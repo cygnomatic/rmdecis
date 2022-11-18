@@ -5,9 +5,6 @@
 #ifndef CYGNOIDES_DECISION_CAM_3D_RECONSTRUCTOR_H
 #define CYGNOIDES_DECISION_CAM_3D_RECONSTRUCTOR_H
 
-// #include <Eigen/Core>
-// #include <Eigen/Dense>
-#include <opencv2/core/eigen.hpp>
 #include <opencv2/core.hpp>
 #include <opencv2/core/utility.hpp>
 #include <opencv2/imgproc.hpp>
@@ -17,11 +14,9 @@
 #include <opencv2/highgui.hpp>
 #include <utility>
 #include <iostream>
-#include <utility>
 #include "objects/armor.h"
 
 using namespace cv;
-// using namespace Eigen;
 
 struct CameraCoeffs
 {
