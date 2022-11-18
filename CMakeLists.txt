@@ -8,7 +8,7 @@ find_package (Eigen3 REQUIRED NO_MODULE)
 
 include_directories(${OpenCV_INCLUDE_DIRS})
 
-add_executable(Cygnoides_Decision reconstruct_3d/cam_3D_reconstructor.cpp reconstruct_3d/cam_3D_reconstructor.h utils/facilities/armor.h)
+add_executable(Cygnoides_Decision reconstruct_3d/cam_3D_reconstructor.cpp reconstruct_3d/cam_3D_reconstructor.h reconstruct_3d/objects/armor.h)
 link_directories(${OpenCV_LIBRARY_DIRS})
 target_link_libraries(Cygnoides_Decision ${OpenCV_LIBS} Eigen3::Eigen)
 

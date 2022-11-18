@@ -18,6 +18,7 @@
 #include <utility>
 #include <iostream>
 #include <utility>
+#include "objects/armor.h"
 
 using namespace cv;
 // using namespace Eigen;
@@ -47,17 +48,39 @@ class Cam3DReconstructor
     Mat cali_cam_mat;
 
 public:
-    explicit Cam3DReconstructor(const CameraCoeffs& cam_coeffs);
     /**
-     * Instantiate Cam3DReconstructor with camera coeffs file.
-     * @param coeffs_path Path to the coeffs file.
+     * Instantiate Cam3DReconstructor with camera coeffs.
+     * @param cam_coeffs camera coeffs.
      */
-
     explicit Cam3DReconstructor(const std::string &coeffs_path);
 
+    /**
+     * Instantiate Cam3DReconstructor with coeffs in a .yml file.
+     * @param cam_coeffs The file contains camera coeffs.
+     */
+    explicit Cam3DReconstructor(const CameraCoeffs &cam_coeffs);
+
+    /**
+     * Undistort the img.
+     * @param img original img input.
+     * @return undistorted img.
+     */
     Mat undistort(const Mat &img);
 
+    /**
+     * Solve PNP with camera coeffs.
+     * @param obj_pts
+     * @param img_pts
+     * @return Points in camera coordinate.
+     */
     std::vector<Point3f> solvePNP(const std::vector<Point3f> &obj_pts, const std::vector<Point2f> &img_pts);
+
+    /**
+     * Solve the armor position in camera coordinate.
+     * @param armor
+     * @param img_pts
+     */
+    void armorSolvePNP(Armor &armor, const std::vector<Point2f> &img_pts);
 };
 
 

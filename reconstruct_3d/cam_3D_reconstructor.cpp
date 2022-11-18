@@ -39,7 +39,8 @@ Mat Cam3DReconstructor::undistort(const Mat &img)
     return ret(roi);
 }
 
-std::vector<Point3f> Cam3DReconstructor::solvePNP(const std::vector<Point3f> &obj_pts, const std::vector<Point2f> &img_pts)
+std::vector<Point3f>
+Cam3DReconstructor::solvePNP(const std::vector<Point3f> &obj_pts, const std::vector<Point2f> &img_pts)
 {
     Mat rvec, tvec;
 
@@ -53,4 +54,7 @@ std::vector<Point3f> Cam3DReconstructor::solvePNP(const std::vector<Point3f> &ob
 }
 
 
-void Cam3DReconstructor::armorSolvePNP();
+void Cam3DReconstructor::armorSolvePNP(Armor &armor, const std::vector<Point2f> &img_pts)
+{
+    armor.corners_cam_coord = solvePNP(armor.corners_self_coord, img_pts);
+}
