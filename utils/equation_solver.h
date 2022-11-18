@@ -18,7 +18,7 @@ public:
      * @param derivative_func The derivative of lhs.
      * @param init_x The initial guess of root.
      * @param eps Terminal error.
-     * @return Root of the equation.
+     * @return Root of the equation. Nan if equation has no solution.
      */
     static float solve_with_der(const std::function<float(float)> &func,
                                 const std::function<float(float)> &derivative_func,
@@ -30,7 +30,7 @@ public:
      * @param init_x The initial guess of root.
      * @param eps Terminal error.
      * @param delta The tiny delta for numerical derivative.
-     * @return Root of the equation.
+     * @return Root of the equation. Nan if equation has no solution.
      */
     static float solve(const std::function<float(float)> &func, float init_x = 0.1,
                        float eps = 1E-6, float delta = 1E-7);

@@ -5,7 +5,7 @@
 #include <cmath>
 #include "../utils/equation_solver.h"
 
-inline float func(float x) {return cos(x) - x;}
+inline float func(float x) {return 1;}
 
 int main()
 {
