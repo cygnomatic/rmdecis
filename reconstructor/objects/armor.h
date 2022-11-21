@@ -6,32 +6,27 @@
 #define CYGNOIDES_DECISION_ARMOR_H
 
 #include <opencv2/core.hpp>
+#include "../../general/typing.h"
+
 
 class Armor
 {
 public:
     float width, height;
-    std::vector<cv::Point2f> corners_img_coord; // from right up corner, counter-clockwise
-    std::vector<cv::Point3f> corners_self_coord;
-    std::vector<cv::Point3f> corners_cam_coord;
+
+    ArmorCorners2d corners_img_coord;
+    ArmorCorners3d corners_self_coord;
+    ArmorCorners3d corners_cam_coord;
 
     Armor(float width, float height)
     {
-        this->width = width; // In mm
+        this->width = width; // In millimeter
         this->height = height;
 
-        corners_self_coord.emplace_back(width / 2, height / 2, 0);
-        corners_self_coord.emplace_back(-width / 2, height / 2, 0);
-        corners_self_coord.emplace_back(-width / 2, -height / 2, 0);
-        corners_self_coord.emplace_back(width / 2, -height / 2, 0);
-    }
-
-    cv::Point3f get_center_cam_coord()
-    {
-        cv::Point3f s;
-        for (auto const &p: corners_cam_coord)
-            s += p;
-        return s / 4;
+        corners_self_coord.tr = {width / 2, height / 2, 0};
+        corners_self_coord.tl = {-width / 2, height / 2, 0};
+        corners_self_coord.dl = {-width / 2, -height / 2, 0};
+        corners_self_coord.dr = {width / 2, -height / 2, 0};
     }
 };
 

@@ -49,5 +49,5 @@ Reconstructor::solvePNP(const std::vector<Point3f> &obj_pts, const std::vector<P
 
 void Reconstructor::armorSolvePNP(Armor &armor, const std::vector<Point2f> &img_pts)
 {
-    armor.corners_cam_coord = solvePNP(armor.corners_self_coord, img_pts);
+    armor.corners_cam_coord = ArmorCorners3d(solvePNP((std::vector<Point3f>) armor.corners_self_coord, img_pts));
 }
