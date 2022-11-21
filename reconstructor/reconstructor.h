@@ -2,8 +2,8 @@
 // Created by catslashbin on 22-11-16.
 //
 
-#ifndef CYGNOIDES_DECISION_CAM_3D_RECONSTRUCTOR_H
-#define CYGNOIDES_DECISION_CAM_3D_RECONSTRUCTOR_H
+#ifndef CYGNOIDES_DECISION_RECONSTRUCTOR_H
+#define CYGNOIDES_DECISION_RECONSTRUCTOR_H
 
 #include <opencv2/core.hpp>
 #include <opencv2/core/utility.hpp>
@@ -23,8 +23,6 @@ struct CameraCoeffs
     Size img_size;
     Mat cam_mat;
     Mat dist_coeffs;
-    Rect roi;
-    Mat cali_cam_mat;
 };
 
 struct CamExtrinsicParam
@@ -33,27 +31,25 @@ struct CamExtrinsicParam
     Mat tvec = Mat::zeros(3, 1, CV_32F);
 };
 
-class Cam3DReconstructor
+class Reconstructor
 {
     // CameraCoeffs cam_coeffs;
     Size img_size;
     Mat cam_mat;
     Mat dist_coeffs;
-    Rect roi;
-    Mat cali_cam_mat;
 
 public:
     /**
      * Instantiate Cam3DReconstructor with camera coeffs.
      * @param cam_coeffs camera coeffs.
      */
-    explicit Cam3DReconstructor(const std::string &coeffs_path);
+    explicit Reconstructor(const std::string &coeffs_path);
 
     /**
      * Instantiate Cam3DReconstructor with coeffs in a .yml file.
      * @param cam_coeffs The file contains camera coeffs.
      */
-    explicit Cam3DReconstructor(const CameraCoeffs &cam_coeffs);
+    explicit Reconstructor(const CameraCoeffs &cam_coeffs);
 
     /**
      * Undistort the img.
@@ -79,4 +75,4 @@ public:
 };
 
 
-#endif //CYGNOIDES_DECISION_CAM_3D_RECONSTRUCTOR_H
+#endif //CYGNOIDES_DECISION_RECONSTRUCTOR_H

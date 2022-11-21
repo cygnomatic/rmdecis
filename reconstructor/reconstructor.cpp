@@ -3,19 +3,15 @@
 //
 
 
-#include "cam_3D_reconstructor.h"
+#include "reconstructor.h"
 
-Cam3DReconstructor::Cam3DReconstructor(const CameraCoeffs &cam_coeffs)
+Reconstructor::Reconstructor(const CameraCoeffs &cam_coeffs)
 {
     img_size = cam_coeffs.img_size;
     cam_mat = cam_coeffs.cam_mat;
-
-    dist_coeffs = cam_coeffs.dist_coeffs;
-    roi = cam_coeffs.roi;
-    cali_cam_mat = cam_coeffs.cali_cam_mat;
 }
 
-Cam3DReconstructor::Cam3DReconstructor(const std::string &coeffs_path)
+Reconstructor::Reconstructor(const std::string &coeffs_path)
 {
     cv::FileStorage fs(coeffs_path, FileStorage::READ);
     if (fs.isOpened())
@@ -27,20 +23,17 @@ Cam3DReconstructor::Cam3DReconstructor(const std::string &coeffs_path)
 
     node["OriImgSize"] >> img_size;
     node["CameraMatrix"] >> cam_mat;
-    node["DistCoeffs"] >> dist_coeffs;
-    node["ROI"] >> roi;
-    node["CailCamMat"] >> cali_cam_mat;
 }
 
-Mat Cam3DReconstructor::undistort(const Mat &img)
+Mat Reconstructor::undistort(const Mat &img)
 {
     Mat ret;
-    cv::undistort(img, ret, cam_mat, dist_coeffs, cali_cam_mat);
-    return ret(roi);
+    cv::undistort(img, ret, cam_mat, dist_coeffs, cam_mat);
+    return ret;
 }
 
 std::vector<Point3f>
-Cam3DReconstructor::solvePNP(const std::vector<Point3f> &obj_pts, const std::vector<Point2f> &img_pts)
+Reconstructor::solvePNP(const std::vector<Point3f> &obj_pts, const std::vector<Point2f> &img_pts)
 {
     Mat rvec, tvec;
 
@@ -54,7 +47,7 @@ Cam3DReconstructor::solvePNP(const std::vector<Point3f> &obj_pts, const std::vec
 }
 
 
-void Cam3DReconstructor::armorSolvePNP(Armor &armor, const std::vector<Point2f> &img_pts)
+void Reconstructor::armorSolvePNP(Armor &armor, const std::vector<Point2f> &img_pts)
 {
     armor.corners_cam_coord = solvePNP(armor.corners_self_coord, img_pts);
 }

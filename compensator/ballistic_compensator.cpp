@@ -20,15 +20,15 @@ float BallisticCompensator::ballistic_der(float v0, float x, float theta) const
 {
     float Sec = 1 / cosf(theta);
     float Tan = tanf(theta);
-    float ret = -(G * x * Tan * Sec) / (k * v0 * (1 - (k * x * Sec) / v0)) +
-                x * (Sec * Sec + (G * Sec * Tan) / (k * v0));
+    float ret = -(GRAVITY * x * Tan * Sec) / (k * v0 * (1 - (k * x * Sec) / v0)) +
+                x * (Sec * Sec + (GRAVITY * Sec * Tan) / (k * v0));
     return ret;
 }
 
 float BallisticCompensator::ballistic(float v0, float x, float theta) const
 {
-    return G / (k * k) * logf(1 - (k * x) / (v0 * cosf(theta))) +
-           x * (G / (k * v0 * cosf(theta)) + tanf(theta));
+    return GRAVITY / (k * k) * logf(1 - (k * x) / (v0 * cosf(theta))) +
+           x * (GRAVITY / (k * v0 * cosf(theta)) + tanf(theta));
 }
 
 float BallisticCompensator::calc_shoot_angle(float v0, float x, float y)

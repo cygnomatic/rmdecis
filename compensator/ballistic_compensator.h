@@ -5,7 +5,7 @@
 #ifndef CYGNOIDES_DECISION_BALLISTIC_COMPENSATOR_H
 #define CYGNOIDES_DECISION_BALLISTIC_COMPENSATOR_H
 
-#define G 9.780f
+#define GRAVITY 9.780f
 
 #include "functional"
 
@@ -32,8 +32,8 @@ public:
      * Calculate ballistic.
      * @param v0 Initial velocity of the bullet
      * @param x Horizontal distance to barrel
-     * @param theta Pitch of barrel, in rad
-     * @return Vertical distance to barrel
+     * @param theta Pitch of gimbal, in rad
+     * @return Vertical distance to gimbal
      */
     float ballistic(float v0, float x, float theta) const;
 
@@ -42,7 +42,7 @@ public:
      * @param v0 Initial velocity of the bullet
      * @param x Horizontal distance to the target
      * @param y Vertical distance to the target
-     * @return Pitch of barrel, in rad
+     * @return Pitch of gimbal, in rad
      */
     float calc_shoot_angle(float v0, float x, float y);
 };
