@@ -14,7 +14,8 @@
 #include <opencv2/highgui.hpp>
 #include <utility>
 #include <iostream>
-#include "objects/armor.h"
+
+#include "../general/typing.h"
 
 using namespace cv;
 
@@ -64,14 +65,14 @@ public:
      * @param img_pts
      * @return Points in camera coordinate.
      */
-    std::vector<Point3f> solvePNP(const std::vector<Point3f> &obj_pts, const std::vector<Point2f> &img_pts);
+    std::vector<Point3f> solve_PNP(const std::vector<Point3f> &obj_pts, const std::vector<Point2f> &img_pts);
 
     /**
      * Solve the armor position in camera coordinate.
-     * @param armor
-     * @param img_pts
+     * @param corners_self_coord Corners coordinate in itself coordinate
+     * @param corners_img_coord Corners coordinate in image coordinate
      */
-    void armorSolvePNP(Armor &armor, const std::vector<Point2f> &img_pts);
+    ArmorCorners3d armor_solve_PNP(const ArmorCorners3d &corners_self_coord, const ArmorCorners2d &corners_img_coord);
 };
 
 

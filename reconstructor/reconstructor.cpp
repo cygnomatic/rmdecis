@@ -2,7 +2,6 @@
 // Created by catslashbin on 22-11-16.
 //
 
-
 #include "reconstructor.h"
 
 Reconstructor::Reconstructor(const CameraCoeffs &cam_coeffs)
@@ -33,7 +32,7 @@ Mat Reconstructor::undistort(const Mat &img)
 }
 
 std::vector<Point3f>
-Reconstructor::solvePNP(const std::vector<Point3f> &obj_pts, const std::vector<Point2f> &img_pts)
+Reconstructor::solve_PNP(const std::vector<Point3f> &obj_pts, const std::vector<Point2f> &img_pts)
 {
     Mat rvec, tvec;
 
@@ -47,7 +46,7 @@ Reconstructor::solvePNP(const std::vector<Point3f> &obj_pts, const std::vector<P
 }
 
 
-void Reconstructor::armorSolvePNP(Armor &armor, const std::vector<Point2f> &img_pts)
+ArmorCorners3d Reconstructor::armor_solve_PNP(const ArmorCorners3d &corners_self_coord, const ArmorCorners2d &corners_img_coord)
 {
-    armor.corners_cam_coord = ArmorCorners3d(solvePNP((std::vector<Point3f>) armor.corners_self_coord, img_pts));
+    return ArmorCorners3d(solve_PNP((std::vector<Point3f>) corners_self_coord, (std::vector<Point2f>) corners_img_coord));
 }

@@ -33,19 +33,24 @@ struct ArmorCorners2d
     cv::Point2f dl; // Down-Left
     cv::Point2f dr; // Down-Right
 
-    cv::Point2f & operator[] (int index)
+    cv::Point2f &operator[](int index)
     {
         switch (index)
         {
-            case 0: return tr;
-            case 1: return tl;
-            case 2: return dl;
-            case 3: return dr;
-            default: throw std::range_error("Corner index should be in 0 to 3.");
+            case 0:
+                return tr;
+            case 1:
+                return tl;
+            case 2:
+                return dl;
+            case 3:
+                return dr;
+            default:
+                throw std::range_error("Corner index should be in 0 to 3.");
         }
     }
 
-    explicit operator std::vector<cv::Point2f> ()
+    explicit operator std::vector<cv::Point2f>() const
     {
         return std::vector<cv::Point2f>({tr, tl, dl, dr});
     }
@@ -82,19 +87,24 @@ struct ArmorCorners3d
     cv::Point3f dl; // Down-Left
     cv::Point3f dr; // Down-Right
 
-    cv::Point3f & operator[] (int index)
+    cv::Point3f &operator[](int index)
     {
         switch (index)
         {
-            case 0: return tr;
-            case 1: return tl;
-            case 2: return dl;
-            case 3: return dr;
-            default: throw std::range_error("Corner index should be in 0 to 3.");
+            case 0:
+                return tr;
+            case 1:
+                return tl;
+            case 2:
+                return dl;
+            case 3:
+                return dr;
+            default:
+                throw std::range_error("Corner index should be in 0 to 3.");
         }
     }
 
-    explicit operator std::vector<cv::Point3f> ()
+    explicit operator std::vector<cv::Point3f>() const
     {
         return std::vector<cv::Point3f>({tr, tl, dl, dr});
     }

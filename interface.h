@@ -1,0 +1,10 @@
+//
+// Created by catslashbin on 22-11-23.
+//
+
+#ifndef CYGNOIDES_DECISION_INTERFACE_H
+#define CYGNOIDES_DECISION_INTERFACE_H
+
+
+
+#endif //CYGNOIDES_DECISION_INTERFACE_H
