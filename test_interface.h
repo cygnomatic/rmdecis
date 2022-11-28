@@ -6,10 +6,10 @@
 #define CYGNOIDES_DECISION_TEST_INTERFACE_H
 
 #include "general/typing.h"
-#include "reconstructor/reconstructor.h"
-#include "utils/armor_utils.h"
+#include "reconstructor/camera_calib.h"
+#include "utils/construct_armor.h"
 
-static Reconstructor reconstructor("cam_cali_coeffs.yml");
+static CameraCalib reconstructor("cam_cali_coeffs.yml");
 
 float test_calc_armor_distance(const ArmorCorners2d& corners_img_coord)
 {

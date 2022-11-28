@@ -2,8 +2,8 @@
 // Created by catslashbin on 22-11-16.
 //
 
-#ifndef CYGNOIDES_DECISION_RECONSTRUCTOR_H
-#define CYGNOIDES_DECISION_RECONSTRUCTOR_H
+#ifndef CYGNOIDES_DECISION_CAMERA_CALIB_H
+#define CYGNOIDES_DECISION_CAMERA_CALIB_H
 
 #include <opencv2/core.hpp>
 #include <opencv2/core/utility.hpp>
@@ -26,13 +26,7 @@ struct CameraCoeffs
     Mat dist_coeffs;
 };
 
-struct CamExtrinsicParam
-{
-    Mat rvec = Mat::eye(3, 3, CV_32F);
-    Mat tvec = Mat::zeros(3, 1, CV_32F);
-};
-
-class Reconstructor
+class CameraCalib
 {
     // CameraCoeffs cam_coeffs;
     Size img_size;
@@ -44,13 +38,13 @@ public:
      * Instantiate Cam3DReconstructor with camera coeffs.
      * @param cam_coeffs camera coeffs.
      */
-    explicit Reconstructor(const std::string &coeffs_path);
+    explicit CameraCalib(const std::string &coeffs_path);
 
     /**
      * Instantiate Cam3DReconstructor with coeffs in a .yml file.
      * @param cam_coeffs The file contains camera coeffs.
      */
-    explicit Reconstructor(const CameraCoeffs &cam_coeffs);
+    explicit CameraCalib(const CameraCoeffs &cam_coeffs);
 
     /**
      * Undistort the img.
@@ -65,7 +59,7 @@ public:
      * @param img_pts
      * @return Points in camera coordinate.
      */
-    std::vector<Point3f> solve_PNP(const std::vector<Point3f> &obj_pts, const std::vector<Point2f> &img_pts);
+    std::vector<Point3f> reconstruct(const std::vector<Point3f> &obj_pts, const std::vector<Point2f> &img_pts);
 
     /**
      * Solve the armor position in camera coordinate.
@@ -73,7 +67,9 @@ public:
      * @param corners_img_coord Corners coordinate in image coordinate
      */
     ArmorCorners3d armor_solve_PNP(const ArmorCorners3d &corners_self_coord, const ArmorCorners2d &corners_img_coord);
+
+    void solvePnP(const std::vector<Point3f> &obj_pts, const std::vector<Point2f> &img_pts, Mat &rvec, Mat &tvec);
 };
 
 
-#endif //CYGNOIDES_DECISION_RECONSTRUCTOR_H
+#endif //CYGNOIDES_DECISION_CAMERA_CALIB_H

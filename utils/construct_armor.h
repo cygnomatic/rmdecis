@@ -2,8 +2,8 @@
 // Created by catslashbin on 22-11-23.
 //
 
-#ifndef CYGNOIDES_DECISION_ARMOR_UTILS_H
-#define CYGNOIDES_DECISION_ARMOR_UTILS_H
+#ifndef CYGNOIDES_DECISION_CONSTRUCT_ARMOR_H
+#define CYGNOIDES_DECISION_CONSTRUCT_ARMOR_H
 
 #include "../general/typing.h"
 
@@ -40,4 +40,4 @@ ArmorCorners3d get_armor_self_coord(ARMOR_TYPE armorType)
     }
 }
 
-#endif //CYGNOIDES_DECISION_ARMOR_UTILS_H
+#endif //CYGNOIDES_DECISION_CONSTRUCT_ARMOR_H

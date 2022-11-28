@@ -5,6 +5,14 @@
 #ifndef CYGNOIDES_GENERAL_TYPING_H
 #define CYGNOIDES_GENERAL_TYPING_H
 
+#include <iostream>
+#include <utility>
+#include <opencv2/highgui.hpp>
+#include <opencv2/videoio.hpp>
+#include <opencv2/imgcodecs.hpp>
+#include <opencv2/calib3d.hpp>
+#include <opencv2/imgproc.hpp>
+#include <opencv2/core/utility.hpp>
 #include <opencv2/core.hpp>
 
 struct ArmorCorners2d
@@ -115,5 +123,61 @@ struct ArmorCorners3d
     // }
 };
 
+struct AxisAngles3f
+{
+    float roll, pitch, yaw;
+
+    explicit AxisAngles3f(const float angles[])
+    {
+        roll = angles[0];
+        pitch = angles[1];
+        yaw = angles[2];
+    }
+};
+
+struct AxisAngles2f
+{
+    float pitch, yaw;
+
+    AxisAngles2f() = default;
+
+    explicit AxisAngles2f(const float angles[])
+    {
+        pitch = angles[0];
+        yaw = angles[1];
+    }
+
+    explicit AxisAngles2f(float pitch, float yaw)
+    {
+        this->pitch = pitch;
+        this->yaw = yaw;
+    }
+};
+
+
+struct Transform3f
+{
+    cv::Mat rvec = cv::Mat::eye(3, 3, CV_32F);
+    cv::Mat tvec = cv::Mat::zeros(3, 1, CV_32F);
+
+    Transform3f() = default;
+
+    Transform3f(cv::Mat rvec, cv::Mat tvec)
+    {
+        this->rvec = rvec;
+        this->tvec = tvec;
+    }
+
+    std::vector<cv::Point3f> apply(const std::vector<cv::Point3f>& pts) const
+    {
+        cv::Mat inp(pts);
+        std::vector<cv::Point3f> ret;
+
+        cv::Mat tmp = rvec * inp + tvec;
+
+        tmp.copyTo(ret);
+        return ret;
+    }
+};
 
 #endif //CYGNOIDES_GENERAL_TYPING_H
