@@ -5,7 +5,7 @@
 #ifndef CYGNOIDES_DECISION_CONSTRUCT_ARMOR_H
 #define CYGNOIDES_DECISION_CONSTRUCT_ARMOR_H
 
-#include "../general/typing.h"
+#include "../typing/general.h"
 
 
 #define SMALL_ARMOR_WIDTH 135.0f

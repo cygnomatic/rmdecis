@@ -5,7 +5,7 @@
 #ifndef CYGNOIDES_DECISION_TRANSFORMER_H
 #define CYGNOIDES_DECISION_TRANSFORMER_H
 
-#include "../general/typing.h"
+#include "../typing/general.h"
 #include "camera_calib.h"
 
 struct SolveArmorResult

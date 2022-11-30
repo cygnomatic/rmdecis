@@ -2,8 +2,8 @@
 // Created by catslashbin on 22-11-21.
 //
 
-#ifndef CYGNOIDES_GENERAL_TYPING_H
-#define CYGNOIDES_GENERAL_TYPING_H
+#ifndef CYGNOIDES_TYPING_GENERAL_H
+#define CYGNOIDES_TYPING_GENERAL_H
 
 #include <iostream>
 #include <utility>
@@ -14,6 +14,8 @@
 #include <opencv2/imgproc.hpp>
 #include <opencv2/core/utility.hpp>
 #include <opencv2/core.hpp>
+
+using namespace cv;
 
 struct ArmorCorners2d
 {
@@ -63,10 +65,20 @@ struct ArmorCorners2d
         return std::vector<cv::Point2f>({tr, tl, dl, dr});
     }
 
-    // cv::Point2f get_center() const
-    // {
-    //     return (tr + tl + dl + dr) / 4;
-    // }
+    cv::Point2f center() const
+    {
+        return (tr + tl + dl + dr) / 4;
+    }
+
+    float area() const
+    {
+        return (float) (norm((tr - tl).cross(tr - dl)) + norm((dr - dl).cross(dr - tl)));
+    }
+
+    float ratio() const
+    {
+        return (max(tr.y, tl.y) - min(dr.y, dl.y)) / (max(tr.x, tl.x) - min(tl.x, dl.x));
+    }
 };
 
 struct ArmorCorners3d
@@ -117,10 +129,11 @@ struct ArmorCorners3d
         return std::vector<cv::Point3f>({tr, tl, dl, dr});
     }
 
-    // cv::Point3f get_center() const
-    // {
-    //     return (tr + tl + dl + dr) / 4;
-    // }
+    cv::Point3f get_center() const
+    {
+        return (tr + tl + dl + dr) / 4;
+    }
+
 };
 
 struct AxisAngles3f
@@ -168,7 +181,7 @@ struct Transform3f
         this->tvec = tvec;
     }
 
-    std::vector<cv::Point3f> apply(const std::vector<cv::Point3f>& pts) const
+    std::vector<cv::Point3f> apply(const std::vector<cv::Point3f> &pts) const
     {
         cv::Mat inp(pts);
         std::vector<cv::Point3f> ret;
@@ -180,4 +193,31 @@ struct Transform3f
     }
 };
 
-#endif //CYGNOIDES_GENERAL_TYPING_H
+enum ArmorID
+{
+    UNKNOWN = 0,
+    UNKNOWN_S = -1,
+    UNKNOWN_B = -2,
+
+    HERO_1 = 1,
+    ENGINEER_2 = 2,
+
+    STANDARD_3 = 3,
+    STANDARD_4 = 4,
+    STANDARD_5 = 5,
+
+    SENTRY_7 = 7,
+    BASE_8 = 8,
+    OUTPOST_10 = 10,
+};
+
+
+struct ArmorPredResult
+{
+    ArmorID armor_type;
+    ArmorCorners2d corners_cam_coord;
+    float confidence;
+};
+
+
+#endif //CYGNOIDES_TYPING_GENERAL_H

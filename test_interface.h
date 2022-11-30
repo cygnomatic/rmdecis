@@ -5,7 +5,7 @@
 #ifndef CYGNOIDES_DECISION_TEST_INTERFACE_H
 #define CYGNOIDES_DECISION_TEST_INTERFACE_H
 
-#include "general/typing.h"
+#include "typing/general.h"
 #include "reconstructor/camera_calib.h"
 #include "utils/construct_armor.h"
 

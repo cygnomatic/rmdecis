@@ -15,7 +15,7 @@
 #include <utility>
 #include <iostream>
 
-#include "../general/typing.h"
+#include "../typing/general.h"
 
 using namespace cv;
 
