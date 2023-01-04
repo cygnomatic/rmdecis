@@ -121,7 +121,7 @@ struct ArmorCorners3d {
         return std::vector<cv::Point3f>({tr, tl, dl, dr});
     }
 
-    cv::Point3f get_center() const {
+    cv::Point3f getCenter() const {
         return (tr + tl + dl + dr) / 4;
     }
 

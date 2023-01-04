@@ -19,7 +19,7 @@ enum ARMOR_TYPE
     BIG_ARMOR = 1
 };
 
-ArmorCorners3d get_armor_self_coord(const cv::Size_<float> &armor_size)
+ArmorCorners3d getArmorModelCoord(const cv::Size_<float> &armor_size)
 {
     return ArmorCorners3d(
             {{armor_size.width / 2,  armor_size.height / 2,  0},
@@ -29,14 +29,14 @@ ArmorCorners3d get_armor_self_coord(const cv::Size_<float> &armor_size)
     );
 }
 
-ArmorCorners3d get_armor_self_coord(ARMOR_TYPE armorType)
+ArmorCorners3d getArmorModelCoord(ARMOR_TYPE armorType)
 {
     switch (armorType)
     {
         case SMALL_ARMOR:
-            return get_armor_self_coord({SMALL_ARMOR_WIDTH, SMALL_ARMOR_HEIGHT});
+            return getArmorModelCoord({SMALL_ARMOR_WIDTH, SMALL_ARMOR_HEIGHT});
         case BIG_ARMOR:
-            return get_armor_self_coord({BIG_ARMOR_WIDTH, BIG_ARMOR_HEIGHT});
+            return getArmorModelCoord({BIG_ARMOR_WIDTH, BIG_ARMOR_HEIGHT});
     }
 }
 

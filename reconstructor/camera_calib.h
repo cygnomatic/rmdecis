@@ -66,7 +66,7 @@ public:
      * @param corners_self_coord Corners coordinate in itself coordinate
      * @param corners_img_coord Corners coordinate in image coordinate
      */
-    ArmorCorners3d armor_solve_PNP(const ArmorCorners3d &corners_self_coord, const ArmorCorners2d &corners_img_coord);
+    ArmorCorners3d armorSolvePnP(const ArmorCorners3d &corners_self_coord, const ArmorCorners2d &corners_img_coord);
 
     void solvePnP(const std::vector<Point3f> &obj_pts, const std::vector<Point2f> &img_pts, Mat &rvec, Mat &tvec);
 };

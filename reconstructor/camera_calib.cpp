@@ -50,7 +50,7 @@ CameraCalib::reconstruct(const std::vector<Point3f> &obj_pts, const std::vector<
 }
 
 
-ArmorCorners3d CameraCalib::armor_solve_PNP(const ArmorCorners3d &corners_self_coord, const ArmorCorners2d &corners_img_coord)
+ArmorCorners3d CameraCalib::armorSolvePnP(const ArmorCorners3d &corners_self_coord, const ArmorCorners2d &corners_img_coord)
 {
     return ArmorCorners3d(
             reconstruct((std::vector<Point3f>) corners_self_coord, (std::vector<Point2f>) corners_img_coord));

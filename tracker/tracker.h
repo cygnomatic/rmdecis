@@ -18,7 +18,7 @@ class Tracker
 
     void predict(float time);
 
-    std::vector<ArmorTrack> & get_all_tracking_armors();
+    std::vector<ArmorTrack> & getAllTrackingArmors();
 };
 
 

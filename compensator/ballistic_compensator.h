@@ -13,11 +13,11 @@ class BallisticCompensator
 {
     float k;
 private:
-    std::function<float(float)> get_ballistic_func(float v0, float x, float y);
+    std::function<float(float)> getBallisticFunc(float v0, float x, float y);
 
-    std::function<float(float)> get_ballistic_der_func(float v0, float x);
+    std::function<float(float)> getBallisticDerFunc(float v0, float x);
 
-    float ballistic_der(float v0, float x, float theta) const;
+    float ballisticDer(float v0, float x, float theta) const;
 
 public:
 
@@ -44,7 +44,7 @@ public:
      * @param y Vertical distance to the target
      * @return Pitch of gimbal, in rad
      */
-    float calc_shoot_angle(float v0, float x, float y);
+    float calcShootAngle(float v0, float x, float y);
 };
 
 

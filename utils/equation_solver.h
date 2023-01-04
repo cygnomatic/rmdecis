@@ -20,9 +20,9 @@ public:
      * @param eps Terminal error.
      * @return Root of the equation. Nan if equation has no solution.
      */
-    static float solve_with_der(const std::function<float(float)> &func,
-                                const std::function<float(float)> &derivative_func,
-                                float init_x = 0.1, float eps = 1E-6);
+    static float solveWithDer(const std::function<float(float)> &func,
+                              const std::function<float(float)> &derivative_func,
+                              float init_x = 0.1, float eps = 1E-6);
 
     /**
      * Solve an equation with Newton-Raphson method. Generate derivative function using numerical way.

@@ -11,9 +11,9 @@
 
 static CameraCalib reconstructor("cam_cali_coeffs.yml");
 
-float test_calc_armor_distance(const ArmorCorners2d& corners_img_coord)
+float testCalcArmorDistance(const ArmorCorners2d& corners_img_coord)
 {
-    reconstructor.armor_solve_PNP(get_armor_self_coord(BIG_ARMOR), corners_img_coord);
+    reconstructor.armorSolvePnP(getArmorModelCoord(BIG_ARMOR), corners_img_coord);
 }
 
 #endif //CYGNOIDES_DECISION_TEST_INTERFACE_H

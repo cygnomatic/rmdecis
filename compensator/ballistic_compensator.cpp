@@ -6,17 +6,17 @@
 #include "../utils/equation_solver.h"
 #include <cmath>
 
-std::function<float(float)> BallisticCompensator::get_ballistic_func(float v0, float x, float y)
+std::function<float(float)> BallisticCompensator::getBallisticFunc(float v0, float x, float y)
 {
     return [v0, x, y, this](float theta) { return ballistic(v0, x, theta) - y; };
 }
 
-std::function<float(float)> BallisticCompensator::get_ballistic_der_func(float v0, float x)
+std::function<float(float)> BallisticCompensator::getBallisticDerFunc(float v0, float x)
 {
-    return [v0, x, this](float theta) { return ballistic_der(v0, x, theta); };
+    return [v0, x, this](float theta) { return ballisticDer(v0, x, theta); };
 }
 
-float BallisticCompensator::ballistic_der(float v0, float x, float theta) const
+float BallisticCompensator::ballisticDer(float v0, float x, float theta) const
 {
     float Sec = 1 / cosf(theta);
     float Tan = tanf(theta);
@@ -31,8 +31,8 @@ float BallisticCompensator::ballistic(float v0, float x, float theta) const
            x * (GRAVITY / (k * v0 * cosf(theta)) + tanf(theta));
 }
 
-float BallisticCompensator::calc_shoot_angle(float v0, float x, float y)
+float BallisticCompensator::calcShootAngle(float v0, float x, float y)
 {
-    return EquationSolver::solve_with_der(get_ballistic_func(v0, x, y),
-                                          get_ballistic_der_func(v0, x));
+    return EquationSolver::solveWithDer(getBallisticFunc(v0, x, y),
+                                        getBallisticDerFunc(v0, x));
 }
