@@ -1,5 +1,6 @@
 [requires]
 yaml-cpp/0.7.0
+spdlog/1.11.0
 
 [generators]
 cmake

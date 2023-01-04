@@ -22,12 +22,24 @@ public:
     int frame_position = 0;
     float fps;
 
+    /**
+     * A simple video player. Feature with video pausing and process adjustment.
+     * @param path Video path.
+     */
     explicit SimpleVideoPlayer(const String &path);
 
     ~SimpleVideoPlayer();
 
+    /**
+     * Read a new frame.
+     * @return New frame.
+     */
     Mat getFrame();
 
+    /**
+     * Show a frame.
+     * @param frame The frame.
+     */
     void update(Mat &frame);
 
     void closeStream();

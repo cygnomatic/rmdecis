@@ -23,10 +23,10 @@ SimpleVideoPlayer::SimpleVideoPlayer(const String& path)
     int height = cap.get(CAP_PROP_FRAME_HEIGHT);
     cout << "Frame size: " << width << " x " << height << endl;
 
-    namedWindow("Video", WINDOW_NORMAL);
-    resizeWindow("Video", width / 2, height / 2);
+    namedWindow("SimpleVideoPlayer", WINDOW_NORMAL);
+    resizeWindow("SimpleVideoPlayer", width / 2, height / 2);
 
-    createTrackbar("Position", "Video", &track_bar_position, 100, onTrackbarSlide, &cap);
+    createTrackbar("Position", "SimpleVideoPlayer", &track_bar_position, 100, onTrackbarSlide, &cap);
 }
 
 SimpleVideoPlayer::~SimpleVideoPlayer()
@@ -45,7 +45,7 @@ void SimpleVideoPlayer::update(Mat &frame)
 {
 
     // Update the track_bar_position of the trackbar
-    setTrackbarPos("Position", "Video", (int) (cap.get(CAP_PROP_POS_FRAMES) / cap.get(CAP_PROP_FRAME_COUNT) * 100));
+    setTrackbarPos("Position", "SimpleVideoPlayer", (int) (cap.get(CAP_PROP_POS_FRAMES) / cap.get(CAP_PROP_FRAME_COUNT) * 100));
 
     // Check if the user has pressed the "Esc" key
     int key = waitKey(1000 / fps);
@@ -69,12 +69,12 @@ void SimpleVideoPlayer::update(Mat &frame)
         }
     }
 
-    imshow("Video", frame);
-
+    imshow("SimpleVideoPlayer", frame);
+    frame_position++;
 }
 
 void SimpleVideoPlayer::closeStream()
 {
     cap.release();
-    destroyWindow("Video");
+    destroyWindow("SimpleVideoPlayer");
 }

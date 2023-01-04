@@ -14,8 +14,10 @@
 #include <opencv2/imgproc.hpp>
 #include <opencv2/core/utility.hpp>
 #include <opencv2/core.hpp>
+#include <spdlog/spdlog.h>
 
 using namespace cv;
+using namespace spdlog;
 
 struct Time
 {

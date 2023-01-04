@@ -12,15 +12,12 @@
 
 class SimulateVisionOutput
 {
-    YAML::Node data;
+    std::vector<YAML::Node> data;
     size_t curr_idx = 0;
 
 public:
 
-    explicit SimulateVisionOutput(const std::string &data_path)
-    {
-        data = YAML::LoadFile(data_path);
-    }
+    explicit SimulateVisionOutput(const std::string &data_path);
 
     ArmorPredResult getData(std::size_t index);
 
