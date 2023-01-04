@@ -17,20 +17,17 @@
 
 using namespace cv;
 
-struct ArmorCorners2d
-{
+struct ArmorCorners2d {
     ArmorCorners2d() = default;
 
-    explicit ArmorCorners2d(cv::Point2f corners[])
-    {
+    explicit ArmorCorners2d(cv::Point2f corners[]) {
         tr = corners[0];
         tl = corners[1];
         dl = corners[2];
         dr = corners[3];
     }
 
-    explicit ArmorCorners2d(std::vector<cv::Point2f> corners)
-    {
+    explicit ArmorCorners2d(std::vector<cv::Point2f> corners) {
         assert(corners.size() == 4);
         tr = corners[0];
         tl = corners[1];
@@ -43,10 +40,8 @@ struct ArmorCorners2d
     cv::Point2f dl; // Down-Left
     cv::Point2f dr; // Down-Right
 
-    cv::Point2f &operator[](int index)
-    {
-        switch (index)
-        {
+    cv::Point2f &operator[](int index) {
+        switch (index) {
             case 0:
                 return tr;
             case 1:
@@ -60,41 +55,41 @@ struct ArmorCorners2d
         }
     }
 
-    explicit operator std::vector<cv::Point2f>() const
-    {
+    explicit operator std::vector<cv::Point2f>() const {
         return std::vector<cv::Point2f>({tr, tl, dl, dr});
     }
 
-    cv::Point2f center() const
-    {
-        return (tr + tl + dl + dr) / 4;
+    explicit operator Rect2f() const {
+        return {Point2f(min(tl.x, dl.x), min(dr.y, dl.y)), Point2f(max(tr.x, tl.x), max(tr.y, tl.y))};
     }
 
-    float area() const
-    {
-        return (float) (norm((tr - tl).cross(tr - dl)) + norm((dr - dl).cross(dr - tl)));
-    }
-
-    float ratio() const
-    {
-        return (max(tr.y, tl.y) - min(dr.y, dl.y)) / (max(tr.x, tl.x) - min(tl.x, dl.x));
-    }
+//    cv::Point2f center() const
+//    {
+//        return (tr + tl + dl + dr) / 4;
+//    }
+//
+//    float area() const
+//    {
+//        return (float) (norm((tr - tl).cross(tr - dl)) + norm((dr - dl).cross(dr - tl)));
+//    }
+//
+//    float ratio() const
+//    {
+//        return (max(tr.y, tl.y) - min(dr.y, dl.y)) / (max(tr.x, tl.x) - min(tl.x, dl.x));
+//    }
 };
 
-struct ArmorCorners3d
-{
+struct ArmorCorners3d {
     ArmorCorners3d() = default;
 
-    explicit ArmorCorners3d(cv::Point3f corners[])
-    {
+    explicit ArmorCorners3d(cv::Point3f corners[]) {
         tr = corners[0];
         tl = corners[1];
         dl = corners[2];
         dr = corners[3];
     }
 
-    explicit ArmorCorners3d(std::vector<cv::Point3f> corners)
-    {
+    explicit ArmorCorners3d(std::vector<cv::Point3f> corners) {
         assert(corners.size() == 4);
         tr = corners[0];
         tl = corners[1];
@@ -107,10 +102,8 @@ struct ArmorCorners3d
     cv::Point3f dl; // Down-Left
     cv::Point3f dr; // Down-Right
 
-    cv::Point3f &operator[](int index)
-    {
-        switch (index)
-        {
+    cv::Point3f &operator[](int index) {
+        switch (index) {
             case 0:
                 return tr;
             case 1:
@@ -124,65 +117,55 @@ struct ArmorCorners3d
         }
     }
 
-    explicit operator std::vector<cv::Point3f>() const
-    {
+    explicit operator std::vector<cv::Point3f>() const {
         return std::vector<cv::Point3f>({tr, tl, dl, dr});
     }
 
-    cv::Point3f get_center() const
-    {
+    cv::Point3f get_center() const {
         return (tr + tl + dl + dr) / 4;
     }
 
 };
 
-struct AxisAngles3f
-{
+struct AxisAngles3f {
     float roll, pitch, yaw;
 
-    explicit AxisAngles3f(const float angles[])
-    {
+    explicit AxisAngles3f(const float angles[]) {
         roll = angles[0];
         pitch = angles[1];
         yaw = angles[2];
     }
 };
 
-struct AxisAngles2f
-{
+struct AxisAngles2f {
     float pitch, yaw;
 
     AxisAngles2f() = default;
 
-    explicit AxisAngles2f(const float angles[])
-    {
+    explicit AxisAngles2f(const float angles[]) {
         pitch = angles[0];
         yaw = angles[1];
     }
 
-    explicit AxisAngles2f(float pitch, float yaw)
-    {
+    explicit AxisAngles2f(float pitch, float yaw) {
         this->pitch = pitch;
         this->yaw = yaw;
     }
 };
 
 
-struct Transform3f
-{
+struct Transform3f {
     cv::Mat rvec = cv::Mat::eye(3, 3, CV_32F);
     cv::Mat tvec = cv::Mat::zeros(3, 1, CV_32F);
 
     Transform3f() = default;
 
-    Transform3f(cv::Mat rvec, cv::Mat tvec)
-    {
+    Transform3f(cv::Mat rvec, cv::Mat tvec) {
         this->rvec = rvec;
         this->tvec = tvec;
     }
 
-    std::vector<cv::Point3f> apply(const std::vector<cv::Point3f> &pts) const
-    {
+    std::vector<cv::Point3f> apply(const std::vector<cv::Point3f> &pts) const {
         cv::Mat inp(pts);
         std::vector<cv::Point3f> ret;
 
@@ -193,27 +176,25 @@ struct Transform3f
     }
 };
 
-enum ArmorID
-{
+static const int NUM_ARMOR_ID = 11;
+enum ArmorID {
     UNKNOWN = 0,
-    UNKNOWN_S = -1,
-    UNKNOWN_B = -2,
 
     HERO_1 = 1,
-    ENGINEER_2 = 2,
 
+    ENGINEER_2 = 2,
     STANDARD_3 = 3,
+
     STANDARD_4 = 4,
     STANDARD_5 = 5,
-
     SENTRY_7 = 7,
+
     BASE_8 = 8,
     OUTPOST_10 = 10,
 };
 
 
-struct ArmorPredResult
-{
+struct ArmorPredResult {
     ArmorID armor_type;
     ArmorCorners2d corners_cam_coord;
     float confidence;

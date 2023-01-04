@@ -7,18 +7,18 @@
 
 #include "../typing/general.h"
 #include "../reconstructor/camera_calib.h"
-#include "tracked_armor.h"
+#include "armor_track.h"
 
 class Tracker
 {
     float last_t;
-    std::vector<TrackedArmor> tracking_armors;
+    std::vector<ArmorTrack> tracking_armors;
 
     void update(std::vector<ArmorPredResult>, float time);
 
     void predict(float time);
 
-    std::vector<TrackedArmor> & get_all_tracking_armors();
+    std::vector<ArmorTrack> & get_all_tracking_armors();
 };
 
 

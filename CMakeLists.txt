@@ -8,7 +8,7 @@ find_package(Eigen3 REQUIRED NO_MODULE)
 
 include_directories(${OpenCV_INCLUDE_DIRS})
 
-add_library(Cygnoides_Decision reconstructor/camera_calib.cpp reconstructor/camera_calib.h utils/equation_solver.cpp utils/equation_solver.h compensator/ballistic_compensator.cpp compensator/ballistic_compensator.h tracker/tracked_armor.cpp tracker/tracked_armor.h tracker/tracker.cpp tracker/tracker.h typing/general.h interface.h test_interface.h utils/construct_armor.h typing/armor.h)
+add_library(Cygnoides_Decision reconstructor/camera_calib.cpp reconstructor/camera_calib.h utils/equation_solver.cpp utils/equation_solver.h compensator/ballistic_compensator.cpp compensator/ballistic_compensator.h tracker/armor_track.cpp tracker/armor_track.h tracker/tracker.cpp tracker/tracker.h typing/general.h interface.h test_interface.h utils/construct_armor.h typing/armor.h utils/cv_utils.h)
 link_directories(${OpenCV_LIBRARY_DIRS})
 target_link_libraries(Cygnoides_Decision ${OpenCV_LIBS} Eigen3::Eigen)
 
