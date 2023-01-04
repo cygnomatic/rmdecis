@@ -23,7 +23,7 @@ public:
     float fps;
 
     /**
-     * A simple video player. Feature with video pausing and process adjustment.
+     * A simple video player. Featured with video pausing and process adjustment.
      * @param path Video path.
      */
     explicit SimpleVideoPlayer(const String &path);

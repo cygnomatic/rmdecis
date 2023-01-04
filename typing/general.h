@@ -19,21 +19,40 @@
 using namespace cv;
 using namespace spdlog;
 
+/**
+ * Type of time.
+ * @param sec POSIX time, second.
+ * @param usec POSIX time, microsecond.
+ */
 struct Time
 {
     int sec;
     int usec;
 
+    /**
+     * Calculate the diff of two time.
+     * @param rhs
+     * @return Time difference, in second.
+     */
     float operator-(const Time &rhs) const
     {
         return (sec - rhs.sec) + (usec - rhs.usec) * 1e-6f;
     }
 };
 
+
+/**
+ * Struct for the four corners of an Armor.
+ * Corners coord in 2D.
+ */
 struct ArmorCorners2d
 {
     ArmorCorners2d() = default;
 
+    /**
+     * Construct ArmorCorners2d with four corners coord.
+     * @param corners Corners. Start form Top-Right, goes counter-clockwise to Down-Right.
+     */
     explicit ArmorCorners2d(cv::Point2f corners[])
     {
         tr = corners[0];
@@ -42,6 +61,10 @@ struct ArmorCorners2d
         dr = corners[3];
     }
 
+    /**
+     * Construct ArmorCorners2d with four corners coord.
+     * @param corners Corners. Start form Top-Right, goes counter-clockwise to Down-Right.
+     */
     explicit ArmorCorners2d(std::vector<cv::Point2f> corners)
     {
         assert(corners.size() == 4);
@@ -78,25 +101,30 @@ struct ArmorCorners2d
         return std::vector<cv::Point2f>({tr, tl, dl, dr});
     }
 
+    /**
+     * Get the bounding box of Armor corners.
+     * @return The bounding rect.
+     */
     explicit operator Rect2f() const
     {
         return {Point2f(min(tl.x, dl.x), min(dr.y, dl.y)), Point2f(max(tr.x, tl.x), max(tr.y, tl.y))};
     }
 
-//    cv::Point2f center() const
-//    {
-//        return (tr + tl + dl + dr) / 4;
-//    }
-//
-//    float area() const
-//    {
-//        return (float) (norm((tr - tl).cross(tr - dl)) + norm((dr - dl).cross(dr - tl)));
-//    }
-//
-//    float ratio() const
-//    {
-//        return (max(tr.y, tl.y) - min(dr.y, dl.y)) / (max(tr.x, tl.x) - min(tl.x, dl.x));
-//    }
+    //    cv::Point2f center() const
+    //    {
+    //        return (tr + tl + dl + dr) / 4;
+    //    }
+    //
+    //    float area() const
+    //    {
+    //        return (float) (norm((tr - tl).cross(tr - dl)) + norm((dr - dl).cross(dr - tl)));
+    //    }
+    //
+    //    float ratio() const
+    //    {
+    //        return (max(tr.y, tl.y) - min(dr.y, dl.y)) / (max(tr.x, tl.x) - min(tl.x, dl.x));
+    //    }
+
 };
 
 struct ArmorCorners3d
@@ -231,6 +259,13 @@ enum ArmorID
     OUTPOST_10 = 10,
 };
 
+/**
+ * The output of the Vision Part.
+ * @param time The time **the frame is shot**. NOT THE TIME FINISH THE VISION PROCESS.
+ * @param armor_type Type of armor.
+ * @param corners_img_coord Detected armor corners in image coord.
+ * @param confidence Confidence of the prediction.
+ */
 struct ArmorPredResult
 {
     Time time;
