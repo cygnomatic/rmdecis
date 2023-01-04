@@ -62,7 +62,7 @@ public:
     std::vector<Point3f> reconstruct(const std::vector<Point3f> &obj_pts, const std::vector<Point2f> &img_pts);
 
     /**
-     * Solve the armor position in camera coordinate.
+     * Solve the armor track_bar_position in camera coordinate.
      * @param corners_self_coord Corners coordinate in itself coordinate
      * @param corners_img_coord Corners coordinate in image coordinate
      */

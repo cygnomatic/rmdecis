@@ -3,15 +3,17 @@
 //
 
 #include "../utils_contrib/simple_video_player.h"
+#include "../utils/cv_utils.h"
 
-void bgr2gray(Mat & img)
-{
-    cvtColor(img, img, CV_BGR2GRAY);
-}
 
 int main()
 {
-    SimpleVideoPlayer player;
-    player.setImgProcessFunc(bgr2gray);
-    player.play("../data/video_test3.avi");
+    SimpleVideoPlayer player("../../data/vision_out/video_input.avi");
+    while (true)
+    {
+        Mat frame = player.getFrame();
+        if (frame.empty())
+            break;
+        player.update(frame);
+    }
 }

@@ -15,25 +15,23 @@ using namespace std;
 
 class SimpleVideoPlayer
 {
-
 public:
-    /**
-     * Set image process function.
-     * @param process_img_func function called to process the image while playing.
-     */
-    void setImgProcessFunc(const std::function<void(Mat &)> &process_img_func);
 
-    /**
-     * Play video
-     * @param path video path.
-     */
-    void play(const String &path);
+    VideoCapture cap;
+    int track_bar_position = 0;
+    int frame_position = 0;
+    float fps;
 
-private:
+    explicit SimpleVideoPlayer(const String &path);
 
-    static void defaultImgProcessFunc(Mat &img);
+    ~SimpleVideoPlayer();
 
-    function<void(Mat &)> processImgFunc = defaultImgProcessFunc;
+    Mat getFrame();
+
+    void update(Mat &frame);
+
+    void closeStream();
+
 };
 
 #endif //CYGNOIDES_DECISION_SIMPLE_VIDEO_PLAYER_H
