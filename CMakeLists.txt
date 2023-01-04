@@ -3,6 +3,13 @@ project(Cygnoides_Decision VERSION 0.1.0 DESCRIPTION "BUPT-RM-Cygnoides decision
 
 set(CMAKE_CXX_STANDARD 14)
 
+if(EXISTS ${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
+    include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
+    conan_basic_setup()
+else()
+    message(WARNING "The file conanbuildinfo.cmake doesn't exist, you have to run conan install first")
+endif()
+
 find_package(OpenCV REQUIRED)
 find_package(Eigen3 REQUIRED NO_MODULE)
 
@@ -20,4 +27,4 @@ add_executable(test_equation_solver tests/test_equation_solver.cpp utils/equatio
 
 add_executable(test_video_playback utils_contrib/simple_video_player.cpp utils_contrib/simple_video_player.h tests/test_video_playback.cpp)
 link_directories(${OpenCV_LIBRARY_DIRS})
-target_link_libraries(test_video_playback ${OpenCV_LIBS})
+target_link_libraries(test_video_playback ${OpenCV_LIBS} ${CONAN_LIBS})
