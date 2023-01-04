@@ -24,7 +24,7 @@ using namespace cv;
 #define GRID_LEN 28.5
 
 
-class CameraCailbrator
+class CameraCalibrator
 {
     std::string cali_coeffs_path;
 
@@ -33,7 +33,7 @@ public:
     Size img_size, cail_img_size;
     Rect roi;
 
-    explicit CameraCailbrator(std::string coeffs_path, const Size& img_size)
+    explicit CameraCalibrator(std::string coeffs_path, const Size& img_size)
     {
         this->cali_coeffs_path = std::move(coeffs_path);
         this->img_size = img_size;
@@ -46,7 +46,7 @@ public:
         return ret;
     }
 
-    void calculateCailCoeffs(const std::vector<Mat> &imgs, const Size &pattern_size, float side_len)
+    void calculateCaliCoeffs(const std::vector<Mat> &imgs, const Size &pattern_size, float side_len)
     {
         Mat rvecs, tvecs;
         std::vector<std::vector<Point2f>> img_pts_arr;
@@ -146,8 +146,8 @@ int main()
         imgs.push_back(img);
     }
 
-    CameraCailbrator camera_calibrator("../config/cam_cali_coeffs.yml", Size(1200, 900));
-    camera_calibrator.calculateCailCoeffs(imgs, Size(BOARD_ROW, BOARD_COLUMN), GRID_LEN);
+    CameraCalibrator camera_calibrator("../config/cam_cali_coeffs.yml", Size(1200, 900));
+    camera_calibrator.calculateCaliCoeffs(imgs, Size(BOARD_ROW, BOARD_COLUMN), GRID_LEN);
 
     return 0;
 }

@@ -13,7 +13,7 @@ CameraCalib::CameraCalib(const CameraCoeffs &cam_coeffs)
 CameraCalib::CameraCalib(const std::string &coeffs_path)
 {
     cv::FileStorage fs(coeffs_path, FileStorage::READ);
-    if (fs.isOpened())
+    if (!fs.isOpened())
     {
         throw std::runtime_error("Can not open file: " + coeffs_path);
     }
@@ -33,7 +33,7 @@ Mat CameraCalib::undistort(const Mat &img)
 
 void CameraCalib::solvePnP(const std::vector<Point3f> &obj_pts, const std::vector<Point2f> &img_pts, Mat &rvec, Mat &tvec)
 {
-    cv::solvePnP(obj_pts, img_pts, cam_mat, dist_coeffs, rvec, tvec);
+    cv::solvePnP(Mat(obj_pts), Mat(img_pts), cam_mat, dist_coeffs, rvec, tvec);
 }
 
 std::vector<Point3f>

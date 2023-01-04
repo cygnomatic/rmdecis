@@ -15,12 +15,12 @@ float calculateIoU(const Rect2f& rect1, const Rect2f& rect2)
     return intersectArea / unionArea;
 }
 
-void drawArmorCorners(cv::Mat& image, ArmorCorners2d& corners)
+void drawArmorCorners(cv::Mat& image, ArmorCorners2d& corners, const cv::Scalar& color = Scalar(255, 0, 0))
 {
-    cv::line(image, corners[0], corners[1], cv::Scalar(255, 0, 0), 2);
-    cv::line(image, corners[1], corners[2], cv::Scalar(255, 0, 0), 2);
-    cv::line(image, corners[2], corners[3], cv::Scalar(255, 0, 0), 2);
-    cv::line(image, corners[3], corners[0], cv::Scalar(255, 0, 0), 2);
+    cv::line(image, corners[0], corners[1], color, 2);
+    cv::line(image, corners[1], corners[2], color, 2);
+    cv::line(image, corners[2], corners[3], color, 2);
+    cv::line(image, corners[3], corners[0], color, 2);
 }
 
 #endif //CYGNOIDES_DECISION_CV_UTILS_H
