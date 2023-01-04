@@ -25,6 +25,6 @@ target_link_libraries(util_calibrate_camera ${OpenCV_LIBS})
 
 add_executable(test_equation_solver tests/test_equation_solver.cpp utils/equation_solver.cpp utils/equation_solver.h)
 
-add_executable(test_video_playback utils_contrib/simple_video_player.cpp utils_contrib/simple_video_player.h tests/test_video_playback.cpp)
+add_executable(test_video_playback utils_contrib/simple_video_player.cpp utils_contrib/simple_video_player.h tests/test_video_playback.cpp utils_contrib/simulate_vision_result.h utils_contrib/simulate_vision_result.cpp)
 link_directories(${OpenCV_LIBRARY_DIRS})
 target_link_libraries(test_video_playback ${OpenCV_LIBS} ${CONAN_LIBS})
