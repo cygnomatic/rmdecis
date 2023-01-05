@@ -26,24 +26,15 @@ using namespace cv;
 
 class CameraCalibrator
 {
-    std::string cali_coeffs_path;
 
 public:
     Mat cam_mat, dist_coeffs, cali_cam_mat;
     Size img_size, cail_img_size;
     Rect roi;
 
-    explicit CameraCalibrator(std::string coeffs_path, const Size& img_size)
+    explicit CameraCalibrator(const Size& img_size)
     {
-        this->cali_coeffs_path = std::move(coeffs_path);
         this->img_size = img_size;
-    }
-
-    Mat undistort(const Mat &img) const
-    {
-        Mat ret;
-        cv::undistort(img, ret, cam_mat, dist_coeffs);
-        return ret;
     }
 
     void calculateCaliCoeffs(const std::vector<Mat> &imgs, const Size &pattern_size, float side_len)
@@ -83,42 +74,23 @@ public:
         cail_img_size = roi.size();
 
         std::cout << "CameraMatrix: \n" << cam_mat << std::endl;
-        std::cout << "DistCoeffs: \n" << dist_coeffs << std::endl;
+        std::cout << "DistortCoeffs: \n" << dist_coeffs << std::endl;
         std::cout << "CailCamMatrix: \n" << cali_cam_mat << std::endl;
         std::cout << "VaildROIsize: \n" << cail_img_size << std::endl;
-
-        saveCoeffs();
     }
 
-private:
-
-    // bool loadCoeffs()
-    // {
-    //     cv::FileStorage fs(cail_coeffs_path, FileStorage::READ);
-    //     if (fs.isOpened())
-    //     {
-    //         std::cerr << "Can not open file:" << cail_coeffs_path << std::endl;
-    //         return false;
-    //     }
-    //     FileNode node = fs.getFirstTopLevelNode();
-    //
-    //     node["CameraMatrix"] >> cam_mat;
-    //     node["DistCoeffs"] >> dist_coeffs;
-    //     return true;
-    // }
-
-    void saveCoeffs()
+    void saveCoeffs(const String& path, const String& info) const
     {
-        cv::FileStorage fs(cali_coeffs_path, FileStorage::WRITE);
+        cv::FileStorage fs(path, FileStorage::WRITE);
 
-        fs << "OriImgSize" << img_size;
+        fs << "Info" << info;
         fs << "CameraMatrix" << cam_mat;
-        fs << "DistCoeffs" << dist_coeffs;
-        fs << "ROI" << roi;
-        fs << "CaliCamMat" << cali_cam_mat;
+        fs << "DistortCoeffs" << dist_coeffs;
 
         fs.release();
     }
+
+private:
 
     static std::vector<Point3f> calculateBoardCornerPos(const Size &pattern_size, float side_len)
     {
@@ -138,7 +110,7 @@ int main()
     std::vector<Mat> imgs;
     Mat img;
 
-    glob("../data/*.jpg", img_paths, false);
+    glob("../../data/calib/*.jpg", img_paths, false);
 
     for (const String &img_path: img_paths)
     {
@@ -146,8 +118,9 @@ int main()
         imgs.push_back(img);
     }
 
-    CameraCalibrator camera_calibrator("../config/cam_cali_coeffs.yml", Size(1200, 900));
+    CameraCalibrator camera_calibrator(Size(1200, 900));
     camera_calibrator.calculateCaliCoeffs(imgs, Size(BOARD_ROW, BOARD_COLUMN), GRID_LEN);
+    camera_calibrator.saveCoeffs("../../config/cam_cali_coeffs.yml", "Test calib");
 
     return 0;
 }

@@ -3,11 +3,12 @@
 //
 
 #include "camera_calib.h"
+#include <spdlog/fmt/ostr.h>
 
 CameraCalib::CameraCalib(const CameraCoeffs &cam_coeffs)
 {
-    img_size = cam_coeffs.img_size;
     cam_mat = cam_coeffs.cam_mat;
+    dist_coeffs = cam_coeffs.dist_coeffs;
 }
 
 CameraCalib::CameraCalib(const std::string &coeffs_path)
@@ -18,10 +19,14 @@ CameraCalib::CameraCalib(const std::string &coeffs_path)
         throw std::runtime_error("Can not open file: " + coeffs_path);
     }
 
-    FileNode node = fs.getFirstTopLevelNode();
+    String calib_info;
+    fs["Info"] >> calib_info;
+    fs["CameraMatrix"] >> cam_mat;
+    fs["DistortCoeffs"] >> dist_coeffs;
 
-    node["OriImgSize"] >> img_size;
-    node["CameraMatrix"] >> cam_mat;
+    fs.release();
+
+    info("Loaded camera coeffs. CalibInfo: {}", calib_info);
 }
 
 Mat CameraCalib::undistort(const Mat &img)
@@ -36,22 +41,7 @@ void CameraCalib::solvePnP(const std::vector<Point3f> &obj_pts, const std::vecto
     cv::solvePnP(Mat(obj_pts), Mat(img_pts), cam_mat, dist_coeffs, rvec, tvec);
 }
 
-std::vector<Point3f>
-CameraCalib::reconstruct(const std::vector<Point3f> &obj_pts, const std::vector<Point2f> &img_pts)
+void CameraCalib::armorSolvePnP(const ArmorCorners3d &corners_self_coord, const ArmorCorners2d &corners_img_coord, Mat &rvec, Mat &tvec)
 {
-    Mat rvec, tvec;
-    solvePnP(obj_pts, img_pts, rvec, tvec);
-
-    Mat cam_coord_pts = rvec * Mat(obj_pts) + tvec;
-    std::vector<Point3f> ret;
-    cam_coord_pts.copyTo(ret);
-
-    return ret;
-}
-
-
-ArmorCorners3d CameraCalib::armorSolvePnP(const ArmorCorners3d &corners_self_coord, const ArmorCorners2d &corners_img_coord)
-{
-    return ArmorCorners3d(
-            reconstruct((std::vector<Point3f>) corners_self_coord, (std::vector<Point2f>) corners_img_coord));
+    solvePnP((std::vector<Point3f>) corners_self_coord, (std::vector<Point2f>) corners_img_coord, rvec, tvec);
 }

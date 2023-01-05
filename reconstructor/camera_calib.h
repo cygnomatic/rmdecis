@@ -21,7 +21,6 @@ using namespace cv;
 
 struct CameraCoeffs
 {
-    Size img_size;
     Mat cam_mat;
     Mat dist_coeffs;
 };
@@ -29,9 +28,7 @@ struct CameraCoeffs
 class CameraCalib
 {
     // CameraCoeffs cam_coeffs;
-    Size img_size;
-    Mat cam_mat;
-    Mat dist_coeffs;
+    Mat cam_mat, dist_coeffs;
 
 public:
     /**
@@ -53,22 +50,9 @@ public:
      */
     Mat undistort(const Mat &img);
 
-    /**
-     * Solve PNP with camera coeffs.
-     * @param obj_pts
-     * @param img_pts
-     * @return Points in camera coordinate.
-     */
-    std::vector<Point3f> reconstruct(const std::vector<Point3f> &obj_pts, const std::vector<Point2f> &img_pts);
-
-    /**
-     * Solve the armor track_bar_position in camera coordinate.
-     * @param corners_self_coord Corners coordinate in itself coordinate
-     * @param corners_img_coord Corners coordinate in image coordinate
-     */
-    ArmorCorners3d armorSolvePnP(const ArmorCorners3d &corners_self_coord, const ArmorCorners2d &corners_img_coord);
-
     void solvePnP(const std::vector<Point3f> &obj_pts, const std::vector<Point2f> &img_pts, Mat &rvec, Mat &tvec);
+
+    void armorSolvePnP(const ArmorCorners3d &corners_self_coord, const ArmorCorners2d &corners_img_coord, Mat &rvec, Mat &tvec);
 };
 
 

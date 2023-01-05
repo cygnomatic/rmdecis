@@ -14,6 +14,8 @@ int main()
     SimpleVideoPlayer player("../../data/vision_out/video_input.avi");
     CameraCalib camera_calib("../../config/cam_cali_coeffs.yml");
 
+    Mat rvec, tvec;
+
     while (true)
     {
         Mat frame = player.getFrame();
@@ -21,18 +23,12 @@ int main()
             break;
 
 
-        auto corners_img = vision_output.getData(player.frame_position).corners_img_coord;
-
-        try
+        for (auto pred_result: vision_output.getData(player.frame_position))
         {
-            auto corners_cam = camera_calib.armorSolvePnP(getArmorModelCoord(SMALL_ARMOR), corners_img);
-            info("Distance: {}", norm(corners_cam.getCenter()));
-        } catch (Exception &e)
-        {
-            error("SolvePnP failed: {}", e.what());
+            drawArmorCorners(frame, pred_result.corners_img_coord, {0, 0, 255});
+            camera_calib.armorSolvePnP(getArmorModelCoord(SMALL_ARMOR), pred_result.corners_img_coord, rvec, tvec);
+            info("Distance: {}", norm(tvec));
         }
-
-        drawArmorCorners(frame, corners_img, {0, 0, 255});
 
         player.update(frame);
     }

@@ -15,6 +15,8 @@
 #include <opencv2/core/utility.hpp>
 #include <opencv2/core.hpp>
 #include <spdlog/spdlog.h>
+#include <spdlog/fmt/ostr.h>
+#include <spdlog/sinks/stdout_sinks.h>
 
 using namespace cv;
 using namespace spdlog;
@@ -107,7 +109,8 @@ struct ArmorCorners2d
      */
     explicit operator Rect2f() const
     {
-        return {Point2f(min(tl.x, dl.x), min(dr.y, dl.y)), Point2f(max(tr.x, tl.x), max(tr.y, tl.y))};
+        return boundingRect(std::vector<cv::Point2f>({tr, tl, dl, dr}));
+//        return {Point2f(min(tl.x, dl.x), min(dr.y, dl.y)), Point2f(max(tr.x, tl.x), max(tr.y, tl.y))};
     }
 
     //    cv::Point2f center() const
