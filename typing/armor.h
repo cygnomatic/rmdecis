@@ -5,8 +5,6 @@
 #ifndef CYGNOIDES_DECISION_ARMOR_H
 #define CYGNOIDES_DECISION_ARMOR_H
 
-#include "general.h"
-
 #define SMALL_ARMOR_WIDTH 135.0f
 #define SMALL_ARMOR_HEIGHT 125.0f
 #define BIG_ARMOR_WIDTH 230.0f
