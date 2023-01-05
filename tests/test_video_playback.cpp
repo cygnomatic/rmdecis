@@ -17,8 +17,10 @@ int main()
         if (frame.empty())
             break;
 
-        auto corners =  vision_output.getData(player.frame_position).corners_img_coord;
-        drawArmorCorners(frame, corners, {0, 0, 255});
+        for (auto pred_result: vision_output.getData(player.frame_position))
+        {
+            drawArmorCorners(frame, pred_result.corners_img_coord, {0, 0, 255});
+        }
 
         player.update(frame);
     }

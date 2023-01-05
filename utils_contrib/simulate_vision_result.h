@@ -13,15 +13,12 @@
 class SimulateVisionOutput
 {
     std::vector<YAML::Node> data;
-    size_t curr_idx = 0;
 
 public:
 
     explicit SimulateVisionOutput(const std::string &data_path);
 
-    ArmorPredResult getData(std::size_t index);
-
-    ArmorPredResult nextData();
+    std::vector<ArmorPredResult> getData(std::size_t index);
 
 };
 
