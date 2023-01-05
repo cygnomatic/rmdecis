@@ -3,7 +3,7 @@
 //
 
 #include <cmath>
-#include "../utils/equation_solver.h"
+#include "../src/utils/equation_solver.h"
 
 inline float func(float x) {return x - x*x + 0.5;}
 

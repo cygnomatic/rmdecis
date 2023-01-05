@@ -8,7 +8,7 @@
 #include <string>
 #include <yaml-cpp/yaml.h>
 
-#include "../typing/general.h"
+#include "../src/typing/general.h"
 
 class SimulateVisionOutput
 {

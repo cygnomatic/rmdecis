@@ -8,7 +8,7 @@
 #include <opencv2/opencv.hpp>
 #include <opencv2/imgproc/types_c.h>
 #include <iostream>
-#include "functional"
+#include <functional>
 
 using namespace cv;
 using namespace std;

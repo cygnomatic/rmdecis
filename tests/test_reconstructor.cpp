@@ -4,8 +4,8 @@
 
 #include "../utils_contrib/simple_video_player.h"
 #include "../utils_contrib/simulate_vision_result.h"
-#include "../reconstructor/camera_calib.h"
-#include "../utils/cv_utils.h"
+#include "../src/reconstructor/camera_calib.h"
+#include "../src/utils/cv_utils.h"
 
 int main()
 {
