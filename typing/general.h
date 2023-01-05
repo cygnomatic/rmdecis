@@ -16,7 +16,6 @@
 #include <opencv2/core.hpp>
 #include <spdlog/spdlog.h>
 #include <spdlog/fmt/ostr.h>
-#include <spdlog/sinks/stdout_sinks.h>
 
 #include "armor.h"
 

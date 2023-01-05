@@ -7,6 +7,7 @@
 
 #include <functional>
 #include <iostream>
+#include <cmath>
 
 class EquationSolver
 {

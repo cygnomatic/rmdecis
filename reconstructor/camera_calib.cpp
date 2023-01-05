@@ -3,7 +3,6 @@
 //
 
 #include "camera_calib.h"
-#include <spdlog/fmt/ostr.h>
 
 CameraCalib::CameraCalib(const CameraCoeffs &cam_coeffs)
 {

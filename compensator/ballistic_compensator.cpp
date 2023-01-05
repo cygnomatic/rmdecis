@@ -1,10 +1,8 @@
 //
 // Created by catslashbin on 22-11-18.
 //
-
 #include "ballistic_compensator.h"
-#include "../utils/equation_solver.h"
-#include <cmath>
+
 
 std::function<float(float)> BallisticCompensator::getBallisticFunc(float v0, float x, float y)
 {

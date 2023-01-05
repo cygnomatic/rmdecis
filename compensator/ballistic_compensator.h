@@ -7,7 +7,10 @@
 
 #define GRAVITY 9.780f
 
-#include "functional"
+#include <functional>
+#include <cmath>
+
+#include "../utils/equation_solver.h"
 
 class BallisticCompensator
 {

@@ -12,7 +12,29 @@
 #define BIG_ARMOR_WIDTH 230.0f
 #define BIG_ARMOR_HEIGHT 127.0f
 
-using namespace cv;
+#define NUM_ARMOR_ID 11
+enum ArmorID
+{
+    UNKNOWN = 0,
+
+    HERO_1 = 1,
+
+    ENGINEER_2 = 2,
+    STANDARD_3 = 3,
+
+    STANDARD_4 = 4,
+    STANDARD_5 = 5,
+    SENTRY_7 = 7,
+
+    BASE_8 = 8,
+    OUTPOST_10 = 10,
+};
+
+enum ARMOR_TYPE
+{
+    SMALL_ARMOR = 0,
+    BIG_ARMOR = 1
+};
 
 /**
  * Struct for the four corners of an Armor.
@@ -78,7 +100,7 @@ struct ArmorCorners2d
      * Get the bounding box of Armor corners.
      * @return The bounding rect.
      */
-    explicit operator Rect2f() const
+    explicit operator cv::Rect2f() const
     {
         return boundingRect(std::vector<cv::Point2f>({tr, tl, dl, dr}));
 //        return {Point2f(min(tl.x, dl.x), min(dr.y, dl.y)), Point2f(max(tr.x, tl.x), max(tr.y, tl.y))};
@@ -101,6 +123,7 @@ struct ArmorCorners2d
 
 };
 
+
 struct ArmorCorners3d
 {
     ArmorCorners3d() = default;
@@ -120,6 +143,34 @@ struct ArmorCorners3d
         tl = corners[1];
         dl = corners[2];
         dr = corners[3];
+    }
+
+    /**
+     * Construct a new ArmorCorners3d object. The center of the Armor is the origin.
+     * @param armor_size Armor size.
+     */
+    explicit ArmorCorners3d(const cv::Size_<float> &armor_size) :
+            ArmorCorners3d(
+                    {{armor_size.width / 2,  armor_size.height / 2,  0},
+                     {-armor_size.width / 2, armor_size.height / 2,  0},
+                     {-armor_size.width / 2, -armor_size.height / 2, 0},
+                     {armor_size.width / 2,  -armor_size.height / 2, 0}}
+            ) {}
+
+    /**
+     * Construct a new ArmorCorners3d object. The center of the Armor is the origin and size is defined.
+     * Used to construct armors in Model Coordinate.
+     * @param armorType The armor type.
+     */
+    explicit ArmorCorners3d(ARMOR_TYPE armorType)
+    {
+        switch (armorType)
+        {
+            case SMALL_ARMOR:
+                *this = ArmorCorners3d({SMALL_ARMOR_WIDTH, SMALL_ARMOR_HEIGHT});
+            case BIG_ARMOR:
+                *this = ArmorCorners3d({BIG_ARMOR_WIDTH, BIG_ARMOR_HEIGHT});
+        }
     }
 
     cv::Point3f tr; // Top-Right
@@ -156,58 +207,11 @@ struct ArmorCorners3d
 
 };
 
-#define NUM_ARMOR_ID = 11;
-enum ArmorID
-{
-    UNKNOWN = 0,
-
-    HERO_1 = 1,
-
-    ENGINEER_2 = 2,
-    STANDARD_3 = 3,
-
-    STANDARD_4 = 4,
-    STANDARD_5 = 5,
-    SENTRY_7 = 7,
-
-    BASE_8 = 8,
-    OUTPOST_10 = 10,
-};
-
-
-
 struct ArmorInfo
 {
     ArmorID armor_id = UNKNOWN;
     ArmorCorners3d corners_cam;
     ArmorCorners2d corners_img;
 };
-
-enum ARMOR_TYPE
-{
-    SMALL_ARMOR = 0,
-    BIG_ARMOR = 1
-};
-
-ArmorCorners3d getArmorModelCoord(const cv::Size_<float> &armor_size)
-{
-    return ArmorCorners3d(
-            {{armor_size.width / 2,  armor_size.height / 2,  0},
-             {-armor_size.width / 2, armor_size.height / 2,  0},
-             {-armor_size.width / 2, -armor_size.height / 2, 0},
-             {armor_size.width / 2,  -armor_size.height / 2, 0}}
-    );
-}
-
-ArmorCorners3d getArmorModelCoord(ARMOR_TYPE armorType)
-{
-    switch (armorType)
-    {
-        case SMALL_ARMOR:
-            return getArmorModelCoord({SMALL_ARMOR_WIDTH, SMALL_ARMOR_HEIGHT});
-        case BIG_ARMOR:
-            return getArmorModelCoord({BIG_ARMOR_WIDTH, BIG_ARMOR_HEIGHT});
-    }
-}
 
 #endif //CYGNOIDES_DECISION_ARMOR_H

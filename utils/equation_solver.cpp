@@ -2,7 +2,6 @@
 // Created by catslashbin on 22-11-18.
 //
 
-#include <cmath>
 #include "equation_solver.h"
 
 #define MAX_N_ITERATION 100

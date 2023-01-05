@@ -3,7 +3,6 @@
 //
 
 #include "transformer.h"
-#include "../general/general.h"
 
 
 inline std::vector<Point3f> mat2pts(const Mat& mat)
