@@ -13,8 +13,6 @@ int main()
     SimpleVideoPlayer player("../../data/vision_out/video_input.avi");
     CameraCalib camera_calib("../../config/cam_cali_coeffs.yml");
 
-    Mat rvec, tvec;
-
     while (true)
     {
         Mat frame = player.getFrame();
@@ -25,8 +23,12 @@ int main()
         for (auto pred_result: vision_output.getData(player.frame_position))
         {
             drawArmorCorners(frame, pred_result.corners_img_coord, {0, 0, 255});
-            camera_calib.armorSolvePnP(ArmorCorners3d(SMALL_ARMOR), pred_result.corners_img_coord, rvec, tvec);
-            info("Distance: {}", norm(tvec));
+            auto trans = camera_calib.armorSolvePnP(ArmorCorners3d(SMALL_ARMOR), pred_result.corners_img_coord);
+
+            String dist = "Distance: " + std::to_string(norm(trans.tvec) / 1000);
+            putText(frame, dist, {50, 200}, FONT_HERSHEY_SIMPLEX, 2, {255, 255, 255}, 3);
+
+            camera_calib.drawAxes(frame, trans);
         }
 
         player.update(frame);

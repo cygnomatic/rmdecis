@@ -50,9 +50,11 @@ public:
      */
     Mat undistort(const Mat &img);
 
-    void solvePnP(const std::vector<Point3f> &obj_pts, const std::vector<Point2f> &img_pts, Mat &rvec, Mat &tvec);
+    Transform3d solvePnP(const std::vector<Point3f> &obj_pts, const std::vector<Point2f> &img_pts);
 
-    void armorSolvePnP(const ArmorCorners3d &corners_self_coord, const ArmorCorners2d &corners_img_coord, Mat &rvec, Mat &tvec);
+    Transform3d armorSolvePnP(const ArmorCorners3d &corners_model, const ArmorCorners2d &corners_img);
+
+    void drawAxes(Mat &img, const Transform3d &trans);
 };
 
 

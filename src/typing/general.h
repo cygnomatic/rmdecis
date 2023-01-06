@@ -89,29 +89,34 @@ struct AxisAngles2f
     }
 };
 
-struct Transform3f
+struct Transform3d
 {
-    cv::Mat rvec = cv::Mat::eye(3, 3, CV_32F);
-    cv::Mat tvec = cv::Mat::zeros(3, 1, CV_32F);
+    cv::Mat rvec = cv::Mat::zeros(3, 1, CV_64F);
+    cv::Mat tvec = cv::Mat::zeros(3, 1, CV_64F);
 
-    Transform3f() = default;
+    Transform3d() = default;
 
-    Transform3f(cv::Mat rvec, cv::Mat tvec)
+    Transform3d(cv::Mat rvec, cv::Mat tvec)
     {
         this->rvec = std::move(rvec);
         this->tvec = std::move(tvec);
     }
 
-    // std::vector<cv::Point3f> apply(const std::vector<cv::Point3f> &pts) const
-    // {
-    //     cv::Mat inp(pts);
-    //     std::vector<cv::Point3f> ret;
-    //
-    //     cv::Mat tmp = rvec * inp + tvec;
-    //
-    //     tmp.copyTo(ret);
-    //     return ret;
-    // }
+    std::vector<Point3f> applyTo(const std::vector<cv::Point3f> &pts) const
+    {
+        Mat rot_mat;
+        std::vector<Point3f> ret;
+        Rodrigues(rvec, rot_mat);
+
+        cv::transform(pts, ret, rot_mat);
+
+        for (auto &pt: pts)
+        {
+            ret.push_back((Point3f) tvec + pt);
+        }
+
+        return ret;
+    }
 };
 
 

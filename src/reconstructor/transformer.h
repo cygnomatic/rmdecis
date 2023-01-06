@@ -17,16 +17,6 @@ struct SolveArmorResult
 class Transformer
 {
 
-    // static ArmorCorners3d reconstruct(CameraCalib &cam_calib,
-    //                                   const ArmorCorners3d &corners_self_coord,
-    //                                   const ArmorCorners2d &corners_img_coord);
-    //
-    // static ArmorCorners3d cam2gimbal_coord(ArmorCorners3d &corners_cam_coord, const Point3f &shift);
-    //
-    // static SolveArmorResult solve(ArmorCorners3d &corners_gimbal_coord);
-    //
-    // static SolveArmorResult solve(CameraCalib &cam_calib, const ArmorCorners3d &corners_self_coord,
-    //                               const ArmorCorners2d &corners_img_coord, const Vec3f &shift);
 };
 
 

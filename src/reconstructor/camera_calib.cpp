@@ -35,12 +35,19 @@ Mat CameraCalib::undistort(const Mat &img)
     return ret;
 }
 
-void CameraCalib::solvePnP(const std::vector<Point3f> &obj_pts, const std::vector<Point2f> &img_pts, Mat &rvec, Mat &tvec)
+Transform3d CameraCalib::solvePnP(const std::vector<Point3f> &obj_pts, const std::vector<Point2f> &img_pts)
 {
+    Mat rvec, tvec;
     cv::solvePnP(Mat(obj_pts), Mat(img_pts), cam_mat, dist_coeffs, rvec, tvec);
+    return Transform3d{rvec, tvec};
 }
 
-void CameraCalib::armorSolvePnP(const ArmorCorners3d &corners_self_coord, const ArmorCorners2d &corners_img_coord, Mat &rvec, Mat &tvec)
+Transform3d CameraCalib::armorSolvePnP(const ArmorCorners3d &corners_model, const ArmorCorners2d &corners_img)
 {
-    solvePnP((std::vector<Point3f>) corners_self_coord, (std::vector<Point2f>) corners_img_coord, rvec, tvec);
+    return solvePnP((std::vector<Point3f>) corners_model, (std::vector<Point2f>) corners_img);
+}
+
+void CameraCalib::drawAxes(Mat &img, const Transform3d& trans)
+{
+    drawFrameAxes(img, cam_mat, dist_coeffs, trans.rvec, trans.tvec, 100);
 }
