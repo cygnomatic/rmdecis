@@ -20,6 +20,7 @@ public:
     VideoCapture cap;
     int track_bar_position = 0;
     int frame_position = 0;
+    float playback_speed;
     float fps;
 
     /**
@@ -41,6 +42,8 @@ public:
      * @param frame The frame.
      */
     void update(Mat &frame);
+
+    float setPlaybackSpeed(float speed);
 
     void closeStream();
 

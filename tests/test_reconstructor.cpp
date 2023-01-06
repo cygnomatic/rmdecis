@@ -13,6 +13,8 @@ int main()
     SimpleVideoPlayer player("../../data/vision_out/video_input.avi");
     CameraCalib camera_calib("../../config/cam_cali_coeffs.yml");
 
+    player.setPlaybackSpeed(0.1);
+
     while (true)
     {
         Mat frame = player.getFrame();
@@ -32,7 +34,7 @@ int main()
             drawArmorCorners(frame, reprojected_corners, {255, 255, 0});
 
             camera_calib.drawAxes(frame, trans_model2cam);
-            break;
+            // break;
         }
 
         player.update(frame);

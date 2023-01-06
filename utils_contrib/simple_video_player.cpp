@@ -48,7 +48,7 @@ void SimpleVideoPlayer::update(Mat &frame)
     setTrackbarPos("Position", "SimpleVideoPlayer", (int) (cap.get(CAP_PROP_POS_FRAMES) / cap.get(CAP_PROP_FRAME_COUNT) * 100));
 
     // Check if the user has pressed the "Esc" key
-    int key = waitKey(1000 / fps);
+    int key = waitKey(1000 / fps / playback_speed);
     if (key == 27)
         closeStream();
 
@@ -77,4 +77,9 @@ void SimpleVideoPlayer::closeStream()
 {
     cap.release();
     destroyWindow("SimpleVideoPlayer");
+}
+
+float SimpleVideoPlayer::setPlaybackSpeed(float speed)
+{
+    this->playback_speed = speed;
 }
