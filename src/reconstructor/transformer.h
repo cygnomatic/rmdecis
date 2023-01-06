@@ -5,6 +5,8 @@
 #ifndef CYGNOIDES_DECISION_TRANSFORMER_H
 #define CYGNOIDES_DECISION_TRANSFORMER_H
 
+#include <utility>
+
 #include "../typing/general.h"
 #include "camera_calib.h"
 
@@ -16,6 +18,12 @@ struct SolveArmorResult
 
 class Transformer
 {
+    Transform3d model2cam, cam2base;
+
+    CameraCalib cam_calib;
+
+    explicit Transformer(CameraCalib camera_calib): cam_calib(std::move(camera_calib)) {}
+
 
 };
 

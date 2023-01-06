@@ -23,12 +23,16 @@ int main()
         for (auto pred_result: vision_output.getData(player.frame_position))
         {
             drawArmorCorners(frame, pred_result.corners_img_coord, {0, 0, 255});
-            auto trans = camera_calib.armorSolvePnP(ArmorCorners3d(SMALL_ARMOR), pred_result.corners_img_coord);
+            auto trans_model2cam = camera_calib.armorSolvePnP(ArmorCorners3d(SMALL_ARMOR), pred_result.corners_img_coord);
 
-            String dist = "Distance: " + std::to_string(norm(trans.tvec) / 1000);
+            String dist = "Distance: " + std::to_string(norm(trans_model2cam.tvec) / 1000);
             putText(frame, dist, {50, 200}, FONT_HERSHEY_SIMPLEX, 2, {255, 255, 255}, 3);
 
-            camera_calib.drawAxes(frame, trans);
+            auto reprojected_corners =  (ArmorCorners2d) camera_calib.projectToImage(std::vector<Point3f>(ArmorCorners3d(SMALL_ARMOR)), trans_model2cam);
+            drawArmorCorners(frame, reprojected_corners, {255, 255, 0});
+
+            camera_calib.drawAxes(frame, trans_model2cam);
+            break;
         }
 
         player.update(frame);

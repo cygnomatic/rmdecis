@@ -51,3 +51,14 @@ void CameraCalib::drawAxes(Mat &img, const Transform3d& trans)
 {
     drawFrameAxes(img, cam_mat, dist_coeffs, trans.rvec, trans.tvec, 100);
 }
+
+std::vector<Point2f> CameraCalib::projectToImage(const std::vector<Point3f>& space_pts, const Transform3d& trans)
+{
+    Mat img_pts;
+    std::vector<Point2f> ret;
+
+    projectPoints(Mat(space_pts), trans.rvec, trans.tvec, cam_mat, dist_coeffs, img_pts);
+
+    img_pts.copyTo(ret);
+    return ret;
+}

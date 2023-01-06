@@ -55,6 +55,8 @@ public:
     Transform3d armorSolvePnP(const ArmorCorners3d &corners_model, const ArmorCorners2d &corners_img);
 
     void drawAxes(Mat &img, const Transform3d &trans);
+
+    std::vector<Point2f> projectToImage(const std::vector<Point3f> &space_pts, const Transform3d &trans = {});
 };
 
 
