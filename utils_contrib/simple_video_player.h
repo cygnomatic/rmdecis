@@ -20,7 +20,7 @@ public:
     VideoCapture cap;
     int track_bar_position = 0;
     int frame_position = 0;
-    float playback_speed;
+    float playback_speed = 1.0;
     float fps;
 
     /**
