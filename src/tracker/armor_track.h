@@ -15,12 +15,15 @@
 class ArmorTrack {
 public:
 
+    ArmorTrack(const ArmorInfo &armor);
+
     int tracked_T = 0, tentative_T = 0, lost_T = 0;
-    float last_pred_time;
 
     void correct(const ArmorInfo &armor, float dt);
 
     Rect2f predict(float dt);
+
+    float calcSimilarity(const ArmorInfo &armor, float dt);
 
 private:
 
@@ -28,9 +31,9 @@ private:
 
     std::array<int, NUM_ARMOR_ID> id_cnt{};
 
-    float calcSimilarity(const ArmorInfo &armor, float curr_time);
-
     float calcIdSimilarity(ArmorID id);
+
+    void updateKalmanFilterMats(float dt);
 };
 
 

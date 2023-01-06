@@ -208,7 +208,6 @@ struct ArmorCorners3d
 struct ArmorInfo
 {
     ArmorID armor_id = UNKNOWN;
-    ArmorCorners3d corners_cam;
     ArmorCorners2d corners_img;
 };
 
