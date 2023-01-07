@@ -18,9 +18,15 @@ class SimpleVideoPlayer
 public:
 
     VideoCapture cap;
-    int track_bar_position = 0;
+    VideoWriter writer;
+
+    bool is_recording = false;
+
     int frame_position = 0;
-    float playback_speed = 1.0;
+
+    int width, height;
+    float playback_speed = 1.0f;
+    float record_speed = 0.5f;
     float fps;
 
     /**
@@ -43,10 +49,26 @@ public:
      */
     void update(Mat &frame);
 
-    float setPlaybackSpeed(float speed);
+    /**
+     * Set playback speed. Usually set to 0.1 for better observation.
+     * @param speed Playback speed. Default 1.0f
+     */
+    void setPlaybackSpeed(float speed);
+
+    /**
+     * Set record speed.
+     * The final record speed = original video speed * (playback speed * record speed)
+     * @param speed Record speed. Default 0.5f.
+     */
+    void setRecordSpeed(float speed);
+
+private:
 
     void closeStream();
 
+    void printInfo() const;
+
+    void toggleRecording();
 };
 
 #endif //CYGNOIDES_DECISION_SIMPLE_VIDEO_PLAYER_H
