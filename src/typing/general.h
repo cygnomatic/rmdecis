@@ -54,7 +54,7 @@ struct ArmorPredResult
 {
     Time time{};
     ArmorID armor_type = UNKNOWN;
-    ArmorCorners2d corners_img_coord;
+    ArmorCorners2d corners_img;
     float confidence{};
 };
 

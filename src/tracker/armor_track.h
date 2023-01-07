@@ -9,15 +9,18 @@
 #include <numeric>
 
 #include "../typing/general.h"
-#include "../typing/armor.h"
 #include "../utils/cv_utils.h"
 
 class ArmorTrack {
 public:
 
-    ArmorTrack(const ArmorInfo &armor);
-
     int tracked_T = 0, tentative_T = 0, lost_T = 0;
+
+    ArmorTrack() = default;
+
+    explicit ArmorTrack(const ArmorInfo &armor);
+
+    void init(const ArmorInfo &armor);
 
     void correct(const ArmorInfo &armor, float dt);
 

@@ -100,8 +100,21 @@ struct ArmorCorners2d
      */
     explicit operator cv::Rect2f() const
     {
+        return getBoundingBox();
+    }
+
+    /**
+     * Get the bounding box of Armor corners.
+     * @return The bounding rect.
+     */
+    cv::Rect2f getBoundingBox() const
+    {
         return boundingRect(std::vector<cv::Point2f>({tr, tl, dl, dr}));
-//        return {Point2f(min(tl.x, dl.x), min(dr.y, dl.y)), Point2f(max(tr.x, tl.x), max(tr.y, tl.y))};
+    }
+
+    std::vector<cv::Point2f> toPts()
+    {
+        return std::vector<cv::Point2f>({tr, tl, dl, dr});
     }
 
     //    cv::Point2f center() const

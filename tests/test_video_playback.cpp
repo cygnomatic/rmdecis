@@ -19,7 +19,7 @@ int main()
 
         for (auto pred_result: vision_output.getData(player.frame_position))
         {
-            drawArmorCorners(frame, pred_result.corners_img_coord, {0, 0, 255});
+            drawArmorCorners(frame, pred_result.corners_img, {0, 0, 255});
         }
 
         player.update(frame);

@@ -19,7 +19,7 @@ include_directories(${OpenCV_INCLUDE_DIRS})
 file(GLOB_RECURSE Main_Lib CONFIGURE_DEPENDS LIST_DIRECTORIES true "src/*.h" "src/*.cpp")
 file(GLOB_RECURSE Utils_Contrib CONFIGURE_DEPENDS "utils_contrib/*.h" "utils_contrib/*.cpp")
 
-add_library(Cygnoides_Decision src/reconstructor/camera_calib.cpp src/reconstructor/camera_calib.h src/utils/equation_solver.cpp src/utils/equation_solver.h src/compensator/ballistic_compensator.cpp src/compensator/ballistic_compensator.h src/tracker/armor_track.cpp src/tracker/armor_track.h src/tracker/tracker.cpp src/tracker/tracker.h src/typing/general.h interface.h test_interface.h src/typing/armor.h src/utils/cv_utils.h src/reconstructor/transformer.cpp src/contrib/munkres-cpp/matrix.cpp src/contrib/munkres-cpp/munkres.cpp)
+add_library(Cygnoides_Decision src/reconstructor/camera_calib.cpp src/reconstructor/camera_calib.h src/utils/equation_solver.cpp src/utils/equation_solver.h src/compensator/ballistic_compensator.cpp src/compensator/ballistic_compensator.h src/tracker/armor_track.cpp src/tracker/armor_track.h src/tracker/tracker.cpp src/tracker/tracker.h src/typing/general.h interface.h test_interface.h src/typing/armor.h src/utils/cv_utils.h src/reconstructor/transformer.cpp src/contrib/munkres-cpp/matrix.cpp src/contrib/munkres-cpp/munkres.cpp src/utils/cv_utils.cpp)
 link_directories(${OpenCV_LIBRARY_DIRS})
 target_link_libraries(Cygnoides_Decision ${OpenCV_LIBS} Eigen3::Eigen)
 
@@ -36,3 +36,7 @@ target_link_libraries(test_video_playback ${OpenCV_LIBS} ${CONAN_LIBS})
 add_executable(test_reconstructor ${Main_lib} ${Utils_Contrib} tests/test_reconstructor.cpp src/reconstructor/camera_calib.cpp)
 link_directories(${OpenCV_LIBRARY_DIRS})
 target_link_libraries(test_reconstructor ${OpenCV_LIBS} ${CONAN_LIBS})
+
+add_executable(test_armor_track ${Main_lib} ${Utils_Contrib} tests/test_armor_track.cpp src/tracker/armor_track.cpp src/utils/cv_utils.cpp)
+link_directories(${OpenCV_LIBRARY_DIRS})
+target_link_libraries(test_armor_track ${OpenCV_LIBS} ${CONAN_LIBS})

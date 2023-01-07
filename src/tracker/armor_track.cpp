@@ -39,12 +39,12 @@ public:
     static Mat getMeasurementMat()
     {
         // State Matrix: [u, v, ratio, area, v_u, v_v, v_ration, v_area]
-        return Mat::eye(8, 4, CV_32F);
+        return Mat::eye(4, 8, CV_32F);
     }
 
     static Mat getProcessNoiseCov(float dt)
     {
-        float SD = 1e-3, SR = 1e-3, SH = 1e-3; // ProcessNoise
+        float SD = 1, SR = 1e-2, SH = 1e-2; // ProcessNoise
         Mat processNoiseCov = (Mat_<float>(8, 8)
                 <<
                 SD * dt * dt, 0, 0, 0, SD * dt, 0, 0, 0,
@@ -61,7 +61,7 @@ public:
 
     static Mat getMeasurementNoiseCov(float dt)
     {
-        float SDM = 0.1, SRM = 0.1, SHM = 0.1; // MeasurementNoise
+        float SDM = 10, SRM = 10, SHM = 10; // MeasurementNoise
         Mat measurementNoiseCov = (Mat_<float>(4, 4)
                 <<
                 SDM, 0, 0, 0,
@@ -107,13 +107,25 @@ public:
 
     static Mat getInitError()
     {
-        return (Mat_<float>(8, 1) << 1, 1, 1, 1, 10, 10, 10, 10);
+        return (Mat_<float>(8, 8) <<
+           10, 0, 0, 0, 0, 0, 0, 0,
+            0, 10, 0, 0, 0, 0, 0, 0,
+            0, 0, 10, 0, 0, 0, 0, 0,
+            0, 0, 0, 10, 0, 0, 0, 0,
+            0, 0, 0, 0, 100, 0, 0, 0,
+            0, 0, 0, 0, 0, 100, 0, 0,
+            0, 0, 0, 0, 0, 0, 100, 0,
+            0, 0, 0, 0, 0, 0, 0, 100);
     }
 
 };
 
-
 ArmorTrack::ArmorTrack(const ArmorInfo &armor)
+{
+    init(armor);
+}
+
+void ArmorTrack::init(const ArmorInfo &armor)
 {
 
     kf = KalmanFilter(8, 4);
@@ -134,10 +146,15 @@ void ArmorTrack::updateKalmanFilterMats(float dt)
     kf.measurementNoiseCov = KalmanFilterFactory::getMeasurementNoiseCov(dt);
 }
 
+
 void ArmorTrack::correct(const ArmorInfo &armor, float dt)
 {
     updateKalmanFilterMats(dt);
-    kf.correct(KalmanFilterFactory::cvtCorners2MeasurementMat(armor.corners_img));
+    // std::cout << KalmanFilterFactory::cvtCorners2MeasurementMat(armor.corners_img) << std::endl;
+
+    kf.predict(); // post(t-1, t-1) -> pre (t-1, t)
+    kf.correct(KalmanFilterFactory::cvtCorners2MeasurementMat(armor.corners_img)); // pre(t-1, t) -> post(t, t)
+
     id_cnt[armor.armor_id]++;
 }
 
@@ -164,3 +181,4 @@ float ArmorTrack::calcIdSimilarity(ArmorID id)
     return (float) (id_cnt[id] + 1) /
            (float) sum; // Here we artificially add one positive and one negative. To smoothen the result.
 }
+
