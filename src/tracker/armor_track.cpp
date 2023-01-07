@@ -44,7 +44,7 @@ public:
 
     static Mat getProcessNoiseCov(float dt)
     {
-        float SD = 1, SR = 1e-2, SH = 1e-2; // ProcessNoise
+        float SD = 10, SR = 10, SH = 10; // ProcessNoise
         Mat processNoiseCov = (Mat_<float>(8, 8)
                 <<
                 SD * dt * dt, 0, 0, 0, SD * dt, 0, 0, 0,
@@ -61,7 +61,7 @@ public:
 
     static Mat getMeasurementNoiseCov(float dt)
     {
-        float SDM = 10, SRM = 10, SHM = 10; // MeasurementNoise
+        float SDM = 50, SRM = 100, SHM = 100; // MeasurementNoise
         Mat measurementNoiseCov = (Mat_<float>(4, 4)
                 <<
                 SDM, 0, 0, 0,

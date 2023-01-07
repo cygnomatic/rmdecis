@@ -14,7 +14,9 @@ int main()
     ArmorTrack armor_track{ArmorInfo{}};
     player.setPlaybackSpeed(0.1);
 
-    while (true)
+    int last_corr_t = 0;
+
+    for (int i = 0;; i++)
     {
         Mat frame = player.getFrame();
         if (frame.empty())
@@ -40,12 +42,15 @@ int main()
             drawArmorCorners(frame, pred_result.corners_img, {0, 0, 255});
             rectangle(frame, pred_result.corners_img.getBoundingBox(), {255, 0, 0}, 2);
 
-            armor_track.correct(armor_info, 1.0);
+            armor_track.correct(armor_info, i - last_corr_t);
 
-            auto result_rect = armor_track.predict(0);
-            rectangle(frame, result_rect, {255, 0, 255}, 2);
+            last_corr_t = i;
+
             break;
         }
+
+        auto result_rect = armor_track.predict(i - last_corr_t);
+        rectangle(frame, result_rect, {255, 0, 255}, 4);
 
         player.update(frame);
     }
