@@ -15,7 +15,7 @@ int main()
     SimpleVideoPlayer player("../../data/vision_out/video_input.avi");
     CameraCalib camera_calib("../../config/cam_cali_coeffs.yml");
 
-    player.setPlaybackSpeed(0.1);
+    player.setPlaybackSpeed(0.5);
 
     while (true)
     {
@@ -24,7 +24,7 @@ int main()
             break;
 
 
-        for (auto pred_result: vision_output.getData(player.frame_position))
+        for (auto pred_result: vision_output.getData(player.frame_position).armor_info)
         {
             drawArmorCorners(frame, pred_result.corners_img, {0, 0, 255});
             auto trans_model2cam = camera_calib.armorSolvePnP(ArmorCorners3d(SMALL_ARMOR), pred_result.corners_img);
@@ -32,7 +32,7 @@ int main()
             // String dist = "Distance: " + std::to_string(norm(trans_model2cam.tvec) / 1000);
             // putText(frame, dist, {50, 200}, FONT_HERSHEY_SIMPLEX, 2, {255, 255, 255}, 3);
 
-            String rot = fmt::format("Rvec [x: {:.2f}, y: {:.2f}, z: {:.2f}]", trans_model2cam.rvec.at<double>(0), trans_model2cam.rvec.at<double>(1), trans_model2cam.rvec.at<double>(2));
+            String rot = fmt::format("tvec [x: {:.2f}, y: {:.2f}, z: {:.2f}]", trans_model2cam.tvec.at<double>(0), trans_model2cam.tvec.at<double>(1), trans_model2cam.tvec.at<double>(2));
             putText(frame, rot, {50, 200}, FONT_HERSHEY_SIMPLEX, 2, {255, 255, 255}, 3);
 
             // info("Rvec [x: {:.2f}, y: {:.2f}, z: {:.2f}]", trans_model2cam.rvec.at<double>(0), trans_model2cam.rvec.at<double>(1), trans_model2cam.rvec.at<double>(2));

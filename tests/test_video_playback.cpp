@@ -11,17 +11,17 @@ int main()
     SimulateVisionOutput vision_output("../../data/vision_out/vision_result.yaml");
     SimpleVideoPlayer player("../../data/vision_out/video_input.avi");
 
-    player.setRecordSpeed(0.1);
-
     while (true)
     {
         Mat frame = player.getFrame();
         if (frame.empty())
             break;
 
-        for (auto pred_result: vision_output.getData(player.frame_position))
+        auto vision_out = vision_output.getData(player.frame_position);
+
+        for (auto armor_info: vision_out.armor_info)
         {
-            drawArmorCorners(frame, pred_result.corners_img, {0, 0, 255});
+            drawArmorCorners(frame, armor_info.corners_img, {0, 0, 255});
         }
 
         player.update(frame);

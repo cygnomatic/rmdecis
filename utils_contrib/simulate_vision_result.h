@@ -12,14 +12,16 @@
 
 class SimulateVisionOutput
 {
-    std::vector<YAML::Node> data;
+    int next_idx = 0;
+    std::map<int, DetectArmorResult> data;
 
 public:
 
     explicit SimulateVisionOutput(const std::string &data_path);
 
-    std::vector<ArmorPredResult> getData(std::size_t index);
+    DetectArmorResult getData(int index);
 
+    DetectArmorResult getNextData();
 };
 
 #endif //CYGNOIDES_DECISION_SIMULATE_VISION_RESULT_H

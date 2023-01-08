@@ -7,7 +7,7 @@ void onTrackbarSlide(int position, void *userdata)
     player->cap.set(CAP_PROP_POS_FRAMES, player->frame_position);
 }
 
-SimpleVideoPlayer::SimpleVideoPlayer(const String& path)
+SimpleVideoPlayer::SimpleVideoPlayer(const String &path)
 {
     cap = VideoCapture(path);
     writer = VideoWriter();
@@ -58,11 +58,25 @@ Mat SimpleVideoPlayer::getFrame()
     return frame;
 }
 
+Mat SimpleVideoPlayer::getFrame(int pos)
+{
+    if (frame_position == pos)
+    {
+        return getFrame();
+    } else
+    {
+        frame_position = pos;
+        cap.set(CAP_PROP_POS_FRAMES, frame_position);
+        return getFrame();
+    }
+}
+
 void SimpleVideoPlayer::update(Mat &frame)
 {
 
     // Update the track_bar_position of the trackbar
-    setTrackbarPos("Position", "SimpleVideoPlayer", (int) (cap.get(CAP_PROP_POS_FRAMES) / cap.get(CAP_PROP_FRAME_COUNT) * 100));
+    setTrackbarPos("Position", "SimpleVideoPlayer",
+                   (int) (cap.get(CAP_PROP_POS_FRAMES) / cap.get(CAP_PROP_FRAME_COUNT) * 100));
 
     int key = waitKey(1000 / fps / playback_speed);
 
@@ -118,10 +132,11 @@ void SimpleVideoPlayer::toggleRecording()
         // Stop recording.
         is_recording = false;
 
-        cout << "[SimpleVideoPlayer] Stop Recording."  << endl;
+        cout << "[SimpleVideoPlayer] Stop Recording." << endl;
         writer.release();
 
-    } else {
+    } else
+    {
         // Start recording.
         is_recording = true;
 
@@ -133,7 +148,8 @@ void SimpleVideoPlayer::toggleRecording()
         auto filename = oss.str();
 
         cout << "[SimpleVideoPlayer] Start Recording. Record file: " + filename << endl;
-        writer = VideoWriter(filename, VideoWriter::fourcc('m', 'p', '4', 'v'), fps * playback_speed * record_speed, {width, height});
+        writer = VideoWriter(filename, VideoWriter::fourcc('m', 'p', '4', 'v'), fps * playback_speed * record_speed,
+                             {width, height});
     }
 }
 

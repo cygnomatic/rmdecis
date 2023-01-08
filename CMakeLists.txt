@@ -33,7 +33,7 @@ add_executable(test_video_playback utils_contrib/simple_video_player.cpp utils_c
 link_directories(${OpenCV_LIBRARY_DIRS})
 target_link_libraries(test_video_playback ${OpenCV_LIBS} ${CONAN_LIBS})
 
-add_executable(test_reconstructor ${Main_lib} ${Utils_Contrib} tests/test_reconstructor.cpp src/reconstructor/camera_calib.cpp)
+add_executable(test_reconstructor ${Main_lib} ${Utils_Contrib} tests/test_reconstructor.cpp src/reconstructor/camera_calib.cpp src/utils/cv_utils.cpp)
 link_directories(${OpenCV_LIBRARY_DIRS})
 target_link_libraries(test_reconstructor ${OpenCV_LIBS} ${CONAN_LIBS})
 

@@ -44,6 +44,14 @@ public:
     Mat getFrame();
 
     /**
+     * Read "pos"-th frame of the video.
+     * @param pos n-th Frame.
+     * @warning THIS FUNCTION WILL BROKE THE TRACK BAR! Use getFrame() instead.
+     * @return
+     */
+    Mat getFrame(int pos);
+
+    /**
      * Show a frame.
      * @param frame The frame.
      */
@@ -69,6 +77,7 @@ private:
     void printInfo() const;
 
     void toggleRecording();
+
 };
 
 #endif //CYGNOIDES_DECISION_SIMPLE_VIDEO_PLAYER_H
