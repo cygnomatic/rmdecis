@@ -9,6 +9,7 @@
 #include <opencv2/imgproc/types_c.h>
 #include <iostream>
 #include <functional>
+#include <chrono>
 
 using namespace cv;
 using namespace std;
@@ -21,6 +22,7 @@ public:
     VideoWriter writer;
 
     bool is_recording = false;
+    bool is_timing = false;
 
     int frame_position = 0;
 
@@ -72,12 +74,17 @@ public:
 
 private:
 
+    int timing_idx = 0;
+    chrono::time_point<std::chrono::system_clock> timing_last{};
+    String fps_display;
+
     void closeStream();
 
     void printInfo() const;
 
     void toggleRecording();
 
+    void toggleTiming();
 };
 
 #endif //CYGNOIDES_DECISION_SIMPLE_VIDEO_PLAYER_H
