@@ -27,9 +27,10 @@ public:
     int frame_position = 0;
 
     int width, height;
+    int total_frames;
+    float fps;
     float playback_speed = 1.0f;
     float record_speed = 0.5f;
-    float fps;
 
     /**
      * A simple video player. Featured with video pausing and process adjustment.
@@ -73,9 +74,9 @@ public:
     void setRecordSpeed(float speed);
 
 private:
-
     int timing_idx = 0;
     chrono::time_point<std::chrono::system_clock> timing_last{};
+
     String fps_display;
 
     void closeStream();

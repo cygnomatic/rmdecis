@@ -21,6 +21,7 @@ SimpleVideoPlayer::SimpleVideoPlayer(const String &path)
     fps = cap.get(CAP_PROP_FPS);
     width = cap.get(CAP_PROP_FRAME_WIDTH);
     height = cap.get(CAP_PROP_FRAME_HEIGHT);
+    total_frames = cap.get(CAP_PROP_FRAME_COUNT);
 
     namedWindow("SimpleVideoPlayer", WINDOW_NORMAL);
     resizeWindow("SimpleVideoPlayer", width / 2, height / 2);
@@ -45,6 +46,7 @@ void SimpleVideoPlayer::printInfo() const
     cout << "[SimpleVideoPlayer] \t- Press 'r' to record. " << endl;
     cout << "[SimpleVideoPlayer] \t- Slide the Track bar to adjust playback process. " << endl;
     cout << "[SimpleVideoPlayer] Video Info: " << endl;
+    cout << "[SimpleVideoPlayer] \t- Total Frame: " << total_frames << endl;
     cout << "[SimpleVideoPlayer] \t- Playback Speed: " << playback_speed << endl;
     cout << "[SimpleVideoPlayer] \t- Frame rate: " << fps << " fps" << endl;
     cout << "[SimpleVideoPlayer] \t- Playback Frame rate: " << fps * playback_speed << " fps" << endl;

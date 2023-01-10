@@ -40,3 +40,7 @@ target_link_libraries(test_reconstructor ${OpenCV_LIBS} ${CONAN_LIBS})
 add_executable(test_armor_track ${Main_lib} ${Utils_Contrib} tests/test_armor_track.cpp src/tracker/armor_track.cpp src/utils/cv_utils.cpp)
 link_directories(${OpenCV_LIBRARY_DIRS})
 target_link_libraries(test_armor_track ${OpenCV_LIBS} ${CONAN_LIBS})
+
+add_executable(test_detection ${Main_lib} ${Utils_Contrib} src/utils/cv_utils.cpp tests/test_detection.cpp src/contrib/detection/get_zhuangjiaban.h)
+link_directories(${OpenCV_LIBRARY_DIRS})
+target_link_libraries(test_detection ${OpenCV_LIBS} ${CONAN_LIBS})
