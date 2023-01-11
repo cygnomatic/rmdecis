@@ -12,7 +12,7 @@ int main()
     SimpleVideoPlayer player("../../data/vision_out/video_input.avi");
 
     ArmorTrack armor_track{ArmorInfo{}};
-    player.setPlaybackSpeed(0.1);
+    player.setPlaybackSpeed(0.5);
 
     int last_corr_t = 0;
 
@@ -22,8 +22,8 @@ int main()
         if (frame.empty())
             break;
 
-
-        for (auto pred_result: vision_output.getData(player.frame_position))
+        auto pred_result = vision_output.getData(player.frame_position);
+        for (auto p: pred_result.armor_info)
         {
             // auto trans_model2cam = camera_calib.armorSolvePnP(ArmorCorners3d(SMALL_ARMOR), pred_result.corners_img_coord);
             //
@@ -37,10 +37,10 @@ int main()
             // camera_calib.drawAxes(frame, trans_model2cam);
             // break;
 
-            ArmorInfo armor_info {pred_result.armor_type, pred_result.corners_img};
+            ArmorInfo armor_info {p.armor_type, p.corners_img};
 
-            drawArmorCorners(frame, pred_result.corners_img, {0, 0, 255});
-            rectangle(frame, pred_result.corners_img.getBoundingBox(), {255, 0, 0}, 2);
+            drawArmorCorners(frame, p.corners_img, {0, 0, 255});
+            rectangle(frame, p.corners_img.getBoundingBox(), {255, 0, 0}, 2);
 
             armor_track.correct(armor_info, i - last_corr_t);
 

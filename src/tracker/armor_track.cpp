@@ -120,8 +120,9 @@ public:
 
 };
 
-ArmorTrack::ArmorTrack(const ArmorInfo &armor)
+ArmorTrack::ArmorTrack(int tracking_id, const ArmorInfo &armor)
 {
+    this->tracking_id = tracking_id;
     init(armor);
 }
 
@@ -150,7 +151,6 @@ void ArmorTrack::updateKalmanFilterMats(float dt)
 void ArmorTrack::correct(const ArmorInfo &armor, float dt)
 {
     updateKalmanFilterMats(dt);
-    // std::cout << KalmanFilterFactory::cvtCorners2MeasurementMat(armor.corners_img) << std::endl;
 
     kf.predict(); // post(t-1, t-1) -> pre (t-1, t)
     kf.correct(KalmanFilterFactory::cvtCorners2MeasurementMat(armor.corners_img)); // pre(t-1, t) -> post(t, t)
@@ -164,13 +164,13 @@ Rect2f ArmorTrack::predict(float dt)
     return KalmanFilterFactory::cvtStateMat2Rect(kf.predict());
 }
 
-float ArmorTrack::calcSimilarity(const ArmorInfo &armor, float dt)
+float ArmorTrack::calcSimilarity(const DetectArmorInfo &armor, float dt)
 {
     auto new_bounding_box = (Rect2f) armor.corners_img;
     auto pred_bounding_box = predict(dt);
 
     float iou = calculateIoU(pred_bounding_box, new_bounding_box);
-    float id_similarity = calcIdSimilarity(armor.armor_id);
+    float id_similarity = calcIdSimilarity(armor.armor_type);
 
     return iou * 0.7 + id_similarity * 0.3;
 }

@@ -11,14 +11,16 @@
 #include "../typing/general.h"
 #include "../utils/cv_utils.h"
 
-class ArmorTrack {
+class ArmorTrack
+{
 public:
 
+    int tracking_id{};
     int tracked_T = 0, tentative_T = 0, lost_T = 0;
 
     ArmorTrack() = default;
 
-    explicit ArmorTrack(const ArmorInfo &armor);
+    explicit ArmorTrack(int tracking_id, const ArmorInfo &armor);
 
     void init(const ArmorInfo &armor);
 
@@ -26,7 +28,7 @@ public:
 
     Rect2f predict(float dt);
 
-    float calcSimilarity(const ArmorInfo &armor, float dt);
+    float calcSimilarity(const DetectArmorInfo &armor, float dt);
 
 private:
 

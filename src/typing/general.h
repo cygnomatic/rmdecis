@@ -46,14 +46,14 @@ struct Time
 /**
  * The detect result of armor.
  * @param armor_type Type of armor.
- * @param corners_img_coord Detected armor corners in image coord.
+ * @param corners_img Detected armor corners in image coord.
  * @param confidence Confidence of the prediction.
  */
 struct DetectArmorInfo
 {
     ArmorID armor_type = UNKNOWN;
     ArmorCorners2d corners_img;
-    float confidence{};
+    float confidence = 0.0;
 };
 
 /**
@@ -69,21 +69,21 @@ struct DetectArmorResult
     std::vector<DetectArmorInfo> armor_info{};
 };
 
-/**
- * [DEPRECATED] The output of the Vision Part.
- * @param time The time **the frame is shot**. NOT THE TIME FINISH THE VISION PROCESS.
- * @param armor_type Type of armor.
- * @param corners_img_coord Detected armor corners in image coord.
- * @param confidence Confidence of the prediction.
- * @deprecated This struct is DEPRECATED. Use DetectArmorResult instead.
- */
-struct ArmorPredResult
-{
-    Time time{};
-    ArmorID armor_type = UNKNOWN;
-    ArmorCorners2d corners_img;
-    float confidence{};
-};
+// /**
+//  * [DEPRECATED] The output of the Vision Part.
+//  * @param time The time **the frame is shot**. NOT THE TIME FINISH THE VISION PROCESS.
+//  * @param armor_type Type of armor.
+//  * @param corners_img_coord Detected armor corners in image coord.
+//  * @param confidence Confidence of the prediction.
+//  * @deprecated This struct is DEPRECATED. Use DetectArmorResult instead.
+//  */
+// struct ArmorPredResult
+// {
+//     Time time{};
+//     ArmorID armor_type = UNKNOWN;
+//     ArmorCorners2d corners_img;
+//     float confidence{};
+// };
 
 struct AxisAngles3f
 {

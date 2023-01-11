@@ -222,6 +222,7 @@ struct ArmorInfo
 {
     ArmorID armor_id = UNKNOWN;
     ArmorCorners2d corners_img;
+    ArmorCorners3d corners_cam;
 };
 
 #endif //CYGNOIDES_DECISION_ARMOR_H

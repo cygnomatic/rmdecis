@@ -5,20 +5,21 @@
 #ifndef CYGNOIDES_DECISION_TRACKER_H
 #define CYGNOIDES_DECISION_TRACKER_H
 
+#include <map>
+
 #include "../typing/general.h"
 #include "../reconstructor/camera_calib.h"
+#include "../contrib/munkres-cpp/munkres.h"
 #include "armor_track.h"
 
 class Tracker
 {
-    float last_t;
-    std::vector<ArmorTrack> tracking_armors;
+    Time last_update_time;
+    munkres::Munkres<float> munkres_f;
 
-    void update(std::vector<ArmorPredResult>, float time);
+    std::map<int, ArmorTrack> armor_tracks;
 
-    void predict(float time);
-
-    std::vector<ArmorTrack> & getAllTrackingArmors();
+    void update(DetectArmorResult detection);
 };
 
 
