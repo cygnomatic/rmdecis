@@ -20,11 +20,11 @@ public:
 
     ArmorTrack() = default;
 
-    explicit ArmorTrack(int tracking_id, const ArmorInfo &armor);
+    explicit ArmorTrack(int tracking_id, const DetectArmorInfo &armor);
 
-    void init(const ArmorInfo &armor);
+    void init(const DetectArmorInfo &armor);
 
-    void correct(const ArmorInfo &armor, float dt);
+    void correct(const DetectArmorInfo &armor, float dt);
 
     Rect2f predict(float dt);
 

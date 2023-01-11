@@ -20,6 +20,10 @@ class Tracker
     std::map<int, ArmorTrack> armor_tracks;
 
     void update(DetectArmorResult detection);
+
+    munkres::Matrix<float> hungarianMatching(munkres::Matrix<float> mat);
+
+    float SIMILARITY_THRESHOLD;
 };
 
 

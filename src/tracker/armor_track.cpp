@@ -120,13 +120,13 @@ public:
 
 };
 
-ArmorTrack::ArmorTrack(int tracking_id, const ArmorInfo &armor)
+ArmorTrack::ArmorTrack(int tracking_id, const DetectArmorInfo &armor)
 {
     this->tracking_id = tracking_id;
     init(armor);
 }
 
-void ArmorTrack::init(const ArmorInfo &armor)
+void ArmorTrack::init(const DetectArmorInfo &armor)
 {
 
     kf = KalmanFilter(8, 4);
@@ -148,14 +148,14 @@ void ArmorTrack::updateKalmanFilterMats(float dt)
 }
 
 
-void ArmorTrack::correct(const ArmorInfo &armor, float dt)
+void ArmorTrack::correct(const DetectArmorInfo &armor, float dt)
 {
     updateKalmanFilterMats(dt);
 
     kf.predict(); // post(t-1, t-1) -> pre (t-1, t)
     kf.correct(KalmanFilterFactory::cvtCorners2MeasurementMat(armor.corners_img)); // pre(t-1, t) -> post(t, t)
 
-    id_cnt[armor.armor_id]++;
+    id_cnt[armor.armor_type]++;
 }
 
 Rect2f ArmorTrack::predict(float dt)

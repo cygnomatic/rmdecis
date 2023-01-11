@@ -2,6 +2,11 @@
 // Created by catslashbin on 22-11-21.
 //
 
+/**
+ * Modified from https://github.com/yasenh/sort-cpp/blob/master/src/track.cpp.
+ * See https://github.com/yasenh/sort-cpp/blob/master/LICENSE for its license.
+ */
+
 #include "tracker.h"
 
 void ::Tracker::update(DetectArmorResult detection)
@@ -14,83 +19,47 @@ void ::Tracker::update(DetectArmorResult detection)
 
     std::vector<DetectArmorInfo> &armor_detection = detection.armor_info;
     size_t n_detection = armor_detection.size(), n_tracks = armor_tracks.size();
+    float dt = detection.time - last_update_time;
 
     // Mat[detection, track]
-    munkres::Matrix<float> munkres_matrix(n_detection, n_tracks);
+    munkres::Matrix<float> similarity_mat(n_detection, n_tracks);
     for (size_t i = 0; i < n_detection; ++i)
     {
         size_t j = 0;
-        for (auto track: armor_tracks)
+        for (auto& track: armor_tracks)
         {
             // Munkres originally aims to find the min cost. Multiply similarity by -1 to find max cost.
-            munkres_matrix(i, j) = -1.0f * track.second.calcSimilarity(armor_detection[i],
-                                                                       detection.time - last_update_time);
+            similarity_mat(i, j) = -1.0f * track.second.calcSimilarity(armor_detection[i], dt);
             ++j;
         }
     }
 
-    // Debug
-    std::cout << munkres_matrix << std::endl;
+    munkres::Matrix<float> association = hungarianMatching(similarity_mat);
 
-    munkres_f.solve(munkres_matrix);
-
-
-
-
-}
-
-void ::Tracker::hungarianMatching(const std::vector<std::vector<float>> &iou_matrix,
-                                  size_t nrows, size_t ncols,
-                                  std::vector<std::vector<float>> &association)
-{
-
-    munkres::Matrix<float> matrix(nrows, ncols);
-    // Initialize matrix with IOU values
-    for (size_t i = 0; i < nrows; i++)
+    for (size_t i = 0; i < n_detection; ++i)
     {
-        for (size_t j = 0; j < ncols; j++)
+        size_t j = 0;
+        for (auto& track: armor_tracks)
         {
-            // Multiply by -1 to find max cost
-            if (iou_matrix[i][j] != 0)
-            {
-                matrix(i, j) = -iou_matrix[i][j];
-            } else
-            {
-                matrix(i, j) = 1.0f;
+            if (association(i, j) == 0){
+                if (similarity_mat(i, j) >= SIMILARITY_THRESHOLD)
+                    track.second.correct(armor_detection[i], dt);
+                break; // Association is 1-to-1.
             }
         }
     }
 
-    //    // Display begin matrix state.
-    //    for (size_t row = 0 ; row < nrows ; row++) {
-    //        for (size_t col = 0 ; col < ncols ; col++) {
-    //            std::cout.width(10);
-    //            std::cout << matrix(row,col) << ",";
-    //        }
-    //        std::cout << std::endl;
-    //    }
-    //    std::cout << std::endl;
+}
 
+munkres::Matrix<float> (::Tracker::hungarianMatching)(munkres::Matrix<float> mat)
+{
+    // Debug
+    std::cout << mat << std::endl;
 
-    // Apply Kuhn-Munkres algorithm to matrix.
-    munkres::Munkres<float> m;
-    m.solve(matrix);
+    munkres_f.solve(mat);
 
-    //    // Display solved matrix.
-    //    for (size_t row = 0 ; row < nrows ; row++) {
-    //        for (size_t col = 0 ; col < ncols ; col++) {
-    //            std::cout.width(2);
-    //            std::cout << matrix(row,col) << ",";
-    //        }
-    //        std::cout << std::endl;
-    //    }
-    //    std::cout << std::endl;
+    // Debug
+    std::cout << mat << std::endl;
 
-    for (size_t i = 0; i < nrows; i++)
-    {
-        for (size_t j = 0; j < ncols; j++)
-        {
-            association[i][j] = matrix(i, j);
-        }
-    }
+    return mat;
 }
