@@ -7,7 +7,7 @@
 #include "../src/utils/cv_utils.h"
 #include <yaml-cpp/yaml.h>
 
-void emitYaml(YAML::Emitter& out, const vector<ArmorPredResult>& pred_results, int seq)
+void emitYaml(YAML::Emitter &out, const vector<ArmorPredResult> &pred_results, int seq)
 {
     out << YAML::BeginDoc;
     {
@@ -56,22 +56,52 @@ void emitYaml(YAML::Emitter& out, const vector<ArmorPredResult>& pred_results, i
     // std::cout << out.c_str() << endl;
 }
 
+// int main()
+// {
+//     // SimpleVideoPlayer player("../../data/vision_out/video_input.avi");
+//     // player.setPlaybackSpeed(5);
+//     // player.setRecordSpeed(0.1);
+//
+//     VideoCapture cap("../../data/vision_out/video_input.avi");
+//     std::ofstream file("vision_result.yaml");
+//     Mat frame;
+//     YAML::Emitter out;
+//     int frame_pos = 0, all_frame = cap.get(CAP_PROP_FRAME_COUNT);
+//
+//     info("Start process {} frame.", all_frame);
+//     while (true)
+//     {
+//         cap >> frame;
+//         if (frame.empty())
+//             break;
+//
+//         auto vision_out = detect(frame, blue);
+//
+//         for (auto armor_info: vision_out)
+//         {
+//             drawArmorCorners(frame, armor_info.corners_img, {0, 0, 255});
+//         }
+//
+//         emitYaml(out, vision_out, frame_pos++);
+//
+//         if (frame_pos % 50 == 0)
+//             info("Processing {}/{} frame ...", frame_pos, all_frame);
+//     }
+//     file << out.c_str();
+//     info("Process finished.");
+// }
+
 int main()
 {
-    // SimpleVideoPlayer player("../../data/vision_out/video_input.avi");
-    // player.setPlaybackSpeed(5);
-    // player.setRecordSpeed(0.1);
+    SimpleVideoPlayer player("../../data/vision_out/video_input.avi");
+    player.setPlaybackSpeed(2);
+    player.setRecordSpeed(0.1);
 
-    VideoCapture cap("../../data/vision_out/video_input.avi");
-    std::ofstream file("vision_result.yaml");
     Mat frame;
-    YAML::Emitter out;
-    int frame_pos = 0, all_frame = cap.get(CAP_PROP_FRAME_COUNT);
 
-    info("Start process {} frame.", all_frame);
     while (true)
     {
-        cap >> frame;
+        frame = player.getFrame();
         if (frame.empty())
             break;
 
@@ -82,11 +112,6 @@ int main()
             drawArmorCorners(frame, armor_info.corners_img, {0, 0, 255});
         }
 
-        emitYaml(out, vision_out, frame_pos++);
-
-        if (frame_pos % 50 == 0)
-            info("Processing {}/{} frame ...", frame_pos, all_frame);
+        player.update(frame);
     }
-    file << out.c_str();
-    info("Process finished.");
 }
