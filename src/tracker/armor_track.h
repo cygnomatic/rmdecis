@@ -14,11 +14,8 @@
 class ArmorTrack
 {
 public:
-
-    int tracking_id{};
-    int tracked_T = 0, tentative_T = 0, lost_T = 0;
-
-    ArmorTrack() = default;
+    int tracking_id;
+    int missing_cnt = 0, hit_cnt = 0;
 
     explicit ArmorTrack(int tracking_id, const DetectArmorInfo &armor);
 

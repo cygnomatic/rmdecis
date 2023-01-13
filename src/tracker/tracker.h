@@ -21,9 +21,13 @@ class Tracker
 
     void update(DetectArmorResult detection);
 
-    munkres::Matrix<float> hungarianMatching(munkres::Matrix<float> mat);
+    static munkres::Matrix<float> hungarianMatching(munkres::Matrix<float> mat);
 
     float SIMILARITY_THRESHOLD;
+
+    std::vector<DetectArmorInfo> match(std::vector<DetectArmorInfo> &armor_detection, float dt);
+
+    std::vector<DetectArmorInfo> match(const std::vector<DetectArmorInfo> &armor_detection, float dt);
 };
 
 
