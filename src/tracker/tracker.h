@@ -13,20 +13,23 @@
 #include "armor_track.h"
 
 class Tracker {
-    Time last_update_time;
-    munkres::Munkres<float> munkres_f;
+public:
+    float k_similarity_threshold = 0.3;
+    int k_max_missing_cnt = 3;
+    int k_min_hit_cnt = 3;
 
-    std::map<int, ArmorTrack> armor_tracks;
+    void update(const DetectArmorResult &detect_result);
 
-    void update(DetectArmorResult detection);
+    void associate(const std::vector<DetectArmorInfo> &armor_detections, float dt,
+                   std::vector<DetectArmorInfo> &unmatched_detections,
+                   std::map<int, DetectArmorInfo> &matched_track2det);
 
-    static munkres::Matrix<float> hungarianMatching(munkres::Matrix<float> mat);
+    std::map<int, ArmorTrack> getAllTracks();
 
-    float SIMILARITY_THRESHOLD;
-
-    std::vector<DetectArmorInfo> match(std::vector<DetectArmorInfo> &armor_detection, float dt);
-
-    std::vector<DetectArmorInfo> match(const std::vector<DetectArmorInfo> &armor_detection, float dt);
+private:
+    std::map<int, ArmorTrack> armor_tracks_;
+    Time last_update_time_;
+    int curr_id_ = 0;
 };
 
 

@@ -31,13 +31,21 @@ struct Time {
     int sec;
     int usec;
 
+    bool isDefined = false;
+
+    Time(int sec, int usec) : sec(sec), usec(usec), isDefined(true) {}
+
+    Time() : sec(0), usec(0), isDefined(false) {}
+
     /**
      * Calculate the diff of two time.
      * @param rhs
-     * @return Time difference, in second.
+     * @return Time difference, in second. If not time is not defined, return 0.
      */
     float operator-(const Time &rhs) const {
-        return (sec - rhs.sec) + (usec - rhs.usec) * 1e-6f;
+        if (isDefined && rhs.isDefined)
+            return (sec - rhs.sec) + (usec - rhs.usec) * 1e-6f;
+        return 0.f;
     }
 };
 

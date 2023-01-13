@@ -13,7 +13,7 @@
 
 class ArmorTrack {
 public:
-    int tracking_id;
+    int tracking_id = -1;
     int missing_cnt = 0, hit_cnt = 0;
 
     explicit ArmorTrack(int tracking_id, const DetectArmorInfo &armor);

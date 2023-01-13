@@ -23,35 +23,64 @@ munkres::Matrix<float> hungarianMatching(munkres::Matrix<float> mat) {
     return mat;
 }
 
-void ::Tracker::update(DetectArmorResult detection) {
-    if (detection.armor_info.empty()) {
+void ::Tracker::update(const DetectArmorResult &detect_result) {
+
+    const std::vector<DetectArmorInfo> &armor_detections = detect_result.armor_info;
+    std::vector<DetectArmorInfo> unmatched_detections;
+    std::map<int, DetectArmorInfo> matched_track2det;
+
+    float dt = detect_result.time - last_update_time_;
+    last_update_time_ = detect_result.time;
+
+    if (detect_result.armor_info.empty()) {
         warn("Received empty detection. Skip.");
         return;
+    } else {
+        associate(armor_detections, dt, unmatched_detections, matched_track2det);
     }
 
-    std::vector<DetectArmorInfo> &armor_detection = detection.armor_info;
-    std::vector<DetectArmorInfo> unmatched_armor;
+    // Update tracks counts
+    for (auto &p: armor_tracks_) {
+        auto &trk = p.second;
 
-    size_t n_detection = armor_detection.size(), n_tracks = armor_tracks.size();
-    float dt = detection.time - last_update_time;
+        if (trk.missing_cnt > k_max_missing_cnt) {
+            // Delete lost track
+            armor_tracks_.erase(trk.tracking_id);
+        } else {
+            // Pre-add one missing cnt.
+            trk.missing_cnt++;
+        }
+    }
 
-    // Matching tracked armors
-    unmatched_armor = match(armor_detection, dt);
+    // Update tracks with associated detections
+    for (const auto &p: matched_track2det) {
+        auto &trk = armor_tracks_.at(p.first);
+        trk.correct(p.second, dt);
+        trk.hit_cnt++;
+        trk.missing_cnt = 0;
+    }
 
+    // Create new tracks for unmatched detections
+    for (const auto &det: unmatched_detections) {
+        ArmorTrack track(curr_id_, det);
+        armor_tracks_.at(curr_id_++) = track;
+    }
 
 }
 
-std::vector<DetectArmorInfo> (::Tracker::match)(const std::vector<DetectArmorInfo> &armor_detection, float dt) {
-    size_t n_detection = armor_detection.size(), n_tracks = armor_tracks.size();
-    std::vector<DetectArmorInfo> unmatched_armor;
+void ::Tracker::associate(const std::vector<DetectArmorInfo> &armor_detections, float dt,
+                          std::vector<DetectArmorInfo> &unmatched_detections,
+                          std::map<int, DetectArmorInfo> &matched_track2det) {
+
+    size_t n_detection = armor_detections.size(), n_tracks = armor_tracks_.size();
 
     // Mat[detection, track]
     munkres::Matrix<float> similarity_mat(n_detection, n_tracks);
     for (size_t i = 0; i < n_detection; ++i) {
         size_t j = 0;
-        for (auto &track: armor_tracks) {
+        for (auto &track: armor_tracks_) {
             // Munkres originally aims to find the min cost. Multiply similarity by -1 to find max cost.
-            similarity_mat(i, j) = -1.0f * track.second.calcSimilarity(armor_detection[i], dt);
+            similarity_mat(i, j) = -1.0f * track.second.calcSimilarity(armor_detections[i], dt);
             ++j;
         }
     }
@@ -59,17 +88,26 @@ std::vector<DetectArmorInfo> (::Tracker::match)(const std::vector<DetectArmorInf
     munkres::Matrix<float> association = hungarianMatching(similarity_mat);
 
     for (size_t i = 0; i < n_detection; ++i) {
+        bool matched_flag = false;
         size_t j = 0;
-        for (auto &track: armor_tracks) {
+        for (auto &int2track: armor_tracks_) {
             if (association(i, j) == 0) {
-                if (similarity_mat(i, j) >= SIMILARITY_THRESHOLD) {
-                    track.second.correct(armor_detection[i], dt);
-                    unmatched_armor.push_back(armor_detection[i]);
+                if (similarity_mat(i, j) >= k_similarity_threshold) {
+                    matched_track2det[int2track.first] = armor_detections[i];
+                    matched_flag = true;
                 }
                 break; // Association is 1-to-1.
             }
+            j++;
+        }
+
+        // Failed to associate.
+        if (!matched_flag) {
+            unmatched_detections.push_back(armor_detections[i]);
         }
     }
-
-    return unmatched_armor;
 }
+
+std::map<int, ArmorTrack> (::Tracker::getAllTracks)() {
+    return armor_tracks_;
+};
