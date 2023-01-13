@@ -7,8 +7,7 @@
 #include "../src/utils/cv_utils.h"
 #include <yaml-cpp/yaml.h>
 
-void emitYaml(YAML::Emitter &out, const vector<ArmorPredResult> &pred_results, int seq)
-{
+void emitYaml(YAML::Emitter &out, const vector<ArmorPredResult> &pred_results, int seq) {
     out << YAML::BeginDoc;
     {
         out << YAML::BeginMap;
@@ -28,8 +27,7 @@ void emitYaml(YAML::Emitter &out, const vector<ArmorPredResult> &pred_results, i
 
             out << YAML::Key << "data" << YAML::Value << YAML::BeginSeq;
             {
-                for (auto &p: pred_results)
-                {
+                for (auto &p: pred_results) {
                     out << YAML::BeginMap;
                     {
                         out << YAML::Key << "armor_type" << YAML::Value << 3;
@@ -91,24 +89,21 @@ void emitYaml(YAML::Emitter &out, const vector<ArmorPredResult> &pred_results, i
 //     info("Process finished.");
 // }
 
-int main()
-{
+int main() {
     SimpleVideoPlayer player("../../data/vision_out/video_input.avi");
     player.setPlaybackSpeed(2);
     player.setRecordSpeed(0.1);
 
     Mat frame;
 
-    while (true)
-    {
+    while (true) {
         frame = player.getFrame();
         if (frame.empty())
             break;
 
         auto vision_out = detect(frame, blue);
 
-        for (auto armor_info: vision_out)
-        {
+        for (auto armor_info: vision_out) {
             drawArmorCorners(frame, armor_info.corners_img, {0, 0, 255});
         }
 

@@ -1,9 +1,5 @@
 <component name="ProjectCodeStyleConfiguration">
   <code_scheme name="Project" version="173">
-    <Objective-C>
-      <option name="NAMESPACE_BRACE_PLACEMENT" value="5" />
-      <option name="FUNCTION_BRACE_PLACEMENT" value="5" />
-    </Objective-C>
     <Objective-C-extensions>
       <rules>
         <rule entity="NAMESPACE" visibility="ANY" specifier="ANY" prefix="" style="CAMEL_CASE" suffix="" />
@@ -47,8 +43,6 @@
     <codeStyleSettings language="ObjectiveC">
       <option name="LINE_COMMENT_AT_FIRST_COLUMN" value="false" />
       <option name="LINE_COMMENT_ADD_SPACE" value="true" />
-      <option name="BRACE_STYLE" value="5" />
-      <option name="CLASS_BRACE_STYLE" value="5" />
     </codeStyleSettings>
   </code_scheme>
 </component>

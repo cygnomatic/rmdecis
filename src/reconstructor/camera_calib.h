@@ -19,14 +19,12 @@
 
 using namespace cv;
 
-struct CameraCoeffs
-{
+struct CameraCoeffs {
     Mat cam_mat;
     Mat dist_coeffs;
 };
 
-class CameraCalib
-{
+class CameraCalib {
     // CameraCoeffs cam_coeffs;
     Mat cam_mat, dist_coeffs;
 

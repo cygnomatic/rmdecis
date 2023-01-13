@@ -23,12 +23,10 @@
 #include <cstdlib>
 #include <ostream>
 
-namespace munkres
-{
+namespace munkres {
 
     template<class T>
-    class Matrix
-    {
+    class Matrix {
     public:
         Matrix();
 
@@ -61,13 +59,10 @@ namespace munkres
 
         inline size_t rows() const { return m_rows; }
 
-        friend std::ostream &operator<<(std::ostream &os, const Matrix &matrix)
-        {
+        friend std::ostream &operator<<(std::ostream &os, const Matrix &matrix) {
             os << "Matrix:" << std::endl;
-            for (size_t row = 0; row < matrix.rows(); row++)
-            {
-                for (size_t col = 0; col < matrix.columns(); col++)
-                {
+            for (size_t row = 0; row < matrix.rows(); row++) {
+                for (size_t col = 0; col < matrix.columns(); col++) {
                     os.width(8);
                     os << matrix(row, col) << ",";
                 }

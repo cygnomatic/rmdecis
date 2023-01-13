@@ -1,19 +1,16 @@
 #include "simple_video_player.h"
 
-void onTrackbarSlide(int position, void *userdata)
-{
+void onTrackbarSlide(int position, void *userdata) {
     SimpleVideoPlayer *player = (SimpleVideoPlayer *) userdata;
     player->frame_position = (int) (position * player->cap.get(CAP_PROP_FRAME_COUNT) / 100.0);
     player->cap.set(CAP_PROP_POS_FRAMES, player->frame_position);
 }
 
-SimpleVideoPlayer::SimpleVideoPlayer(const String &path)
-{
+SimpleVideoPlayer::SimpleVideoPlayer(const String &path) {
     cap = VideoCapture(path);
     writer = VideoWriter();
 
-    if (!cap.isOpened())
-    {
+    if (!cap.isOpened()) {
         cerr << "ERROR: Unable to open the video file" << endl;
         return;
     }
@@ -32,13 +29,11 @@ SimpleVideoPlayer::SimpleVideoPlayer(const String &path)
     cout << "[SimpleVideoPlayer] Video loaded. Start Playback." << endl;
 }
 
-SimpleVideoPlayer::~SimpleVideoPlayer()
-{
+SimpleVideoPlayer::~SimpleVideoPlayer() {
     closeStream();
 }
 
-void SimpleVideoPlayer::printInfo() const
-{
+void SimpleVideoPlayer::printInfo() const {
     cout << "[SimpleVideoPlayer] ====================================== " << endl;
     cout << "[SimpleVideoPlayer] Usage: " << endl;
     cout << "[SimpleVideoPlayer] \t- Press 'space' to pause the video. " << endl;
@@ -54,39 +49,32 @@ void SimpleVideoPlayer::printInfo() const
     cout << "[SimpleVideoPlayer] ====================================== " << endl;
 }
 
-Mat SimpleVideoPlayer::getFrame()
-{
+Mat SimpleVideoPlayer::getFrame() {
     Mat frame;
     cap >> frame;
     return frame;
 }
 
-Mat SimpleVideoPlayer::getFrame(int pos)
-{
-    if (frame_position == pos)
-    {
+Mat SimpleVideoPlayer::getFrame(int pos) {
+    if (frame_position == pos) {
         return getFrame();
-    } else
-    {
+    } else {
         frame_position = pos;
         cap.set(CAP_PROP_POS_FRAMES, frame_position);
         return getFrame();
     }
 }
 
-void SimpleVideoPlayer::update(Mat &frame)
-{
+void SimpleVideoPlayer::update(Mat &frame) {
 
     // Update the track_bar_position of the trackbar
     setTrackbarPos("Position", "SimpleVideoPlayer",
                    (int) (cap.get(CAP_PROP_POS_FRAMES) / cap.get(CAP_PROP_FRAME_COUNT) * 100));
 
     // Update timing
-    if (is_timing)
-    {
+    if (is_timing) {
         timing_idx++;
-        if (timing_idx % 10 == 0)
-        {
+        if (timing_idx % 10 == 0) {
             auto timing_now = chrono::high_resolution_clock::now();
             chrono::duration<float, std::milli> dur_ms = timing_now - timing_last;
             fps_display =
@@ -101,8 +89,7 @@ void SimpleVideoPlayer::update(Mat &frame)
 
     // std::cout << key << endl;
 
-    switch (key)
-    {
+    switch (key) {
         case 27: // "Esc"
             closeStream();
             break;
@@ -113,14 +100,12 @@ void SimpleVideoPlayer::update(Mat &frame)
             toggleTiming();
             break;
         case 32: // "Space"
-            while (true)
-            {
+            while (true) {
                 // Check if the "Space" key is released
                 key = waitKey(10);
                 if (key == 32)
                     break;
-                if (key == 27)
-                {
+                if (key == 27) {
                     closeStream();
                     return;
                 }
@@ -130,8 +115,7 @@ void SimpleVideoPlayer::update(Mat &frame)
             break;
     }
 
-    if (is_recording)
-    {
+    if (is_recording) {
         writer.write(frame);
         putText(frame, "RECORDING...", {width - 500, 200}, FONT_HERSHEY_SIMPLEX, 2, {0, 0, 255}, 6);
     }
@@ -140,30 +124,25 @@ void SimpleVideoPlayer::update(Mat &frame)
     frame_position++;
 }
 
-void SimpleVideoPlayer::closeStream()
-{
+void SimpleVideoPlayer::closeStream() {
     cap.release();
     writer.release();
     destroyWindow("SimpleVideoPlayer");
 }
 
-void SimpleVideoPlayer::setPlaybackSpeed(float speed)
-{
+void SimpleVideoPlayer::setPlaybackSpeed(float speed) {
     this->playback_speed = speed;
 }
 
-void SimpleVideoPlayer::toggleRecording()
-{
-    if (is_recording)
-    {
+void SimpleVideoPlayer::toggleRecording() {
+    if (is_recording) {
         // Stop recording.
         is_recording = false;
 
         cout << "[SimpleVideoPlayer] Stop Recording." << endl;
         writer.release();
 
-    } else
-    {
+    } else {
         // Start recording.
         is_recording = true;
 
@@ -180,14 +159,12 @@ void SimpleVideoPlayer::toggleRecording()
     }
 }
 
-void SimpleVideoPlayer::toggleTiming()
-{
+void SimpleVideoPlayer::toggleTiming() {
     is_timing = !is_timing;
     timing_idx = 0;
     timing_last = chrono::high_resolution_clock::now();
 }
 
-void SimpleVideoPlayer::setRecordSpeed(float speed)
-{
+void SimpleVideoPlayer::setRecordSpeed(float speed) {
     record_speed = speed;
 }

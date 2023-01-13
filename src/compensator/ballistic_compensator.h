@@ -12,8 +12,7 @@
 
 #include "../utils/equation_solver.h"
 
-class BallisticCompensator
-{
+class BallisticCompensator {
     float k;
 private:
     std::function<float(float)> getBallisticFunc(float v0, float x, float y);
@@ -28,8 +27,7 @@ public:
      * Ballistic compensate calculator.
      * @param k Wind resistance coefficient
      */
-    explicit BallisticCompensator(float k)
-    { this->k = k; };
+    explicit BallisticCompensator(float k) { this->k = k; };
 
     /**
      * Calculate ballistic.

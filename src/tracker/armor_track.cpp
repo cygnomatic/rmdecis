@@ -5,11 +5,9 @@
 #include "armor_track.h"
 
 
-class KalmanFilterFactory
-{
+class KalmanFilterFactory {
 public:
-    enum StateMatDesc
-    {
+    enum StateMatDesc {
         STATE_U = 0,
         STATE_V = 1,
         STATE_RATIO = 2,
@@ -20,8 +18,7 @@ public:
         STATE_D_AREA = 7
     };
 
-    static Mat getTransitionMatrix(float dt)
-    {
+    static Mat getTransitionMatrix(float dt) {
         Mat transitionMatrix = (Mat_<float>(8, 8)
                 <<
                 1, 0, 0, 0, dt, 0, 0, 0,
@@ -36,14 +33,12 @@ public:
         return transitionMatrix;
     }
 
-    static Mat getMeasurementMat()
-    {
+    static Mat getMeasurementMat() {
         // State Matrix: [u, v, ratio, area, v_u, v_v, v_ration, v_area]
         return Mat::eye(4, 8, CV_32F);
     }
 
-    static Mat getProcessNoiseCov(float dt)
-    {
+    static Mat getProcessNoiseCov(float dt) {
         float SD = 10, SR = 10, SH = 10; // ProcessNoise
         Mat processNoiseCov = (Mat_<float>(8, 8)
                 <<
@@ -59,8 +54,7 @@ public:
         return processNoiseCov;
     }
 
-    static Mat getMeasurementNoiseCov(float dt)
-    {
+    static Mat getMeasurementNoiseCov(float dt) {
         float SDM = 50, SRM = 100, SHM = 100; // MeasurementNoise
         Mat measurementNoiseCov = (Mat_<float>(4, 4)
                 <<
@@ -72,8 +66,7 @@ public:
         return measurementNoiseCov;
     }
 
-    static Mat cvtCorners2MeasurementMat(const ArmorCorners2d &corners)
-    {
+    static Mat cvtCorners2MeasurementMat(const ArmorCorners2d &corners) {
         Rect2f bounding_box = (Rect2f) corners;
 
         float u = bounding_box.x, v = bounding_box.y;
@@ -83,8 +76,7 @@ public:
         return (Mat_<float>(4, 1) << u, v, ratio, area);
     };
 
-    static Rect2f cvtStateMat2Rect(const Mat &state)
-    {
+    static Rect2f cvtStateMat2Rect(const Mat &state) {
         auto pred_uv = Point2f{state.at<float>(STATE_U), state.at<float>(STATE_V)};
 
         // width^2 = (width * height) * (width / height) = area * ratio
@@ -94,8 +86,7 @@ public:
         return {pred_uv, Size2f{width, height}};
     };
 
-    static Mat getInitState(const ArmorCorners2d &corners)
-    {
+    static Mat getInitState(const ArmorCorners2d &corners) {
         Rect2f bounding_box = (Rect2f) corners;
 
         float u = bounding_box.x, v = bounding_box.y;
@@ -105,29 +96,26 @@ public:
         return (Mat_<float>(8, 1) << u, v, ratio, area, 0, 0, 0, 0);
     }
 
-    static Mat getInitError()
-    {
+    static Mat getInitError() {
         return (Mat_<float>(8, 8) <<
-           10, 0, 0, 0, 0, 0, 0, 0,
-            0, 10, 0, 0, 0, 0, 0, 0,
-            0, 0, 10, 0, 0, 0, 0, 0,
-            0, 0, 0, 10, 0, 0, 0, 0,
-            0, 0, 0, 0, 100, 0, 0, 0,
-            0, 0, 0, 0, 0, 100, 0, 0,
-            0, 0, 0, 0, 0, 0, 100, 0,
-            0, 0, 0, 0, 0, 0, 0, 100);
+                                  10, 0, 0, 0, 0, 0, 0, 0,
+                0, 10, 0, 0, 0, 0, 0, 0,
+                0, 0, 10, 0, 0, 0, 0, 0,
+                0, 0, 0, 10, 0, 0, 0, 0,
+                0, 0, 0, 0, 100, 0, 0, 0,
+                0, 0, 0, 0, 0, 100, 0, 0,
+                0, 0, 0, 0, 0, 0, 100, 0,
+                0, 0, 0, 0, 0, 0, 0, 100);
     }
 
 };
 
-ArmorTrack::ArmorTrack(int tracking_id, const DetectArmorInfo &armor)
-{
+ArmorTrack::ArmorTrack(int tracking_id, const DetectArmorInfo &armor) {
     this->tracking_id = tracking_id;
     init(armor);
 }
 
-void ArmorTrack::init(const DetectArmorInfo &armor)
-{
+void ArmorTrack::init(const DetectArmorInfo &armor) {
 
     kf = KalmanFilter(8, 4);
 
@@ -140,16 +128,14 @@ void ArmorTrack::init(const DetectArmorInfo &armor)
     updateKalmanFilterMats(0.1);
 }
 
-void ArmorTrack::updateKalmanFilterMats(float dt)
-{
+void ArmorTrack::updateKalmanFilterMats(float dt) {
     kf.transitionMatrix = KalmanFilterFactory::getTransitionMatrix(dt);
     kf.processNoiseCov = KalmanFilterFactory::getProcessNoiseCov(dt);
     kf.measurementNoiseCov = KalmanFilterFactory::getMeasurementNoiseCov(dt);
 }
 
 
-void ArmorTrack::correct(const DetectArmorInfo &armor, float dt)
-{
+void ArmorTrack::correct(const DetectArmorInfo &armor, float dt) {
     updateKalmanFilterMats(dt);
 
     kf.predict(); // post(t-1, t-1) -> pre (t-1, t)
@@ -158,14 +144,12 @@ void ArmorTrack::correct(const DetectArmorInfo &armor, float dt)
     id_cnt[armor.armor_type]++;
 }
 
-Rect2f ArmorTrack::predict(float dt)
-{
+Rect2f ArmorTrack::predict(float dt) {
     updateKalmanFilterMats(dt);
     return KalmanFilterFactory::cvtStateMat2Rect(kf.predict());
 }
 
-float ArmorTrack::calcSimilarity(const DetectArmorInfo &armor, float dt)
-{
+float ArmorTrack::calcSimilarity(const DetectArmorInfo &armor, float dt) {
     auto new_bounding_box = (Rect2f) armor.corners_img;
     auto pred_bounding_box = predict(dt);
 
@@ -175,8 +159,7 @@ float ArmorTrack::calcSimilarity(const DetectArmorInfo &armor, float dt)
     return iou * 0.7 + id_similarity * 0.3;
 }
 
-float ArmorTrack::calcIdSimilarity(ArmorID id)
-{
+float ArmorTrack::calcIdSimilarity(ArmorID id) {
     int sum = std::accumulate(id_cnt.begin(), id_cnt.end(), 2);
     return (float) (id_cnt[id] + 1) /
            (float) sum; // Here we artificially add one positive and one negative. To smoothen the result.

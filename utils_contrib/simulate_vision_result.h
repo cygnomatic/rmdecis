@@ -10,8 +10,7 @@
 
 #include "../src/typing/general.h"
 
-class SimulateVisionOutput
-{
+class SimulateVisionOutput {
     int next_idx = 0;
     std::map<int, DetectArmorResult> data;
 

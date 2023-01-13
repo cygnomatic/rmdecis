@@ -5,10 +5,9 @@
 #include <cmath>
 #include "../src/utils/equation_solver.h"
 
-inline float func(float x) {return x - x*x + 0.5;}
+inline float func(float x) { return x - x * x + 0.5; }
 
-int main()
-{
+int main() {
     std::cout << EquationSolver::solve(func);
     return 0;
 }

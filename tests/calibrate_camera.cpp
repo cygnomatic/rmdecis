@@ -24,21 +24,18 @@ using namespace cv;
 #define GRID_LEN 28.5
 
 
-class CameraCalibrator
-{
+class CameraCalibrator {
 
 public:
     Mat cam_mat, dist_coeffs, cali_cam_mat;
     Size img_size, cail_img_size;
     Rect roi;
 
-    explicit CameraCalibrator(const Size& img_size)
-    {
+    explicit CameraCalibrator(const Size &img_size) {
         this->img_size = img_size;
     }
 
-    void calculateCaliCoeffs(const std::vector<Mat> &imgs, const Size &pattern_size, float side_len)
-    {
+    void calculateCaliCoeffs(const std::vector<Mat> &imgs, const Size &pattern_size, float side_len) {
         Mat rvecs, tvecs;
         std::vector<std::vector<Point2f>> img_pts_arr;
         std::vector<std::vector<Point3f>> obj_pts_arr;
@@ -47,12 +44,10 @@ public:
 
         TermCriteria criteria{TermCriteria::EPS | TermCriteria::COUNT, 30, 0.001};
 
-        for (const Mat &img: imgs)
-        {
+        for (const Mat &img: imgs) {
             findChessboardCorners(img, pattern_size, corners);
 
-            if (corners.empty())
-            {
+            if (corners.empty()) {
                 std::cerr << "No corner found." << std::endl;
                 continue;
             }
@@ -79,8 +74,7 @@ public:
         std::cout << "VaildROIsize: \n" << cail_img_size << std::endl;
     }
 
-    void saveCoeffs(const String& path, const String& info) const
-    {
+    void saveCoeffs(const String &path, const String &info) const {
         cv::FileStorage fs(path, FileStorage::WRITE);
 
         fs << "Info" << info;
@@ -92,8 +86,7 @@ public:
 
 private:
 
-    static std::vector<Point3f> calculateBoardCornerPos(const Size &pattern_size, float side_len)
-    {
+    static std::vector<Point3f> calculateBoardCornerPos(const Size &pattern_size, float side_len) {
         std::vector<Point3f> corner;
         for (int i = 0; i < pattern_size.height; ++i)
             for (int j = 0; j < pattern_size.width; ++j)
@@ -103,8 +96,7 @@ private:
 };
 
 
-int main()
-{
+int main() {
 
     std::vector<String> img_paths;
     std::vector<Mat> imgs;
@@ -112,8 +104,7 @@ int main()
 
     glob("../../data/calib/*.jpg", img_paths, false);
 
-    for (const String &img_path: img_paths)
-    {
+    for (const String &img_path: img_paths) {
         resize(imread(img_path, IMREAD_GRAYSCALE), img, Size(1200, 900));
         imgs.push_back(img);
     }

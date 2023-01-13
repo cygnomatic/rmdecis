@@ -11,8 +11,7 @@
 #define BIG_ARMOR_HEIGHT 127.0f
 
 #define NUM_ARMOR_ID 11
-enum ArmorID
-{
+enum ArmorID {
     UNKNOWN = 0,
 
     HERO_1 = 1,
@@ -28,8 +27,7 @@ enum ArmorID
     OUTPOST_10 = 10,
 };
 
-enum ARMOR_TYPE
-{
+enum ARMOR_TYPE {
     SMALL_ARMOR = 0,
     BIG_ARMOR = 1
 };
@@ -38,16 +36,14 @@ enum ARMOR_TYPE
  * Struct for the four corners of an Armor.
  * Corners coord in 2D.
  */
-struct ArmorCorners2d
-{
+struct ArmorCorners2d {
     ArmorCorners2d() = default;
 
     /**
      * Construct ArmorCorners2d with four corners coord.
      * @param corners Corners. Start form Top-Right, goes counter-clockwise to Down-Right.
      */
-    explicit ArmorCorners2d(cv::Point2f corners[])
-    {
+    explicit ArmorCorners2d(cv::Point2f corners[]) {
         tr = corners[0];
         tl = corners[1];
         dl = corners[2];
@@ -58,8 +54,7 @@ struct ArmorCorners2d
      * Construct ArmorCorners2d with four corners coord.
      * @param corners Corners. Start form Top-Right, goes counter-clockwise to Down-Right.
      */
-    explicit ArmorCorners2d(std::vector<cv::Point2f> corners)
-    {
+    explicit ArmorCorners2d(std::vector<cv::Point2f> corners) {
         assert(corners.size() == 4);
         tr = corners[0];
         tl = corners[1];
@@ -72,10 +67,8 @@ struct ArmorCorners2d
     cv::Point2f dl; // Down-Left
     cv::Point2f dr; // Down-Right
 
-    cv::Point2f &operator[](int index)
-    {
-        switch (index)
-        {
+    cv::Point2f &operator[](int index) {
+        switch (index) {
             case 0:
                 return tr;
             case 1:
@@ -89,8 +82,7 @@ struct ArmorCorners2d
         }
     }
 
-    explicit operator std::vector<cv::Point2f>() const
-    {
+    explicit operator std::vector<cv::Point2f>() const {
         return std::vector<cv::Point2f>({tr, tl, dl, dr});
     }
 
@@ -98,8 +90,7 @@ struct ArmorCorners2d
      * Get the bounding box of Armor corners.
      * @return The bounding rect.
      */
-    explicit operator cv::Rect2f() const
-    {
+    explicit operator cv::Rect2f() const {
         return getBoundingBox();
     }
 
@@ -107,13 +98,11 @@ struct ArmorCorners2d
      * Get the bounding box of Armor corners.
      * @return The bounding rect.
      */
-    cv::Rect2f getBoundingBox() const
-    {
+    cv::Rect2f getBoundingBox() const {
         return boundingRect(std::vector<cv::Point2f>({tr, tl, dl, dr}));
     }
 
-    std::vector<cv::Point2f> toPts()
-    {
+    std::vector<cv::Point2f> toPts() {
         return std::vector<cv::Point2f>({tr, tl, dl, dr});
     }
 
@@ -135,20 +124,17 @@ struct ArmorCorners2d
 };
 
 
-struct ArmorCorners3d
-{
+struct ArmorCorners3d {
     ArmorCorners3d() = default;
 
-    explicit ArmorCorners3d(cv::Point3f corners[])
-    {
+    explicit ArmorCorners3d(cv::Point3f corners[]) {
         tr = corners[0];
         tl = corners[1];
         dl = corners[2];
         dr = corners[3];
     }
 
-    explicit ArmorCorners3d(std::vector<cv::Point3f> corners)
-    {
+    explicit ArmorCorners3d(std::vector<cv::Point3f> corners) {
         assert(corners.size() == 4);
         tr = corners[0];
         tl = corners[1];
@@ -173,10 +159,8 @@ struct ArmorCorners3d
      * Used to construct armors in Model Coordinate.
      * @param armorType The armor type.
      */
-    explicit ArmorCorners3d(ARMOR_TYPE armorType)
-    {
-        switch (armorType)
-        {
+    explicit ArmorCorners3d(ARMOR_TYPE armorType) {
+        switch (armorType) {
             case SMALL_ARMOR:
                 *this = ArmorCorners3d({SMALL_ARMOR_WIDTH, SMALL_ARMOR_HEIGHT});
             case BIG_ARMOR:
@@ -189,10 +173,8 @@ struct ArmorCorners3d
     cv::Point3f dl; // Down-Left
     cv::Point3f dr; // Down-Right
 
-    cv::Point3f &operator[](int index)
-    {
-        switch (index)
-        {
+    cv::Point3f &operator[](int index) {
+        switch (index) {
             case 0:
                 return tr;
             case 1:
@@ -206,20 +188,17 @@ struct ArmorCorners3d
         }
     }
 
-    explicit operator std::vector<cv::Point3f>() const
-    {
+    explicit operator std::vector<cv::Point3f>() const {
         return std::vector<cv::Point3f>({tr, tl, dl, dr});
     }
 
-    cv::Point3f getCenter() const
-    {
+    cv::Point3f getCenter() const {
         return (tr + tl + dl + dr) / 4;
     }
 
 };
 
-struct ArmorInfo
-{
+struct ArmorInfo {
     ArmorID armor_id = UNKNOWN;
     ArmorCorners2d corners_img;
     ArmorCorners3d corners_cam;

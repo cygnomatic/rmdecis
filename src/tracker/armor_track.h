@@ -11,8 +11,7 @@
 #include "../typing/general.h"
 #include "../utils/cv_utils.h"
 
-class ArmorTrack
-{
+class ArmorTrack {
 public:
     int tracking_id;
     int missing_cnt = 0, hit_cnt = 0;

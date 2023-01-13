@@ -10,19 +10,17 @@
 #include "../typing/general.h"
 #include "camera_calib.h"
 
-struct SolveArmorResult
-{
+struct SolveArmorResult {
     float delta_depth, delta_height;
     float delta_yaw;
 };
 
-class Transformer
-{
+class Transformer {
     Transform3d model2cam, cam2base;
 
     CameraCalib cam_calib;
 
-    explicit Transformer(CameraCalib camera_calib): cam_calib(std::move(camera_calib)) {}
+    explicit Transformer(CameraCalib camera_calib) : cam_calib(std::move(camera_calib)) {}
 
 
 };

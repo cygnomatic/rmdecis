@@ -8,8 +8,7 @@
 
 float EquationSolver::solveWithDer(const std::function<float(float)> &func,
                                    const std::function<float(float)> &derivative_func,
-                                   float init_x, float eps)
-{
+                                   float init_x, float eps) {
     float x = init_x;
     int n_iter = 0;
     while (n_iter < MAX_N_ITERATION) // To prevent infinite loop.
@@ -17,13 +16,12 @@ float EquationSolver::solveWithDer(const std::function<float(float)> &func,
         x = x - func(x) / derivative_func(x);
         if (fabs(func(x)) < eps)
             return x;
-        n_iter ++;
+        n_iter++;
     }
     return nanf("");
 }
 
-float EquationSolver::solve(const std::function<float(float)> &func, float init_x, float eps, float delta)
-{
+float EquationSolver::solve(const std::function<float(float)> &func, float init_x, float eps, float delta) {
     return solveWithDer(func,
                         [&func, delta](float x) { return (func(x + delta) - func(x)) / delta; },
                         init_x, eps);

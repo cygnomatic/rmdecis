@@ -14,8 +14,7 @@
 using namespace cv;
 using namespace std;
 
-class SimpleVideoPlayer
-{
+class SimpleVideoPlayer {
 public:
 
     VideoCapture cap;

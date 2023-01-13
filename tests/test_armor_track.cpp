@@ -6,8 +6,7 @@
 #include "../utils_contrib/simulate_vision_result.h"
 #include "../src/tracker/armor_track.h"
 
-int main()
-{
+int main() {
     SimulateVisionOutput vision_output("../../data/vision_out/vision_result.yaml");
     SimpleVideoPlayer player("../../data/vision_out/video_input.avi");
 
@@ -16,15 +15,13 @@ int main()
 
     int last_corr_t = 0;
 
-    for (int i = 0;; i++)
-    {
+    for (int i = 0;; i++) {
         Mat frame = player.getFrame();
         if (frame.empty())
             break;
 
         auto pred_result = vision_output.getData(player.frame_position);
-        for (auto p: pred_result.armor_info)
-        {
+        for (auto p: pred_result.armor_info) {
             // auto trans_model2cam = camera_calib.armorSolvePnP(ArmorCorners3d(SMALL_ARMOR), pred_result.corners_img_coord);
             //
             // String rot = fmt::format("Rvec [x: {:.2f}, y: {:.2f}, z: {:.2f}]", trans_model2cam.rvec.at<double>(0), trans_model2cam.rvec.at<double>(1), trans_model2cam.rvec.at<double>(2));
@@ -37,7 +34,7 @@ int main()
             // camera_calib.drawAxes(frame, trans_model2cam);
             // break;
 
-            ArmorInfo armor_info {p.armor_type, p.corners_img};
+            ArmorInfo armor_info{p.armor_type, p.corners_img};
 
             drawArmorCorners(frame, p.corners_img, {0, 0, 255});
             rectangle(frame, p.corners_img.getBoundingBox(), {255, 0, 0}, 2);

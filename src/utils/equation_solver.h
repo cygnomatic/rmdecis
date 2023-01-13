@@ -9,8 +9,7 @@
 #include <iostream>
 #include <cmath>
 
-class EquationSolver
-{
+class EquationSolver {
 public:
 
     /**

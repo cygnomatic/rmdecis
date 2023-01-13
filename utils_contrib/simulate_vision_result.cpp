@@ -4,18 +4,15 @@
 
 #include "simulate_vision_result.h"
 
-SimulateVisionOutput::SimulateVisionOutput(const std::string &data_path)
-{
+SimulateVisionOutput::SimulateVisionOutput(const std::string &data_path) {
 
     info("Start to load data from {} ...", data_path);
 
     std::vector<YAML::Node> ys = YAML::LoadAllFromFile(data_path);
 
     int seq_idx = 0;
-    for (YAML::Node y: ys)
-    {
-        try
-        {
+    for (YAML::Node y: ys) {
+        try {
             seq_idx = y["header"]["seq"].as<int>();
 
             YAML::Node stamp = y["header"]["stamp"];
@@ -23,8 +20,7 @@ SimulateVisionOutput::SimulateVisionOutput(const std::string &data_path)
 
             std::vector<DetectArmorInfo> armor_info;
 
-            for (YAML::Node d: y["data"])
-            {
+            for (YAML::Node d: y["data"]) {
                 ArmorID armor_type = (ArmorID) d["armor_type"].as<int>();
                 float confidence = d["confidence"].as<float>();
 
@@ -49,15 +45,13 @@ SimulateVisionOutput::SimulateVisionOutput(const std::string &data_path)
     info("Successfully loaded {} data.", ys.size());
 }
 
-DetectArmorResult SimulateVisionOutput::getNextData()
-{
+DetectArmorResult SimulateVisionOutput::getNextData() {
     auto d = getData(next_idx);
     next_idx++;
     return d;
 }
 
-DetectArmorResult SimulateVisionOutput::getData(int seq_idx)
-{
+DetectArmorResult SimulateVisionOutput::getData(int seq_idx) {
     auto i = data.find(seq_idx);
     if (i == data.end())
         return DetectArmorResult{};

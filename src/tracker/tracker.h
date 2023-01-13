@@ -12,8 +12,7 @@
 #include "../contrib/munkres-cpp/munkres.h"
 #include "armor_track.h"
 
-class Tracker
-{
+class Tracker {
     Time last_update_time;
     munkres::Munkres<float> munkres_f;
 
