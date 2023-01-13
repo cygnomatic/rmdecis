@@ -11,14 +11,11 @@
 #include <functional>
 #include <chrono>
 
-using namespace cv;
-using namespace std;
-
 class SimpleVideoPlayer {
 public:
 
-    VideoCapture cap;
-    VideoWriter writer;
+    cv::VideoCapture cap;
+    cv::VideoWriter writer;
 
     bool is_recording = false;
     bool is_timing = false;
@@ -35,7 +32,7 @@ public:
      * A simple video player. Featured with video pausing and process adjustment.
      * @param path Video path.
      */
-    explicit SimpleVideoPlayer(const String &path);
+    explicit SimpleVideoPlayer(const std::string &path);
 
     ~SimpleVideoPlayer();
 
@@ -43,7 +40,7 @@ public:
      * Read a new frame.
      * @return New frame.
      */
-    Mat getFrame();
+    cv::Mat getFrame();
 
     /**
      * Read "pos"-th frame of the video.
@@ -51,13 +48,13 @@ public:
      * @warning THIS FUNCTION WILL BROKE THE TRACK BAR! Use getFrame() instead.
      * @return
      */
-    Mat getFrame(int pos);
+    cv::Mat getFrame(int pos);
 
     /**
      * Show a frame.
      * @param frame The frame.
      */
-    void update(Mat &frame);
+    void update(cv::Mat &frame);
 
     /**
      * Set playback speed. Usually set to 0.1 for better observation.
@@ -74,9 +71,9 @@ public:
 
 private:
     int timing_idx = 0;
-    chrono::time_point<std::chrono::system_clock> timing_last{};
+    std::chrono::time_point<std::chrono::system_clock> timing_last{};
 
-    String fps_display;
+    std::string fps_display;
 
     void closeStream();
 

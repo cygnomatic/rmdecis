@@ -4,6 +4,8 @@
 
 #include "cv_utils.h"
 
+using namespace cv;
+
 void drawArmorCorners(cv::Mat &image, ArmorCorners2d &corners, const cv::Scalar &color, int thickness) {
     cv::line(image, corners[0], corners[1], color, thickness);
     cv::line(image, corners[1], corners[2], color, thickness);

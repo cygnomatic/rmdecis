@@ -19,7 +19,6 @@
 
 #include "armor.h"
 
-using namespace cv;
 using namespace spdlog;
 
 /**
@@ -125,15 +124,15 @@ struct Transform3d {
         this->tvec = std::move(tvec);
     }
 
-    std::vector<Point3f> applyTo(const std::vector<cv::Point3f> &pts) const {
-        Mat rot_mat;
-        std::vector<Point3f> ret;
+    std::vector<cv::Point3f> applyTo(const std::vector<cv::Point3f> &pts) const {
+        cv::Mat rot_mat;
+        std::vector<cv::Point3f> ret;
         Rodrigues(rvec, rot_mat);
 
         cv::transform(pts, ret, rot_mat);
 
         for (auto &pt: pts) {
-            ret.push_back((Point3f) tvec + pt);
+            ret.push_back((cv::Point3f) tvec + pt);
         }
 
         return ret;

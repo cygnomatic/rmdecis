@@ -23,7 +23,7 @@ munkres::Matrix<float> hungarianMatching(munkres::Matrix<float> mat) {
     return mat;
 }
 
-void ::Tracker::update(const DetectArmorResult &detect_result) {
+void Tracker::update(const DetectArmorResult &detect_result) {
 
     const std::vector<DetectArmorInfo> &armor_detections = detect_result.armor_info;
     std::vector<DetectArmorInfo> unmatched_detections;
@@ -68,7 +68,7 @@ void ::Tracker::update(const DetectArmorResult &detect_result) {
 
 }
 
-void ::Tracker::associate(const std::vector<DetectArmorInfo> &armor_detections, float dt,
+void Tracker::associate(const std::vector<DetectArmorInfo> &armor_detections, float dt,
                           std::vector<DetectArmorInfo> &unmatched_detections,
                           std::map<int, DetectArmorInfo> &matched_track2det) {
 

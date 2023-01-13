@@ -7,9 +7,9 @@
 
 #include "../typing/general.h"
 
-float calculateIoU(const Rect2f &rect1, const Rect2f &rect2);
+float calculateIoU(const cv::Rect2f &rect1, const cv::Rect2f &rect2);
 
-void drawArmorCorners(cv::Mat &image, ArmorCorners2d &corners, const cv::Scalar &color = Scalar(255, 0, 0),
+void drawArmorCorners(cv::Mat &image, ArmorCorners2d &corners, const cv::Scalar &color = cv::Scalar(255, 0, 0),
                       int thickness = 2);
 
 #endif //CYGNOIDES_DECISION_CV_UTILS_H

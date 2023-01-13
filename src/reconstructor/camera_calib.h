@@ -17,16 +17,14 @@
 
 #include "../typing/general.h"
 
-using namespace cv;
-
 struct CameraCoeffs {
-    Mat cam_mat;
-    Mat dist_coeffs;
+    cv::Mat cam_mat;
+    cv::Mat dist_coeffs;
 };
 
 class CameraCalib {
     // CameraCoeffs cam_coeffs;
-    Mat cam_mat, dist_coeffs;
+    cv::Mat cam_mat, dist_coeffs;
 
 public:
     /**
@@ -46,15 +44,15 @@ public:
      * @param img original img input.
      * @return undistorted img.
      */
-    Mat undistort(const Mat &img);
+    cv::Mat undistort(const cv::Mat &img);
 
-    Transform3d solvePnP(const std::vector<Point3f> &obj_pts, const std::vector<Point2f> &img_pts);
+    Transform3d solvePnP(const std::vector<cv::Point3f> &obj_pts, const std::vector<cv::Point2f> &img_pts);
 
     Transform3d armorSolvePnP(const ArmorCorners3d &corners_model, const ArmorCorners2d &corners_img);
 
-    void drawAxes(Mat &img, const Transform3d &trans);
+    void drawAxes(cv::Mat &img, const Transform3d &trans);
 
-    std::vector<Point2f> projectToImage(const std::vector<Point3f> &space_pts, const Transform3d &trans = {});
+    std::vector<cv::Point2f> projectToImage(const std::vector<cv::Point3f> &space_pts, const Transform3d &trans = {});
 };
 
 

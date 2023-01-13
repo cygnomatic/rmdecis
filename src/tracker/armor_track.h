@@ -22,13 +22,13 @@ public:
 
     void correct(const DetectArmorInfo &armor, float dt);
 
-    Rect2f predict(float dt);
+    cv::Rect2f predict(float dt);
 
     float calcSimilarity(const DetectArmorInfo &armor, float dt);
 
 private:
 
-    KalmanFilter kf;
+    cv::KalmanFilter kf;
 
     std::array<int, NUM_ARMOR_ID> id_cnt{};
 

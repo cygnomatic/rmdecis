@@ -4,6 +4,7 @@
 
 #include "armor_track.h"
 
+using namespace cv;
 
 class KalmanFilterFactory {
 public:

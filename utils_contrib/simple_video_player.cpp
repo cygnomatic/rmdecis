@@ -1,12 +1,15 @@
 #include "simple_video_player.h"
 
+using namespace std;
+using namespace cv;
+
 void onTrackbarSlide(int position, void *userdata) {
     SimpleVideoPlayer *player = (SimpleVideoPlayer *) userdata;
     player->frame_position = (int) (position * player->cap.get(CAP_PROP_FRAME_COUNT) / 100.0);
     player->cap.set(CAP_PROP_POS_FRAMES, player->frame_position);
 }
 
-SimpleVideoPlayer::SimpleVideoPlayer(const String &path) {
+SimpleVideoPlayer::SimpleVideoPlayer(const string &path) {
     cap = VideoCapture(path);
     writer = VideoWriter();
 

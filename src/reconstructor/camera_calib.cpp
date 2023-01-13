@@ -4,6 +4,8 @@
 
 #include "camera_calib.h"
 
+using namespace cv;
+
 CameraCalib::CameraCalib(const CameraCoeffs &cam_coeffs) {
     cam_mat = cam_coeffs.cam_mat;
     dist_coeffs = cam_coeffs.dist_coeffs;
