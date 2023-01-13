@@ -9,6 +9,8 @@
 
 #include <fmt/format.h>
 
+using namespace cv;
+
 int main() {
     SimulateVisionOutput vision_output("../../data/vision_out/vision_result.yaml");
     SimpleVideoPlayer player("../../data/vision_out/video_input.avi");

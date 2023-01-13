@@ -10,6 +10,7 @@
 #include "../utils_contrib/simulate_vision_result.h"
 #include "../src/tracker/armor_track.h"
 
+using namespace cv;
 
 int main() {
     SimulateVisionOutput vision_output("../../data/vision_out/vision_result.yaml");

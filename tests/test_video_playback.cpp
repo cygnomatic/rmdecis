@@ -6,6 +6,8 @@
 #include "../utils_contrib/simulate_vision_result.h"
 #include "../src/utils/cv_utils.h"
 
+using namespace cv;
+
 int main() {
     SimulateVisionOutput vision_output("../../data/vision_out/vision_result.yaml");
     SimpleVideoPlayer player("../../data/vision_out/video_input.avi");
