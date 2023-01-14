@@ -19,7 +19,7 @@ public:
         STATE_D_AREA = 7
     };
 
-    static Mat getTransitionMatrix(float dt) {
+    static inline Mat getTransitionMatrix(float dt) {
         Mat transitionMatrix = (Mat_<float>(8, 8)
                 <<
                 1, 0, 0, 0, dt, 0, 0, 0,
@@ -34,12 +34,12 @@ public:
         return transitionMatrix;
     }
 
-    static Mat getMeasurementMat() {
+    static inline Mat getMeasurementMat() {
         // State Matrix: [u, v, ratio, area, v_u, v_v, v_ration, v_area]
         return Mat::eye(4, 8, CV_32F);
     }
 
-    static Mat getProcessNoiseCov(float dt) {
+    static inline Mat getProcessNoiseCov(float dt) {
         float SD = 2, SR = 2, SH = 2; // ProcessNoise
         Mat processNoiseCov = (Mat_<float>(8, 8)
                 <<
@@ -55,7 +55,7 @@ public:
         return processNoiseCov;
     }
 
-    static Mat getMeasurementNoiseCov(float dt) {
+    static inline Mat getMeasurementNoiseCov(float dt) {
         float SDM = 1, SRM = 2, SHM = 2; // MeasurementNoise
         Mat measurementNoiseCov = (Mat_<float>(4, 4)
                 <<
@@ -67,7 +67,7 @@ public:
         return measurementNoiseCov;
     }
 
-    static Mat cvtCorners2MeasurementMat(const ArmorCorners2d &corners) {
+    static inline Mat cvtCorners2MeasurementMat(const ArmorCorners2d &corners) {
         Rect2f bounding_box = (Rect2f) corners;
 
         float u = bounding_box.x, v = bounding_box.y;
@@ -77,7 +77,7 @@ public:
         return (Mat_<float>(4, 1) << u, v, ratio, area);
     };
 
-    static Rect2f cvtStateMat2Rect(const Mat &state) {
+    static inline Rect2f cvtStateMat2Rect(const Mat &state) {
         auto pred_uv = Point2f{state.at<float>(STATE_U), state.at<float>(STATE_V)};
 
         // width^2 = (width * height) * (width / height) = area * ratio
@@ -87,7 +87,7 @@ public:
         return {pred_uv, Size2f{width, height}};
     };
 
-    static Mat getInitState(const ArmorCorners2d &corners) {
+    static inline Mat getInitState(const ArmorCorners2d &corners) {
         Rect2f bounding_box = (Rect2f) corners;
 
         float u = bounding_box.x, v = bounding_box.y;
@@ -97,18 +97,23 @@ public:
         return (Mat_<float>(8, 1) << u, v, ratio, area, 0, 0, 0, 0);
     }
 
-    static Mat getInitError() {
+    static inline Mat getInitError() {
         return (Mat_<float>(8, 8) <<
-              100, 0, 0, 0, 0, 0, 0, 0,
-                0, 100, 0, 0, 0, 0, 0, 0,
-                0, 0, 100, 0, 0, 0, 0, 0,
-                0, 0, 0, 100, 0, 0, 0, 0,
+              10, 0, 0, 0, 0, 0, 0, 0,
+                0, 10, 0, 0, 0, 0, 0, 0,
+                0, 0, 10, 0, 0, 0, 0, 0,
+                0, 0, 0, 10, 0, 0, 0, 0,
                 0, 0, 0, 0, 10000, 0, 0, 0,
                 0, 0, 0, 0, 0, 10000, 0, 0,
                 0, 0, 0, 0, 0, 0, 10000, 0,
                 0, 0, 0, 0, 0, 0, 0, 10000);
     }
 
+    static void updateKalmanFilterMats(KalmanFilter kf, float dt) {
+        kf.transitionMatrix = KalmanFilterFactory::getTransitionMatrix(dt);
+        kf.processNoiseCov = KalmanFilterFactory::getProcessNoiseCov(dt);
+        kf.measurementNoiseCov = KalmanFilterFactory::getMeasurementNoiseCov(dt);
+    }
 };
 
 ArmorTrack::ArmorTrack(int tracking_id, const DetectArmorInfo &armor) {
@@ -126,28 +131,24 @@ void ArmorTrack::init(const DetectArmorInfo &armor) {
 
     // Init mats
     kf.measurementMatrix = KalmanFilterFactory::getMeasurementMat();
-    updateKalmanFilterMats(0.1);
+    KalmanFilterFactory::updateKalmanFilterMats(kf, 0.1);
 }
-
-void ArmorTrack::updateKalmanFilterMats(float dt) {
-    kf.transitionMatrix = KalmanFilterFactory::getTransitionMatrix(dt);
-    kf.processNoiseCov = KalmanFilterFactory::getProcessNoiseCov(dt);
-    kf.measurementNoiseCov = KalmanFilterFactory::getMeasurementNoiseCov(dt);
-}
-
 
 void ArmorTrack::correct(const DetectArmorInfo &armor, float dt) {
-    updateKalmanFilterMats(dt);
+
+    KalmanFilterFactory::updateKalmanFilterMats(kf, dt);
 
     kf.predict(); // post(t-1, t-1) -> pre (t-1, t)
     kf.correct(KalmanFilterFactory::cvtCorners2MeasurementMat(armor.corners_img)); // pre(t-1, t) -> post(t, t)
 
     id_cnt[armor.armor_type]++;
+
 }
 
 Rect2f ArmorTrack::predict(float dt) {
-    updateKalmanFilterMats(dt);
-    return KalmanFilterFactory::cvtStateMat2Rect(kf.predict());
+    KalmanFilter tmp_kf{kf};
+    KalmanFilterFactory::updateKalmanFilterMats(tmp_kf, dt);
+    return KalmanFilterFactory::cvtStateMat2Rect(tmp_kf.predict());
 }
 
 float ArmorTrack::calcSimilarity(const DetectArmorInfo &armor, float dt) {

@@ -21,7 +21,7 @@ int main() {
     SimpleVideoPlayer player("../../data/vision_out/video_input.avi");
     player.setPlaybackSpeed(1);
 
-    Tracker tracker{0.55, 1, 2};
+    Tracker tracker{0.55, 3, 2};
 
     for (int i = 0;; i++) {
         Mat frame = player.getFrame();
@@ -32,7 +32,7 @@ int main() {
         tracker.update(pred_result);
 
         for (auto &t: pred_result.armor_info) {
-            rectangle(frame, t.corners_img.getBoundingBox(), {255, 0, 0}, 2);
+            rectangle(frame, t.corners_img.getBoundingBox(), {255, 255, 0}, 2);
         }
 
         for (auto &p: tracker.getTracks()) {

@@ -24,20 +24,9 @@ int main() {
 
         auto pred_result = vision_output.getData(player.frame_position);
         for (auto p: pred_result.armor_info) {
-            // auto trans_model2cam = camera_calib.armorSolvePnP(ArmorCorners3d(SMALL_ARMOR), pred_result.corners_img_coord);
-            //
-            // String rot = fmt::format("Rvec [x: {:.2f}, y: {:.2f}, z: {:.2f}]", trans_model2cam.rvec.at<double>(0), trans_model2cam.rvec.at<double>(1), trans_model2cam.rvec.at<double>(2));
-            // putText(frame, rot, {50, 200}, FONT_HERSHEY_SIMPLEX, 2, {255, 255, 255}, 3);
-            //
-            // auto reprojected_corners =  (ArmorCorners2d) camera_calib.projectToImage(std::vector<Point3f>(ArmorCorners3d(SMALL_ARMOR)), trans_model2cam);
-            //
-            // drawArmorCorners(frame, pred_result.corners_img_coord, {0, 0, 255});
-            // drawArmorCorners(frame, reprojected_corners, {255, 0, 0});
-            // camera_calib.drawAxes(frame, trans_model2cam);
-            // break;
 
             drawArmorCorners(frame, p.corners_img, {0, 0, 255});
-            rectangle(frame, p.corners_img.getBoundingBox(), {255, 0, 0}, 2);
+            rectangle(frame, p.corners_img.getBoundingBox(), {255, 255, 255}, 20);
 
             armor_track.correct(p, i - last_corr_t);
 
@@ -48,6 +37,22 @@ int main() {
 
         auto result_rect = armor_track.predict(i - last_corr_t);
         rectangle(frame, result_rect, {255, 0, 255}, 4);
+
+        result_rect = armor_track.predict(i - last_corr_t + 500);
+        rectangle(frame, result_rect, {255, 0, 255}, 4);
+
+        result_rect = armor_track.predict(i - last_corr_t + 1000);
+        rectangle(frame, result_rect, {255, 0, 255}, 4);
+
+        // result_rect = armor_track.predict(i - last_corr_t);
+        // rectangle(frame, result_rect, {255, 0, 255}, 4);
+        //
+        // result_rect = armor_track.predict(i - last_corr_t);
+        // rectangle(frame, result_rect, {255, 0, 255}, 4);
+        //
+        // result_rect = armor_track.predict(i - last_corr_t);
+        // rectangle(frame, result_rect, {255, 0, 255}, 4);
+
 
         player.update(frame);
     }
