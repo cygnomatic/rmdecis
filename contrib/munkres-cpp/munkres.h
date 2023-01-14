@@ -17,8 +17,8 @@
  *   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
  */
 
-#if !defined(_MUNKRES_H_)
-#define _MUNKRES_H_
+#ifndef MUNKRES_H
+#define MUNKRES_H
 
 #include "matrix.h"
 
@@ -455,4 +455,4 @@ namespace munkres {
 
 }
 
-#endif /* !defined(_MUNKRES_H_) */
+#endif /* !defined(MUNKRES_H) */

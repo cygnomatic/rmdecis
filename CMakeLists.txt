@@ -1,7 +1,8 @@
 cmake_minimum_required(VERSION 3.9)
-project(Cygnoides_Decision VERSION 0.1.0 DESCRIPTION "BUPT-RM-Cygnoides decision part.")
+project(Cygnoides_Decision)
 
 set(CMAKE_CXX_STANDARD 14)
+#set(CMAKE_VERBOSE_MAKEFILE ON)
 
 if (EXISTS ${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
     include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
@@ -11,40 +12,34 @@ else ()
 endif ()
 
 find_package(OpenCV REQUIRED)
-find_package(Eigen3 REQUIRED NO_MODULE)
 
 include_directories(${OpenCV_INCLUDE_DIRS})
+include_directories(${PROJECT_SOURCE_DIR}/contrib)
 
-#file(GLOB_RECURSE Main_Lib CONFIGURE_DEPENDS "src/compensator/*.h" "src/compensator/*.cpp" "src/reconstructor/*.h" "src/reconstructor/*.cpp" "src/tracker/*.h" "src/tracker/*.cpp" "src/typing/*.h" "src/typing/*.cpp" "src/utils/*.h" "src/utils/*.cpp")
-file(GLOB_RECURSE Main_Lib CONFIGURE_DEPENDS LIST_DIRECTORIES true "src/*.h" "src/*.cpp")
-file(GLOB_RECURSE Utils_Contrib CONFIGURE_DEPENDS "utils_contrib/*.h" "utils_contrib/*.cpp")
+file(GLOB_RECURSE MAIN_LIBS CONFIGURE_DEPENDS "src/*.h" "src/*.cpp")
+file(GLOB_RECURSE UTILS_CONTRIB CONFIGURE_DEPENDS "utils_contrib/*.h" "utils_contrib/*.cpp")
 
-add_library(Cygnoides_Decision src/reconstructor/camera_calib.cpp src/reconstructor/camera_calib.h src/utils/equation_solver.cpp src/utils/equation_solver.h src/compensator/ballistic_compensator.cpp src/compensator/ballistic_compensator.h src/tracker/armor_track.cpp src/tracker/armor_track.h src/tracker/tracker.cpp src/tracker/tracker.h src/typing/general.h interface.h test_interface.h src/typing/armor.h src/utils/cv_utils.h src/reconstructor/transformer.cpp src/contrib/munkres-cpp/matrix.cpp src/contrib/munkres-cpp/munkres.cpp src/utils/cv_utils.cpp)
-link_directories(${OpenCV_LIBRARY_DIRS})
-target_link_libraries(Cygnoides_Decision ${OpenCV_LIBS} Eigen3::Eigen)
+message("-- ProjectSourceDir: ${PROJECT_SOURCE_DIR}")
+message("-- GLOB: \${MAIN_LIBS}: ${MAIN_LIBS}")
+message("-- GLOB: \${UTILS_CONTRIB}: ${UTILS_CONTRIB}")
 
-add_executable(util_calibrate_camera tests/calibrate_camera.cpp)
-link_directories(${OpenCV_LIBRARY_DIRS})
-target_link_libraries(util_calibrate_camera ${OpenCV_LIBS})
+add_library(Cygnoides_Decision ${MAIN_LIBS})
+target_link_libraries(Cygnoides_Decision ${OpenCV_LIBS})
 
-add_executable(test_equation_solver tests/test_equation_solver.cpp src/utils/equation_solver.cpp src/utils/equation_solver.h)
+add_executable(tool_calibrate_camera tests/calibrate_camera.cpp)
+target_link_libraries(tool_calibrate_camera ${OpenCV_LIBS} ${CONAN_LIBS})
 
-add_executable(test_video_playback utils_contrib/simple_video_player.cpp utils_contrib/simple_video_player.h tests/test_video_playback.cpp utils_contrib/simulate_vision_result.h utils_contrib/simulate_vision_result.cpp src/utils/cv_utils.cpp)
-link_directories(${OpenCV_LIBRARY_DIRS})
+add_executable(test_video_playback ${UTILS_CONTRIB} ${MAIN_LIBS} tests/test_video_playback.cpp)
 target_link_libraries(test_video_playback ${OpenCV_LIBS} ${CONAN_LIBS})
 
-add_executable(test_reconstructor ${Main_lib} ${Utils_Contrib} tests/test_reconstructor.cpp src/reconstructor/camera_calib.cpp src/utils/cv_utils.cpp)
-link_directories(${OpenCV_LIBRARY_DIRS})
+add_executable(test_reconstructor ${UTILS_CONTRIB} ${MAIN_LIBS} tests/test_reconstructor.cpp)
 target_link_libraries(test_reconstructor ${OpenCV_LIBS} ${CONAN_LIBS})
 
-add_executable(test_armor_track ${Main_lib} ${Utils_Contrib} tests/test_armor_track.cpp src/tracker/armor_track.cpp src/utils/cv_utils.cpp)
-link_directories(${OpenCV_LIBRARY_DIRS})
+add_executable(test_armor_track ${MAIN_LIBS} ${UTILS_CONTRIB} tests/test_armor_track.cpp)
 target_link_libraries(test_armor_track ${OpenCV_LIBS} ${CONAN_LIBS})
 
-add_executable(test_tracker ${Main_lib} ${Utils_Contrib} tests/test_tracker.cpp src/tracker/armor_track.cpp src/utils/cv_utils.cpp src/tracker/tracker.cpp)
-link_directories(${OpenCV_LIBRARY_DIRS})
-target_link_libraries(test_tracker ${OpenCV_LIBS} ${CONAN_LIBS})
+add_executable(test_tracker ${UTILS_CONTRIB} )
+target_link_libraries(test_tracker ${OpenCV_LIBS} ${CONAN_LIBS} tests/test_tracker.cpp)
 
-add_executable(test_detection ${Main_lib} ${Utils_Contrib} src/utils/cv_utils.cpp tests/test_detection.cpp src/contrib/detection/get_zhuangjiaban.h)
-link_directories(${OpenCV_LIBRARY_DIRS})
+add_executable(test_detection ${MAIN_LIBS} ${UTILS_CONTRIB} tests/test_detection.cpp)
 target_link_libraries(test_detection ${OpenCV_LIBS} ${CONAN_LIBS})

@@ -16,8 +16,8 @@
  *   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
  */
 
-#ifndef _MATRIX_H_
-#define _MATRIX_H_
+#ifndef MATRIX_H
+#define MATRIX_H
 
 #include <initializer_list>
 #include <cstdlib>
@@ -77,12 +77,13 @@ namespace munkres {
         size_t m_columns;
     };
 
-// #ifndef USE_EXPORT_KEYWORD
-//
-// #include "matrix.cpp"
-// //#define export /*export*/
-// #endif
-
 }
 
-#endif /* !defined(_MATRIX_H_) */
+#ifndef USE_EXPORT_KEYWORD
+
+#include "matrix.cpp"
+//#define export /*export*/
+#endif
+
+
+#endif /* !defined(MATRIX_H) */

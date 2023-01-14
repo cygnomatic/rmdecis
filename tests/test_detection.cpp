@@ -3,9 +3,11 @@
 //
 
 #include "../utils_contrib/simple_video_player.h"
-#include "../src/contrib/detection/get_zhuangjiaban.h"
+#include "detection/get_zhuangjiaban.h"
 #include "../src/utils/cv_utils.h"
 #include <yaml-cpp/yaml.h>
+
+using namespace cv;
 
 void emitYaml(YAML::Emitter &out, const vector<ArmorPredResult> &pred_results, int seq) {
     out << YAML::BeginDoc;

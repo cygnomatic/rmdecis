@@ -4,6 +4,8 @@
 
 #include "simulate_vision_result.h"
 
+using namespace cv;
+
 SimulateVisionOutput::SimulateVisionOutput(const std::string &data_path) {
 
     info("Start to load data from {} ...", data_path);

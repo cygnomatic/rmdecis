@@ -9,7 +9,7 @@
 
 #include "../typing/general.h"
 #include "../reconstructor/camera_calib.h"
-#include "../contrib/munkres-cpp/munkres.h"
+#include "munkres-cpp/munkres.h"
 #include "armor_track.h"
 
 class Tracker {
