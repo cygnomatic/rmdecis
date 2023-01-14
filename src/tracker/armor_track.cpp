@@ -40,7 +40,7 @@ public:
     }
 
     static Mat getProcessNoiseCov(float dt) {
-        float SD = 10, SR = 10, SH = 10; // ProcessNoise
+        float SD = 1, SR = 0.01, SH = 0.001; // ProcessNoise
         Mat processNoiseCov = (Mat_<float>(8, 8)
                 <<
                 SD * dt * dt, 0, 0, 0, SD * dt, 0, 0, 0,
@@ -56,7 +56,7 @@ public:
     }
 
     static Mat getMeasurementNoiseCov(float dt) {
-        float SDM = 50, SRM = 100, SHM = 100; // MeasurementNoise
+        float SDM = 1, SRM = 10, SHM = 10; // MeasurementNoise
         Mat measurementNoiseCov = (Mat_<float>(4, 4)
                 <<
                 SDM, 0, 0, 0,
@@ -99,14 +99,14 @@ public:
 
     static Mat getInitError() {
         return (Mat_<float>(8, 8) <<
-                                  10, 0, 0, 0, 0, 0, 0, 0,
-                0, 10, 0, 0, 0, 0, 0, 0,
-                0, 0, 10, 0, 0, 0, 0, 0,
-                0, 0, 0, 10, 0, 0, 0, 0,
-                0, 0, 0, 0, 100, 0, 0, 0,
-                0, 0, 0, 0, 0, 100, 0, 0,
-                0, 0, 0, 0, 0, 0, 100, 0,
-                0, 0, 0, 0, 0, 0, 0, 100);
+              100, 0, 0, 0, 0, 0, 0, 0,
+                0, 100, 0, 0, 0, 0, 0, 0,
+                0, 0, 100, 0, 0, 0, 0, 0,
+                0, 0, 0, 100, 0, 0, 0, 0,
+                0, 0, 0, 0, 10000, 0, 0, 0,
+                0, 0, 0, 0, 0, 10000, 0, 0,
+                0, 0, 0, 0, 0, 0, 10000, 0,
+                0, 0, 0, 0, 0, 0, 0, 10000);
     }
 
 };

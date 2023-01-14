@@ -12,13 +12,13 @@
 munkres::Matrix<float> hungarianMatching(munkres::Matrix<float> mat) {
 
     // Debug
-    std::cout << mat << std::endl;
+    // std::cout << mat << std::endl;
 
     munkres::Munkres<float> m;
     m.solve(mat);
 
     // Debug
-    std::cout << mat << std::endl;
+    // std::cout << mat << std::endl;
 
     return mat;
 }
@@ -33,10 +33,11 @@ void Tracker::update(const DetectArmorResult &detect_result) {
     last_update_time_ = detect_result.time;
 
     if (detect_result.armor_info.empty()) {
-        warn("Received empty detection. Skip.");
+        // warn("Received empty detection. Skip.");
     } else {
         if (armor_tracks_.empty()) {
-            unmatched_detections = detect_result.armor_info;
+            debug("No tracking armors.");
+            unmatched_detections = {detect_result.armor_info[0]};
         } else {
             associate(armor_detections, dt, unmatched_detections, matched_track2det);
         }
@@ -64,6 +65,7 @@ void Tracker::update(const DetectArmorResult &detect_result) {
         // That will cause problem when erase and make the program freeze.
 
         if (it->second.missing_cnt > k_max_missing_cnt) {
+            debug("Armor tracker {} dead. Erased.", it->second.tracking_id);
             it = armor_tracks_.erase(it);
         } else {
             it->second.missing_cnt++;
@@ -112,6 +114,14 @@ void Tracker::associate(const std::vector<DetectArmorInfo> &armor_detections, fl
     }
 }
 
-std::map<int, ArmorTrack> (::Tracker::getAllTracks)() {
-    return armor_tracks_;
-};
+std::map<int, ArmorTrack> Tracker::getTracks(bool include_probationary) {
+    if (include_probationary)
+        return armor_tracks_;
+
+    std::map<int, ArmorTrack> tracks;
+    for (auto &p: armor_tracks_) {
+        if (p.second.hit_cnt > k_min_hit_cnt)
+            tracks.insert(p);
+    }
+    return tracks;
+}

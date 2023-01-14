@@ -14,9 +14,15 @@
 
 class Tracker {
 public:
-    float k_similarity_threshold = 0.3;
-    int k_max_missing_cnt = 3;
-    int k_min_hit_cnt = 3;
+    float k_similarity_threshold = 0.7;
+    int k_max_missing_cnt = 2;
+    int k_min_hit_cnt = 4;
+
+    // Tracker() = default;
+
+    explicit Tracker(float k_similarity_threshold = 0.7, int k_max_missing_cnt = 2, int k_min_hit_cnt = 4) :
+            k_similarity_threshold(k_similarity_threshold), k_max_missing_cnt(k_max_missing_cnt),
+            k_min_hit_cnt(k_min_hit_cnt) {}
 
     void update(const DetectArmorResult &detect_result);
 
@@ -24,7 +30,7 @@ public:
                    std::vector<DetectArmorInfo> &unmatched_detections,
                    std::map<int, DetectArmorInfo> &matched_track2det);
 
-    std::map<int, ArmorTrack> getAllTracks();
+    std::map<int, ArmorTrack> getTracks(bool include_probationary = false);
 
 private:
     std::map<int, ArmorTrack> armor_tracks_;
