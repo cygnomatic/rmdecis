@@ -38,8 +38,8 @@ target_link_libraries(test_reconstructor ${OpenCV_LIBS} ${CONAN_LIBS})
 add_executable(test_armor_track ${MAIN_LIBS} ${UTILS_CONTRIB} tests/test_armor_track.cpp)
 target_link_libraries(test_armor_track ${OpenCV_LIBS} ${CONAN_LIBS})
 
-add_executable(test_tracker ${UTILS_CONTRIB} )
-target_link_libraries(test_tracker ${OpenCV_LIBS} ${CONAN_LIBS} tests/test_tracker.cpp)
+add_executable(test_tracker ${MAIN_LIBS} ${UTILS_CONTRIB} tests/test_tracker.cpp)
+target_link_libraries(test_tracker ${OpenCV_LIBS} ${CONAN_LIBS})
 
 add_executable(test_detection ${MAIN_LIBS} ${UTILS_CONTRIB} tests/test_detection.cpp)
 target_link_libraries(test_detection ${OpenCV_LIBS} ${CONAN_LIBS})

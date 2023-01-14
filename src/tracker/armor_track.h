@@ -16,6 +16,8 @@ public:
     int tracking_id = -1;
     int missing_cnt = 0, hit_cnt = 0;
 
+    ArmorTrack() = default;
+
     explicit ArmorTrack(int tracking_id, const DetectArmorInfo &armor);
 
     void init(const DetectArmorInfo &armor);

@@ -17,5 +17,6 @@ float calculateIoU(const Rect2f &rect1, const Rect2f &rect2) {
     Rect2f intersect = rect1 & rect2;
     float intersectArea = intersect.area();
     float unionArea = rect1.area() + rect2.area() - intersectArea;
-    return intersectArea / unionArea;
+    float iou = intersectArea / unionArea;
+    return std::isnan(iou) ? 0.f : iou;
 }

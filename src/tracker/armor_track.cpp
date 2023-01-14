@@ -157,7 +157,10 @@ float ArmorTrack::calcSimilarity(const DetectArmorInfo &armor, float dt) {
     float iou = calculateIoU(pred_bounding_box, new_bounding_box);
     float id_similarity = calcIdSimilarity(armor.armor_type);
 
-    return iou * 0.7 + id_similarity * 0.3;
+    float ret = iou * 0.7 + id_similarity * 0.3;
+    assert(!isnanf(ret));
+
+    return ret;
 }
 
 float ArmorTrack::calcIdSimilarity(ArmorID id) {
