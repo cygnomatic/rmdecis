@@ -13,7 +13,7 @@ int main() {
     SimpleVideoPlayer player("../../data/vision_out/video_input.avi");
 
     ArmorTrack armor_track{0, DetectArmorInfo{}};
-    player.setPlaybackSpeed(0.1);
+    player.setPlaybackSpeed(1);
 
     int last_corr_t = 0;
 

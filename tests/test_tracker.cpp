@@ -19,9 +19,9 @@ int main() {
 
     SimulateVisionOutput vision_output("../../data/vision_out/vision_result.yaml");
     SimpleVideoPlayer player("../../data/vision_out/video_input.avi");
-    player.setPlaybackSpeed(0.1);
+    player.setPlaybackSpeed(1);
 
-    Tracker tracker;
+    Tracker tracker{0.55, 1, 2};
 
     for (int i = 0;; i++) {
         Mat frame = player.getFrame();
