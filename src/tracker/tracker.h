@@ -26,7 +26,7 @@ public:
 
     void update(const DetectArmorResult &detect_result);
 
-    void associate(const std::vector<DetectArmorInfo> &armor_detections, float dt,
+    void associate(const std::vector<DetectArmorInfo> &armor_detections, Time time,
                    std::vector<DetectArmorInfo> &unmatched_detections,
                    std::map<int, DetectArmorInfo> &matched_track2det);
 
@@ -34,7 +34,6 @@ public:
 
 private:
     std::map<int, ArmorTrack> armor_tracks_;
-    Time last_update_time_;
     int curr_id_ = 0;
 };
 

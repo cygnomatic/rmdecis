@@ -22,13 +22,15 @@ public:
 
     void init(const DetectArmorInfo &armor);
 
-    void correct(const DetectArmorInfo &armor, float dt);
+    void correct(const DetectArmorInfo &armor, Time time);
 
-    cv::Rect2f predict(float dt);
+    cv::Rect2f predict(Time time);
 
-    float calcSimilarity(const DetectArmorInfo &armor, float dt);
+    float calcSimilarity(const DetectArmorInfo &armor, Time time);
 
 private:
+
+    Time last_correct_time_;
 
     cv::KalmanFilter kf;
 

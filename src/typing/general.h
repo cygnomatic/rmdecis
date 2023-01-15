@@ -46,6 +46,15 @@ struct Time {
             return (sec - rhs.sec) + (usec - rhs.usec) * 1e-6f;
         return 0.f;
     }
+
+    /**
+     * Add sec to the time instance.
+     * @param rhs Time addition in second.
+     * @return
+     */
+    Time operator+(const float rhs) const {
+        return Time{sec + int(rhs), usec + int(rhs * 1e6)};
+    }
 };
 
 /**

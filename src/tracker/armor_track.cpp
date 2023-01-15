@@ -56,7 +56,7 @@ public:
     }
 
     static inline Mat getMeasurementNoiseCov(float dt) {
-        float SDM = 1, SRM = 2, SHM = 2; // MeasurementNoise
+        float SDM = 2, SRM = 1, SHM = 1; // MeasurementNoise
         Mat measurementNoiseCov = (Mat_<float>(4, 4)
                 <<
                 SDM, 0, 0, 0,
@@ -135,8 +135,9 @@ void ArmorTrack::updateKalmanFilterMats(float dt) {
 }
 
 
-void ArmorTrack::correct(const DetectArmorInfo &armor, float dt) {
-    updateKalmanFilterMats(dt);
+void ArmorTrack::correct(const DetectArmorInfo &armor, Time time) {
+    updateKalmanFilterMats(time - last_correct_time_);
+    last_correct_time_ = time;
 
     kf.predict(); // post(t-1, t-1) -> pre (t-1, t)
     kf.correct(KalmanFilterFactory::cvtCorners2MeasurementMat(armor.corners_img)); // pre(t-1, t) -> post(t, t)
@@ -144,8 +145,8 @@ void ArmorTrack::correct(const DetectArmorInfo &armor, float dt) {
     id_cnt[armor.armor_type]++;
 }
 
-Rect2f ArmorTrack::predict(float dt) {
-    updateKalmanFilterMats(dt);
+Rect2f ArmorTrack::predict(Time time) {
+    updateKalmanFilterMats(time - last_correct_time_);
     Rect2f ret;
 
     // We need to call predict several times, so we
@@ -161,14 +162,14 @@ Rect2f ArmorTrack::predict(float dt) {
     return ret;
 }
 
-float ArmorTrack::calcSimilarity(const DetectArmorInfo &armor, float dt) {
+float ArmorTrack::calcSimilarity(const DetectArmorInfo &armor, Time time) {
     auto new_bounding_box = (Rect2f) armor.corners_img;
-    auto pred_bounding_box = predict(dt);
+    auto pred_bounding_box = predict(time);
 
     float iou = calculateIoU(pred_bounding_box, new_bounding_box);
     float id_similarity = calcIdSimilarity(armor.armor_type);
 
-    float ret = iou * 0.7 + id_similarity * 0.3;
+    float ret = iou * 1.0 + id_similarity * 0.0;
     assert(!isnanf(ret));
 
     return ret;

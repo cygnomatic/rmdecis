@@ -29,9 +29,6 @@ void Tracker::update(const DetectArmorResult &detect_result) {
     std::vector<DetectArmorInfo> unmatched_detections;
     std::map<int, DetectArmorInfo> matched_track2det;
 
-    float dt = detect_result.time - last_update_time_;
-    last_update_time_ = detect_result.time;
-
     if (detect_result.armor_info.empty()) {
         // warn("Received empty detection. Skip.");
     } else {
@@ -39,14 +36,14 @@ void Tracker::update(const DetectArmorResult &detect_result) {
             debug("No tracking armors.");
             unmatched_detections = {detect_result.armor_info[0]};
         } else {
-            associate(armor_detections, dt, unmatched_detections, matched_track2det);
+            associate(armor_detections, detect_result.time, unmatched_detections, matched_track2det);
         }
     }
 
     // Update tracks with associated detections
     for (const auto &p: matched_track2det) {
         auto &trk = armor_tracks_[p.first];
-        trk.correct(p.second, dt);
+        trk.correct(p.second, detect_result.time);
         trk.hit_cnt++;
 
         // Set to minus one to cancel out the extra addition of `missing_cnt` in `Update tracks lifecycle`.
@@ -65,7 +62,9 @@ void Tracker::update(const DetectArmorResult &detect_result) {
         // That will cause problem when erase and make the program freeze.
 
         if (it->second.missing_cnt > k_max_missing_cnt) {
-            debug("Armor tracker {} dead. Erased.", it->second.tracking_id);
+            if (it->second.hit_cnt > k_min_hit_cnt) {
+                debug("Armor tracker {} dead. Erased.", it->second.tracking_id);
+            };
             it = armor_tracks_.erase(it);
         } else {
             it->second.missing_cnt++;
@@ -74,7 +73,7 @@ void Tracker::update(const DetectArmorResult &detect_result) {
     }
 }
 
-void Tracker::associate(const std::vector<DetectArmorInfo> &armor_detections, float dt,
+void Tracker::associate(const std::vector<DetectArmorInfo> &armor_detections, Time time,
                         std::vector<DetectArmorInfo> &unmatched_detections,
                         std::map<int, DetectArmorInfo> &matched_track2det) {
 
@@ -86,7 +85,7 @@ void Tracker::associate(const std::vector<DetectArmorInfo> &armor_detections, fl
         size_t j = 0;
         for (auto &track: armor_tracks_) {
             // Munkres originally aims to find the min cost. Multiply similarity by -1 to find max cost.
-            negative_similarity_mat(i, j) = -1.0f * track.second.calcSimilarity(armor_detections[i], dt);
+            negative_similarity_mat(i, j) = -1.0f * track.second.calcSimilarity(armor_detections[i], time);
             ++j;
         }
     }
