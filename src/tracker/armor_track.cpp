@@ -40,7 +40,7 @@ public:
     }
 
     static inline Mat getProcessNoiseCov(float dt) {
-        float SD = 2, SR = 2, SH = 2; // ProcessNoise
+        float SD = 1, SR = 1, SH = 1; // ProcessNoise
         Mat processNoiseCov = (Mat_<float>(8, 8)
                 <<
                 SD * dt * dt, 0, 0, 0, SD * dt, 0, 0, 0,
@@ -56,7 +56,7 @@ public:
     }
 
     static inline Mat getMeasurementNoiseCov(float dt) {
-        float SDM = 1, SRM = 2, SHM = 2; // MeasurementNoise
+        float SDM = 5, SRM = 5, SHM = 5; // MeasurementNoise
         Mat measurementNoiseCov = (Mat_<float>(4, 4)
                 <<
                 SDM, 0, 0, 0,
@@ -148,10 +148,15 @@ Rect2f ArmorTrack::predict(float dt) {
     updateKalmanFilterMats(dt);
     Rect2f ret;
 
-    // Prevent statePost being updated.
+    // We need to call predict several times, so we
+    // preserve original state to prevent them being updated multiple times.
     Mat oriStatePost = kf.statePost.clone();
+    Mat oriErrorCovPost = kf.errorCovPost.clone();
+
     ret = KalmanFilterFactory::cvtStateMat2Rect(kf.predict());
+
     kf.statePost = oriStatePost.clone();
+    kf.errorCovPost = oriErrorCovPost.clone();
 
     return ret;
 }
