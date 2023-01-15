@@ -146,7 +146,14 @@ void ArmorTrack::correct(const DetectArmorInfo &armor, float dt) {
 
 Rect2f ArmorTrack::predict(float dt) {
     updateKalmanFilterMats(dt);
-    return KalmanFilterFactory::cvtStateMat2Rect(kf.predict());
+    Rect2f ret;
+
+    // Prevent statePost being updated.
+    Mat oriStatePost = kf.statePost.clone();
+    ret = KalmanFilterFactory::cvtStateMat2Rect(kf.predict());
+    kf.statePost = oriStatePost.clone();
+
+    return ret;
 }
 
 float ArmorTrack::calcSimilarity(const DetectArmorInfo &armor, float dt) {
