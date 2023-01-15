@@ -56,7 +56,7 @@ public:
     }
 
     static inline Mat getMeasurementNoiseCov(float dt) {
-        float SDM = 2, SRM = 1, SHM = 1; // MeasurementNoise
+        float SDM = 100, SRM = 10, SHM = 10; // MeasurementNoise
         Mat measurementNoiseCov = (Mat_<float>(4, 4)
                 <<
                 SDM, 0, 0, 0,
@@ -74,6 +74,8 @@ public:
         float ratio = bounding_box.width / bounding_box.height;
         float area = bounding_box.area();
 
+        // debug("Observation: u={}, v={}, r={}, a={}", u, v, ratio, area);
+
         return (Mat_<float>(4, 1) << u, v, ratio, area);
     };
 
@@ -83,6 +85,9 @@ public:
         // width^2 = (width * height) * (width / height) = area * ratio
         float width = sqrt(state.at<float>(STATE_AREA) * state.at<float>(STATE_RATIO));
         float height = width / state.at<float>(STATE_RATIO);
+
+        debug("State velocity: {} {} {} {}", state.at<float>(STATE_D_U), state.at<float>(STATE_D_V),
+              state.at<float>(STATE_D_AREA), state.at<float>(STATE_D_RATIO));
 
         return {pred_uv, Size2f{width, height}};
     };
@@ -99,7 +104,7 @@ public:
 
     static inline Mat getInitError() {
         return (Mat_<float>(8, 8) <<
-              100, 0, 0, 0, 0, 0, 0, 0,
+                                  100, 0, 0, 0, 0, 0, 0, 0,
                 0, 100, 0, 0, 0, 0, 0, 0,
                 0, 0, 100, 0, 0, 0, 0, 0,
                 0, 0, 0, 100, 0, 0, 0, 0,

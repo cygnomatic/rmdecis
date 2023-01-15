@@ -36,14 +36,14 @@ int main() {
         }
 
         for (auto &p: tracker.getTracks()) {
-            auto bbox = p.second.predict(pred_result.time);
-            rectangle(frame, bbox, {0, 255, 255}, 5);
-
-            bbox = p.second.predict(pred_result.time + 5);
+            // auto bbox = p.second.predict(pred_result.time + 10);
+            // rectangle(frame, bbox, {0, 50, 50}, 5);
+            //
+            auto bbox = p.second.predict(pred_result.time + 5);
             rectangle(frame, bbox, {0, 150, 150}, 5);
 
-            bbox = p.second.predict(pred_result.time + 10);
-            rectangle(frame, bbox, {0, 50, 50}, 5);
+            bbox = p.second.predict(pred_result.time);
+            rectangle(frame, bbox, {0, 255, 255}, 5);
         }
 
         player.update(frame);
