@@ -38,18 +38,44 @@ int main() {
         auto result_rect = armor_track.predict(i - last_corr_t);
         rectangle(frame, result_rect, {255, 0, 255}, 4);
 
-        result_rect = armor_track.predict(i - last_corr_t + 500);
+        result_rect = armor_track.predict(i - last_corr_t + 5);
         rectangle(frame, result_rect, {255, 0, 255}, 4);
 
-        result_rect = armor_track.predict(i - last_corr_t + 1000);
+        result_rect = armor_track.predict(i - last_corr_t + 10);
         rectangle(frame, result_rect, {255, 0, 255}, 4);
-
+        //
+        // result_rect = armor_track.predict(i - last_corr_t);
+        // rectangle(frame, result_rect, {255, 0, 255}, 4);
+        //
         // result_rect = armor_track.predict(i - last_corr_t);
         // rectangle(frame, result_rect, {255, 0, 255}, 4);
         //
         // result_rect = armor_track.predict(i - last_corr_t);
         // rectangle(frame, result_rect, {255, 0, 255}, 4);
         //
+        // result_rect = armor_track.predict(i - last_corr_t);
+        // rectangle(frame, result_rect, {255, 0, 255}, 4);
+        //
+        // result_rect = armor_track.predict(i - last_corr_t);
+        // rectangle(frame, result_rect, {255, 0, 255}, 4);
+        // result_rect = armor_track.predict(i - last_corr_t);
+        // rectangle(frame, result_rect, {255, 0, 255}, 4);
+        // result_rect = armor_track.predict(i - last_corr_t);
+        // rectangle(frame, result_rect, {255, 0, 255}, 4);
+        // result_rect = armor_track.predict(i - last_corr_t);
+        // rectangle(frame, result_rect, {255, 0, 255}, 4);
+        // result_rect = armor_track.predict(i - last_corr_t);
+        // rectangle(frame, result_rect, {255, 0, 255}, 4);
+        // result_rect = armor_track.predict(i - last_corr_t);
+        // rectangle(frame, result_rect, {255, 0, 255}, 4);
+        // result_rect = armor_track.predict(i - last_corr_t);
+        // rectangle(frame, result_rect, {255, 0, 255}, 4);
+        // result_rect = armor_track.predict(i - last_corr_t);
+        // rectangle(frame, result_rect, {255, 0, 255}, 4);
+        // result_rect = armor_track.predict(i - last_corr_t);
+        // rectangle(frame, result_rect, {255, 0, 255}, 4);
+        // result_rect = armor_track.predict(i - last_corr_t);
+        // rectangle(frame, result_rect, {255, 0, 255}, 4);
         // result_rect = armor_track.predict(i - last_corr_t);
         // rectangle(frame, result_rect, {255, 0, 255}, 4);
 

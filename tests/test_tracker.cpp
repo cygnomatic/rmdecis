@@ -37,7 +37,13 @@ int main() {
 
         for (auto &p: tracker.getTracks()) {
             auto bbox = p.second.predict(0);
-            rectangle(frame, bbox, {0, 255, 255}, 2);
+            rectangle(frame, bbox, {0, 255, 255}, 5);
+
+            bbox = p.second.predict(5);
+            rectangle(frame, bbox, {0, 150, 150}, 5);
+
+            bbox = p.second.predict(10);
+            rectangle(frame, bbox, {0, 50, 50}, 5);
         }
 
         player.update(frame);
