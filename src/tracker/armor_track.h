@@ -35,6 +35,8 @@ private:
     std::array<int, NUM_ARMOR_ID> id_cnt{};
 
     float calcIdSimilarity(ArmorID id);
+
+    void updateKalmanFilterMats(float dt);
 };
 
 

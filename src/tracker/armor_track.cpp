@@ -99,20 +99,14 @@ public:
 
     static inline Mat getInitError() {
         return (Mat_<float>(8, 8) <<
-              10, 0, 0, 0, 0, 0, 0, 0,
-                0, 10, 0, 0, 0, 0, 0, 0,
-                0, 0, 10, 0, 0, 0, 0, 0,
-                0, 0, 0, 10, 0, 0, 0, 0,
+              100, 0, 0, 0, 0, 0, 0, 0,
+                0, 100, 0, 0, 0, 0, 0, 0,
+                0, 0, 100, 0, 0, 0, 0, 0,
+                0, 0, 0, 100, 0, 0, 0, 0,
                 0, 0, 0, 0, 10000, 0, 0, 0,
                 0, 0, 0, 0, 0, 10000, 0, 0,
                 0, 0, 0, 0, 0, 0, 10000, 0,
                 0, 0, 0, 0, 0, 0, 0, 10000);
-    }
-
-    static void updateKalmanFilterMats(KalmanFilter kf, float dt) {
-        kf.transitionMatrix = KalmanFilterFactory::getTransitionMatrix(dt);
-        kf.processNoiseCov = KalmanFilterFactory::getProcessNoiseCov(dt);
-        kf.measurementNoiseCov = KalmanFilterFactory::getMeasurementNoiseCov(dt);
     }
 };
 
@@ -131,24 +125,28 @@ void ArmorTrack::init(const DetectArmorInfo &armor) {
 
     // Init mats
     kf.measurementMatrix = KalmanFilterFactory::getMeasurementMat();
-    KalmanFilterFactory::updateKalmanFilterMats(kf, 0.1);
+    updateKalmanFilterMats(0.1);
 }
 
-void ArmorTrack::correct(const DetectArmorInfo &armor, float dt) {
+void ArmorTrack::updateKalmanFilterMats(float dt) {
+    kf.transitionMatrix = KalmanFilterFactory::getTransitionMatrix(dt);
+    kf.processNoiseCov = KalmanFilterFactory::getProcessNoiseCov(dt);
+    kf.measurementNoiseCov = KalmanFilterFactory::getMeasurementNoiseCov(dt);
+}
 
-    KalmanFilterFactory::updateKalmanFilterMats(kf, dt);
+
+void ArmorTrack::correct(const DetectArmorInfo &armor, float dt) {
+    updateKalmanFilterMats(dt);
 
     kf.predict(); // post(t-1, t-1) -> pre (t-1, t)
     kf.correct(KalmanFilterFactory::cvtCorners2MeasurementMat(armor.corners_img)); // pre(t-1, t) -> post(t, t)
 
     id_cnt[armor.armor_type]++;
-
 }
 
 Rect2f ArmorTrack::predict(float dt) {
-    KalmanFilter tmp_kf{kf};
-    KalmanFilterFactory::updateKalmanFilterMats(tmp_kf, dt);
-    return KalmanFilterFactory::cvtStateMat2Rect(tmp_kf.predict());
+    updateKalmanFilterMats(dt);
+    return KalmanFilterFactory::cvtStateMat2Rect(kf.predict());
 }
 
 float ArmorTrack::calcSimilarity(const DetectArmorInfo &armor, float dt) {
