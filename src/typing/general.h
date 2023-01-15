@@ -41,7 +41,7 @@ struct Time {
      * @param rhs
      * @return Time difference, in second. If not time is not defined, return 0.
      */
-    float operator-(const Time &rhs) const {
+    float inline operator-(const Time &rhs) const {
         if (isDefined && rhs.isDefined)
             return (sec - rhs.sec) + (usec - rhs.usec) * 1e-6f;
         return 0.f;
@@ -52,8 +52,8 @@ struct Time {
      * @param rhs Time addition in second.
      * @return
      */
-    Time operator+(const float rhs) const {
-        return Time{sec + int(rhs), usec + int(rhs * 1e6)};
+    Time inline operator+(const float rhs) const {
+        return Time{sec + int(rhs), usec + int((rhs - int(rhs)) * 1e6)};
     }
 };
 
