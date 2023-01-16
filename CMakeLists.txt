@@ -15,6 +15,8 @@ find_package(OpenCV REQUIRED)
 
 include_directories(${OpenCV_INCLUDE_DIRS})
 include_directories(${PROJECT_SOURCE_DIR}/contrib)
+include_directories(${PROJECT_SOURCE_DIR}/src)
+
 
 file(GLOB_RECURSE MAIN_LIBS CONFIGURE_DEPENDS "src/*.h" "src/*.cpp")
 file(GLOB_RECURSE UTILS_CONTRIB CONFIGURE_DEPENDS "utils_contrib/*.h" "utils_contrib/*.cpp")
