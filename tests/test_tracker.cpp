@@ -38,17 +38,16 @@ int main() {
 
         for (auto &p: tracker.getTracks()) {
 
-            // bbox = p.second.predict(pred_result.time + 5);
-            // rectangle(frame, bbox, {0, 150, 150}, 5);
-
-            // bbox = p.second.predict(pred_result.time + 10);
-            // rectangle(frame, bbox, {0, 50, 50}, 5);
-
             bbox = p.second.predict(pred_result.time);
             rectangle(frame, bbox, {0, 255, 255}, 5);
 
-            debug("i={}, bbox.x={}, bbox.y={}", i, bbox.x, bbox.y);
+            bbox = p.second.predict(pred_result.time + 5);
+            rectangle(frame, bbox, {0, 150, 150}, 5);
 
+            bbox = p.second.predict(pred_result.time + 10);
+            rectangle(frame, bbox, {0, 50, 50}, 5);
+
+            debug("i={}, bbox.x={}, bbox.y={}", i, bbox.x, bbox.y);
         }
 
         player.update(frame);
