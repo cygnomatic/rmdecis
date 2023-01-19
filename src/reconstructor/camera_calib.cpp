@@ -3,7 +3,6 @@
 //
 
 #include "camera_calib.h"
-#include "general.h"
 
 using namespace cv;
 

@@ -3,7 +3,6 @@
 //
 
 #include "armor_track.h"
-#include "general.h"
 
 using namespace cv;
 
@@ -89,7 +88,7 @@ public:
         return measurementNoiseCov;
     }
 
-    static inline Mat cvtDetection2MeasurementMat(const ReconstructArmorInfo &detection) {
+    static inline Mat cvtDetection2MeasurementMat(const DetectArmorInfo &detection) {
         Rect2f bounding_box = (Rect2f) detection.corners_img;
         Point3f center = detection.center_gimbal;
 
@@ -119,7 +118,7 @@ public:
         return {Point3f{x, y, z}, Rect2f{pred_uv, Size2f{width, height}}};
     };
 
-    static inline Mat getInitState(const ReconstructArmorInfo &detection) {
+    static inline Mat getInitState(const DetectArmorInfo &detection) {
         Rect2f bounding_box = detection.corners_img.getBoundingBox();
         Point3f center = detection.center_gimbal;
 
@@ -153,12 +152,12 @@ public:
     }
 };
 
-ArmorTrack::ArmorTrack(int tracking_id, const ReconstructArmorInfo &detection) {
+ArmorTrack::ArmorTrack(int tracking_id, const DetectArmorInfo &detection) {
     this->tracking_id = tracking_id;
     init(detection);
 }
 
-void ArmorTrack::init(const ReconstructArmorInfo &detection) {
+void ArmorTrack::init(const DetectArmorInfo &detection) {
 
     kf = KalmanFilter(14, 7);
 
@@ -178,14 +177,14 @@ void ArmorTrack::updateKalmanFilterMats(float dt) {
 }
 
 
-void ArmorTrack::correct(const ReconstructArmorInfo &detection, Time time) {
+void ArmorTrack::correct(const DetectArmorInfo &detection, Time time) {
     updateKalmanFilterMats(time - last_correct_time_);
     last_correct_time_ = time;
 
     kf.predict(); // post(t-1, t-1) -> pre (t-1, t)
     kf.correct(KalmanFilterFactory::cvtDetection2MeasurementMat(detection)); // pre(t-1, t) -> post(t, t)
 
-    id_cnt[detection.armor_type]++;
+    id_cnt[detection.facility_id]++;
 }
 
 TrackArmorInfo ArmorTrack::predict(Time time) {
@@ -204,12 +203,12 @@ TrackArmorInfo ArmorTrack::predict(Time time) {
     return ret;
 }
 
-float ArmorTrack::calcSimilarity(const ReconstructArmorInfo &detection, Time time) {
+float ArmorTrack::calcSimilarity(const DetectArmorInfo &detection, Time time) {
     auto new_bounding_box = (Rect2f) detection.corners_img;
     auto pred_bounding_box = predict(time).bbox;
 
     float iou = calculateIoU(pred_bounding_box, new_bounding_box);
-    float id_similarity = calcIdSimilarity(detection.armor_type);
+    float id_similarity = calcIdSimilarity(detection.facility_id);
 
     float ret = iou * 1.0 + id_similarity * 0.0;
     assert(!isnanf(ret));
@@ -217,7 +216,7 @@ float ArmorTrack::calcSimilarity(const ReconstructArmorInfo &detection, Time tim
     return ret;
 }
 
-float ArmorTrack::calcIdSimilarity(ArmorID id) {
+float ArmorTrack::calcIdSimilarity(FacilityID id) {
     int sum = std::accumulate(id_cnt.begin(), id_cnt.end(), 2);
     return (float) (id_cnt[id] + 1) /
            (float) sum; // Here we artificially add one positive and one negative. To smoothen the result.

@@ -10,8 +10,8 @@
 #define BIG_ARMOR_WIDTH 230.0f
 #define BIG_ARMOR_HEIGHT 127.0f
 
-#define NUM_ARMOR_ID 11
-enum ArmorID {
+#define MAX_FACILITY_ID 13
+enum FacilityID {
     UNKNOWN = 0,
 
     HERO_1 = 1,
@@ -25,12 +25,23 @@ enum ArmorID {
 
     BASE_8 = 8,
     OUTPOST_10 = 10,
+
+    UNKNOWN_BOT = 11,
+    UNKNOWN_STRUCTURE = 12
 };
 
-enum ARMOR_TYPE {
+enum ArmorType {
     SMALL_ARMOR = 0,
     BIG_ARMOR = 1
 };
+
+static ArmorType getArmorTypeFormID(FacilityID id) {
+    if (id == HERO_1 || id == ENGINEER_2
+        || id == STANDARD_3 || id == STANDARD_4 || id == STANDARD_5
+        || id == SENTRY_7 || id == UNKNOWN_BOT)
+        return SMALL_ARMOR;
+    else return BIG_ARMOR;
+}
 
 /**
  * Struct for the four corners of an Armor.
@@ -158,7 +169,7 @@ struct ArmorCorners3d {
      * Used to construct armors in Model Coordinate.
      * @param armorType The armor type.
      */
-    explicit ArmorCorners3d(ARMOR_TYPE armorType) {
+    explicit ArmorCorners3d(ArmorType armorType) {
         switch (armorType) {
             case SMALL_ARMOR:
                 *this = ArmorCorners3d({SMALL_ARMOR_WIDTH, SMALL_ARMOR_HEIGHT});

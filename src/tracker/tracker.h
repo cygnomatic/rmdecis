@@ -7,11 +7,10 @@
 
 #include <map>
 
-#include "../typing/core.h"
-#include "../reconstructor/camera_calib.h"
+#include "typing/core.h"
+#include "reconstructor/camera_calib.h"
 #include "munkres-cpp/munkres.h"
 #include "armor_track.h"
-#include "general.h"
 
 class Tracker {
 public:
@@ -25,11 +24,11 @@ public:
             k_similarity_threshold(k_similarity_threshold), k_max_missing_cnt(k_max_missing_cnt),
             k_min_hit_cnt(k_min_hit_cnt) {}
 
-    void update(const ReconstructArmorResult &reconstruct_armor_result);
+    void update(const DetectArmorsFrame &reconstruct_armor_result);
 
-    void associate(const std::vector<ReconstructArmorInfo> &armor_detections, Time time,
-                   std::vector<ReconstructArmorInfo> &unmatched_detections,
-                   std::map<int, ReconstructArmorInfo> &matched_track2det);
+    void associate(const std::vector<DetectArmorInfo> &armor_detections, Time time,
+                   std::vector<DetectArmorInfo> &unmatched_detections,
+                   std::map<int, DetectArmorInfo> &matched_track2det);
 
     std::map<int, ArmorTrack> getTracks(bool include_probationary = false);
 

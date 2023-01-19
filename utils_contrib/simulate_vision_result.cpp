@@ -24,7 +24,7 @@ SimulateVisionOutput::SimulateVisionOutput(const std::string &data_path) {
             std::vector<DetectArmorInfo> armor_info;
 
             for (YAML::Node d: y["data"]) {
-                ArmorID armor_type = (ArmorID) d["armor_type"].as<int>();
+                FacilityID armor_type = (FacilityID) d["armor_type"].as<int>();
                 float confidence = d["confidence"].as<float>();
 
                 Point2f rt{d["rt_x"].as<float>(), d["rt_y"].as<float>()};
@@ -48,15 +48,15 @@ SimulateVisionOutput::SimulateVisionOutput(const std::string &data_path) {
     info("Successfully loaded {} data.", ys.size());
 }
 
-DetectArmorResult SimulateVisionOutput::getNextData() {
+DetectArmorsFrame SimulateVisionOutput::getNextData() {
     auto d = getData(next_idx);
     next_idx++;
     return d;
 }
 
-DetectArmorResult SimulateVisionOutput::getData(int seq_idx) {
+DetectArmorsFrame SimulateVisionOutput::getData(int seq_idx) {
     auto i = data.find(seq_idx);
     if (i == data.end())
-        return DetectArmorResult{};
+        return DetectArmorsFrame{};
     return data[seq_idx];
 }

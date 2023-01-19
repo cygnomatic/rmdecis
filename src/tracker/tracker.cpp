@@ -8,7 +8,6 @@
  */
 
 #include "tracker.h"
-#include "general.h"
 
 munkres::Matrix<float> hungarianMatching(munkres::Matrix<float> mat) {
 
@@ -24,11 +23,11 @@ munkres::Matrix<float> hungarianMatching(munkres::Matrix<float> mat) {
     return mat;
 }
 
-void Tracker::update(const ReconstructArmorResult &reconstruct_armor_result) {
+void Tracker::update(const DetectArmorsFrame &reconstruct_armor_result) {
 
-    const std::vector<ReconstructArmorInfo> &armor_detections = reconstruct_armor_result.armor_info;
-    std::vector<ReconstructArmorInfo> unmatched_detections;
-    std::map<int, ReconstructArmorInfo> matched_track2det;
+    const std::vector<DetectArmorInfo> &armor_detections = reconstruct_armor_result.armor_info;
+    std::vector<DetectArmorInfo> unmatched_detections;
+    std::map<int, DetectArmorInfo> matched_track2det;
 
     if (reconstruct_armor_result.armor_info.empty()) {
         // warn("Received empty detection. Skip.");
@@ -74,9 +73,9 @@ void Tracker::update(const ReconstructArmorResult &reconstruct_armor_result) {
     }
 }
 
-void Tracker::associate(const std::vector<ReconstructArmorInfo> &armor_detections, Time time,
-                        std::vector<ReconstructArmorInfo> &unmatched_detections,
-                        std::map<int, ReconstructArmorInfo> &matched_track2det) {
+void Tracker::associate(const std::vector<DetectArmorInfo> &armor_detections, Time time,
+                        std::vector<DetectArmorInfo> &unmatched_detections,
+                        std::map<int, DetectArmorInfo> &matched_track2det) {
 
     size_t n_detection = armor_detections.size(), n_tracks = armor_tracks_.size();
 

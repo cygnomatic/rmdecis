@@ -8,9 +8,8 @@
 #include <opencv2/video/tracking.hpp>
 #include <numeric>
 
-#include "../typing/core.h"
-#include "../utils/cv_utils.h"
-#include "general.h"
+#include "typing/core.h"
+#include "utils/cv_utils.h"
 
 class ArmorTrack {
 public:
@@ -19,15 +18,15 @@ public:
 
     ArmorTrack() = default;
 
-    explicit ArmorTrack(int tracking_id, const ReconstructArmorInfo &detection);
+    explicit ArmorTrack(int tracking_id, const DetectArmorInfo &detection);
 
-    void init(const ReconstructArmorInfo &detection);
+    void init(const DetectArmorInfo &detection);
 
-    void correct(const ReconstructArmorInfo &detection, Time time);
+    void correct(const DetectArmorInfo &detection, Time time);
 
     TrackArmorInfo predict(Time time);
 
-    float calcSimilarity(const ReconstructArmorInfo &detection, Time time);
+    float calcSimilarity(const DetectArmorInfo &detection, Time time);
 
 private:
 
@@ -35,9 +34,9 @@ private:
 
     cv::KalmanFilter kf;
 
-    std::array<int, NUM_ARMOR_ID> id_cnt{};
+    std::array<int, MAX_FACILITY_ID> id_cnt{};
 
-    float calcIdSimilarity(ArmorID id);
+    float calcIdSimilarity(FacilityID id);
 
     void updateKalmanFilterMats(float dt);
 };

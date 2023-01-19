@@ -24,33 +24,28 @@ using namespace spdlog;
 
 /**
  * The detect result of armor.
- * @param armor_type Type of armor.
- * @param corners_img Detected armor corners in image coord.
- * @param confidence Confidence of the prediction.
  */
 struct DetectArmorInfo {
-    ArmorID armor_type = UNKNOWN;
+
+    // Info from vision detection part
+    FacilityID facility_id = UNKNOWN_BOT;
+    ArmorType armorType = SMALL_ARMOR;
+
     ArmorCorners2d corners_img;
-    float detection_confidence = 0.0;
-};
+    ArmorCorners3d corners_model;
+    float detection_confidence = 1.0;
 
-struct ReconstructArmorInfo : DetectArmorInfo {
-
-    explicit ReconstructArmorInfo() = default;
-
-    explicit ReconstructArmorInfo(const DetectArmorInfo &det, const cv::Point3f &center_gimbal,
-                                  const cv::Mat &rvec = cv::Mat(3, 1, CV_32F), float reconstruct_confidence = 1.0) {
-        armor_type = det.armor_type;
-        corners_img = det.corners_img;
-        detection_confidence = det.detection_confidence;
-        this->center_gimbal = center_gimbal;
-        this->rvec = rvec;
-        this->reconstruct_confidence = reconstruct_confidence;
-    }
-
-    cv::Point3f center_gimbal{};
-    cv::Mat rvec = cv::Mat::zeros(3, 1, CV_32F);
+    // Info form reconstructor
+    cv::Point3f center_gimbal;
+    Transform3d trans_model2cam;
     float reconstruct_confidence = 0.0;
+
+    explicit DetectArmorInfo() = default;
+
+    explicit DetectArmorInfo(FacilityID armor_type, const ArmorCorners2d &corners_img, float detection_confidence = 1.0) :
+            facility_id(armor_type), corners_img(corners_img), detection_confidence(detection_confidence) {
+        corners_model = ArmorCorners3d{getArmorTypeFormID(facility_id)};
+    }
 };
 
 /**
@@ -59,21 +54,12 @@ struct ReconstructArmorInfo : DetectArmorInfo {
  * @param time The time **the frame is shot**. NOT THE TIME FINISH THE VISION PROCESS.
  * @param armor_info Detected armor info.
  */
-struct DetectArmorResult {
+struct DetectArmorsFrame {
     int seq_idx = -1;
     Time time{};
     std::vector<DetectArmorInfo> armor_info{};
 };
 
-struct ReconstructArmorResult : DetectArmorResult {
-
-    explicit ReconstructArmorResult(const DetectArmorResult &det) {
-        this->time = det.time;
-        this->seq_idx = det.seq_idx;
-    }
-
-    std::vector<ReconstructArmorInfo> armor_info{};
-};
 
 /**
  * [DEPRECATED] The output of the Vision Part.
@@ -85,7 +71,7 @@ struct ReconstructArmorResult : DetectArmorResult {
  */
 struct ArmorPredResult {
     Time time{};
-    ArmorID armor_type = UNKNOWN;
+    FacilityID armor_type = UNKNOWN;
     ArmorCorners2d corners_img;
     float confidence{};
 };
