@@ -104,6 +104,10 @@ struct Transform3d {
 
         return ret;
     }
+
+    cv::Point3f applyTo(const cv::Point3f &pt) const {
+        return applyTo(std::vector<cv::Point3f>{pt}).at(0);
+    }
 };
 
 #endif //CYGNOIDES_DECISION_GENERAL_H

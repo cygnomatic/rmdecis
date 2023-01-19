@@ -3,7 +3,6 @@
 //
 
 #include "simulate_vision_result.h"
-#include "general.h"
 
 using namespace cv;
 
@@ -33,7 +32,7 @@ SimulateVisionOutput::SimulateVisionOutput(const std::string &data_path) {
                 Point2f rd{d["rd_x"].as<float>(), d["rd_y"].as<float>()};
                 ArmorCorners2d corners{{rt, lt, ld, rd}};
 
-                armor_info.push_back(DetectArmorInfo{armor_type, corners, confidence});
+                armor_info.emplace_back(armor_type, corners, confidence);
             }
 
             data[seq_idx] = {seq_idx, time, armor_info};

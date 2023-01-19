@@ -7,9 +7,9 @@
 
 #include <utility>
 
-#include "../typing/core.h"
-#include "camera_calib.h"
-#include "general.h"
+#include "typing/core.h"
+#include "utils/cv_utils.h"
+#include "reconstructor/camera_calib.h"
 
 struct SolveArmorResult {
     float delta_depth, delta_height;
@@ -17,13 +17,20 @@ struct SolveArmorResult {
 };
 
 class Transformer {
-    Transform3d model2cam, cam2base;
+
+    Transform3d trans_model2cam, trans_cam2base;
 
     CameraCalib cam_calib;
 
+public:
+
+    void reconstructArmor3D(DetectArmorInfo &armor);
+
+    void reconstructArmor3D(std::vector<DetectArmorInfo> &armors);
+
     explicit Transformer(CameraCalib camera_calib) : cam_calib(std::move(camera_calib)) {}
 
-
+    cv::Point2f cam2img(const cv::Point3f &pt);
 };
 
 

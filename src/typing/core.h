@@ -36,7 +36,8 @@ struct DetectArmorInfo {
     float detection_confidence = 1.0;
 
     // Info form reconstructor
-    cv::Point3f center_gimbal;
+    cv::Point3f center_base;
+    cv::Point3f center_cam;
     Transform3d trans_model2cam;
     float reconstruct_confidence = 0.0;
 

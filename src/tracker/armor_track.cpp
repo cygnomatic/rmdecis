@@ -90,7 +90,7 @@ public:
 
     static inline Mat cvtDetection2MeasurementMat(const DetectArmorInfo &detection) {
         Rect2f bounding_box = (Rect2f) detection.corners_img;
-        Point3f center = detection.center_gimbal;
+        Point3f center = detection.center_base;
 
         float u = bounding_box.x, v = bounding_box.y;
         float ratio = bounding_box.width / bounding_box.height;
@@ -120,7 +120,7 @@ public:
 
     static inline Mat getInitState(const DetectArmorInfo &detection) {
         Rect2f bounding_box = detection.corners_img.getBoundingBox();
-        Point3f center = detection.center_gimbal;
+        Point3f center = detection.center_base;
 
 
         float u = bounding_box.x, v = bounding_box.y;
