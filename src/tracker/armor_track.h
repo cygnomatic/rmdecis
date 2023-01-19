@@ -18,15 +18,15 @@ public:
 
     ArmorTrack() = default;
 
-    explicit ArmorTrack(int tracking_id, const DetectArmorInfo &armor);
+    explicit ArmorTrack(int tracking_id, const ReconstructArmorInfo &detection);
 
-    void init(const DetectArmorInfo &armor);
+    void init(const ReconstructArmorInfo &detection);
 
-    void correct(const DetectArmorInfo &armor, Time time);
+    void correct(const ReconstructArmorInfo &detection, Time time);
 
-    cv::Rect2f predict(Time time);
+    TrackArmorInfo predict(Time time);
 
-    float calcSimilarity(const DetectArmorInfo &armor, Time time);
+    float calcSimilarity(const ReconstructArmorInfo &detection, Time time);
 
 private:
 

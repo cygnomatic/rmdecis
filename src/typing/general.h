@@ -66,7 +66,26 @@ struct Time {
 struct DetectArmorInfo {
     ArmorID armor_type = UNKNOWN;
     ArmorCorners2d corners_img;
-    float confidence = 0.0;
+    float detection_confidence = 0.0;
+};
+
+struct ReconstructArmorInfo : DetectArmorInfo {
+
+    explicit ReconstructArmorInfo() = default;
+
+    explicit ReconstructArmorInfo(const DetectArmorInfo &det, const cv::Point3f &center_gimbal,
+                                  const cv::Mat &rvec = cv::Mat(3, 1, CV_32F), float reconstruct_confidence = 1.0) {
+        armor_type = det.armor_type;
+        corners_img = det.corners_img;
+        detection_confidence = det.detection_confidence;
+        this->center_gimbal = center_gimbal;
+        this->rvec = rvec;
+        this->reconstruct_confidence = reconstruct_confidence;
+    }
+
+    cv::Point3f center_gimbal{};
+    cv::Mat rvec = cv::Mat::zeros(3, 1, CV_32F);
+    float reconstruct_confidence = 0.0;
 };
 
 /**
@@ -79,6 +98,16 @@ struct DetectArmorResult {
     int seq_idx = -1;
     Time time{};
     std::vector<DetectArmorInfo> armor_info{};
+};
+
+struct ReconstructArmorResult : DetectArmorResult {
+
+    explicit ReconstructArmorResult(const DetectArmorResult &det) {
+        this->time = det.time;
+        this->seq_idx = det.seq_idx;
+    }
+
+    std::vector<ReconstructArmorInfo> armor_info{};
 };
 
 /**
@@ -146,6 +175,11 @@ struct Transform3d {
 
         return ret;
     }
+};
+
+struct TrackArmorInfo {
+    cv::Point3f center_gimbal;
+    cv::Rect2f bbox;
 };
 
 
