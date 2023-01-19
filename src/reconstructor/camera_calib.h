@@ -15,7 +15,7 @@
 #include <utility>
 #include <iostream>
 
-#include "../typing/general.h"
+#include "../typing/core.h"
 
 struct CameraCoeffs {
     cv::Mat cam_mat;

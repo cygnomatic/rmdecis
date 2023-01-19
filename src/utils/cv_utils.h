@@ -5,7 +5,7 @@
 #ifndef CYGNOIDES_DECISION_CV_UTILS_H
 #define CYGNOIDES_DECISION_CV_UTILS_H
 
-#include "../typing/general.h"
+#include "../typing/core.h"
 
 float calculateIoU(const cv::Rect2f &rect1, const cv::Rect2f &rect2);
 

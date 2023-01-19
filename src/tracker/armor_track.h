@@ -8,7 +8,7 @@
 #include <opencv2/video/tracking.hpp>
 #include <numeric>
 
-#include "../typing/general.h"
+#include "../typing/core.h"
 #include "../utils/cv_utils.h"
 
 class ArmorTrack {

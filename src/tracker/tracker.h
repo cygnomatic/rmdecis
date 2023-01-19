@@ -7,7 +7,7 @@
 
 #include <map>
 
-#include "../typing/general.h"
+#include "../typing/core.h"
 #include "../reconstructor/camera_calib.h"
 #include "munkres-cpp/munkres.h"
 #include "armor_track.h"

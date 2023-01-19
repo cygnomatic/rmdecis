@@ -7,7 +7,7 @@
 
 #include <utility>
 
-#include "../typing/general.h"
+#include "../typing/core.h"
 #include "camera_calib.h"
 
 struct SolveArmorResult {
