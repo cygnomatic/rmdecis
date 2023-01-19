@@ -8,6 +8,7 @@
  */
 
 #include "tracker.h"
+#include "general.h"
 
 munkres::Matrix<float> hungarianMatching(munkres::Matrix<float> mat) {
 

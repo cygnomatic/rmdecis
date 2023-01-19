@@ -123,7 +123,6 @@ struct ArmorCorners2d {
 
 };
 
-
 struct ArmorCorners3d {
     ArmorCorners3d() = default;
 

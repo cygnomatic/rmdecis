@@ -9,6 +9,7 @@
 
 #include "../typing/core.h"
 #include "camera_calib.h"
+#include "general.h"
 
 struct SolveArmorResult {
     float delta_depth, delta_height;

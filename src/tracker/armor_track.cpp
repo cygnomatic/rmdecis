@@ -3,6 +3,7 @@
 //
 
 #include "armor_track.h"
+#include "general.h"
 
 using namespace cv;
 

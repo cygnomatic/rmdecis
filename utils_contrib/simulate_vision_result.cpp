@@ -3,6 +3,7 @@
 //
 
 #include "simulate_vision_result.h"
+#include "general.h"
 
 using namespace cv;
 
