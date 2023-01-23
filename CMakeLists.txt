@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.9)
-project(Cygnoides_Decision VERSION 0.1 DESCRIPTION "CygnoidesRM Decision lib")
+project(Cygnoides_Decision)
 
 set(CMAKE_CXX_STANDARD 14)
 #set(CMAKE_VERBOSE_MAKEFILE ON)
@@ -11,9 +11,6 @@ else ()
     message(WARNING "The file conanbuildinfo.cmake doesn't exist, you have to run conan install first")
 endif ()
 
-find_package(OpenCV REQUIRED)
-
-include_directories(${OpenCV_INCLUDE_DIRS})
 include_directories(${PROJECT_SOURCE_DIR}/contrib)
 include_directories(${PROJECT_SOURCE_DIR}/src)
 
@@ -25,25 +22,25 @@ message("-- GLOB: \${MAIN_LIBS}: ${MAIN_LIBS}")
 message("-- GLOB: \${UTILS_CONTRIB}: ${UTILS_CONTRIB}")
 
 add_library(Cygnoides_Decision ${MAIN_LIBS})
-target_link_libraries(Cygnoides_Decision ${OpenCV_LIBS})
+target_link_libraries(Cygnoides_Decision)
 
 add_executable(tool_calibrate_camera tests/calibrate_camera.cpp)
-target_link_libraries(tool_calibrate_camera ${OpenCV_LIBS} ${CONAN_LIBS})
+target_link_libraries(tool_calibrate_camera ${CONAN_LIBS})
 
 add_executable(test_video_playback ${UTILS_CONTRIB} ${MAIN_LIBS} tests/test_video_playback.cpp)
-target_link_libraries(test_video_playback ${OpenCV_LIBS} ${CONAN_LIBS})
+target_link_libraries(test_video_playback ${CONAN_LIBS})
 
 add_executable(test_reconstructor ${UTILS_CONTRIB} ${MAIN_LIBS} tests/test_reconstructor.cpp)
-target_link_libraries(test_reconstructor ${OpenCV_LIBS} ${CONAN_LIBS})
+target_link_libraries(test_reconstructor ${CONAN_LIBS})
 
 add_executable(test_armor_track ${MAIN_LIBS} ${UTILS_CONTRIB} tests/test_armor_track.cpp)
-target_link_libraries(test_armor_track ${OpenCV_LIBS} ${CONAN_LIBS})
+target_link_libraries(test_armor_track ${CONAN_LIBS})
 
 add_executable(test_tracker ${MAIN_LIBS} ${UTILS_CONTRIB} tests/test_tracker.cpp)
-target_link_libraries(test_tracker ${OpenCV_LIBS} ${CONAN_LIBS})
+target_link_libraries(test_tracker ${CONAN_LIBS})
 
 add_executable(test_detection ${MAIN_LIBS} ${UTILS_CONTRIB} tests/test_detection.cpp)
-target_link_libraries(test_detection ${OpenCV_LIBS} ${CONAN_LIBS})
+target_link_libraries(test_detection ${CONAN_LIBS})
 
 add_executable(test_basic_aiming ${MAIN_LIBS} ${UTILS_CONTRIB} tests/test_basic_aiming.cpp)
-target_link_libraries(test_basic_aiming ${OpenCV_LIBS} ${CONAN_LIBS})
+target_link_libraries(test_basic_aiming ${CONAN_LIBS})
