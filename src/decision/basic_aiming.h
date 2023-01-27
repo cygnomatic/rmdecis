@@ -14,29 +14,40 @@
 #include "compensator/ballistic_compensator.h"
 
 class BasicAiming {
-// private:
-public:
+private:
 
-    Tracker tracker{0.75, 4, 3};
     CameraCalib camera_calib;
-    Transformer transformer;
     BallisticCompensator compensator{0.1};
 
     float ballet_init_speed = 15.0 * 1e3;
-    float compensate_time = 2.0;
+    float compensate_time = 0.0;
 
     int last_aiming_id_ = -1;
     EulerAngles last_aiming_angle_{};
 
     int chooseNextTarget(std::map<int, ArmorTrack> &tracks_map, Time &predTime);
 
-// public:
+    EulerAngles predictFromTrack(ArmorTrack &track, Time predTime);
 
+public:
+
+    // Should be private. Set to public for debug use.
+    Tracker tracker{0.75, 4, 3};
+    Transformer transformer;
+
+    /**
+     * Initialize BasicAiming decision-maker.
+     * @param camera_coeffs Path to camera calibration coeffs file.
+     */
     explicit BasicAiming(const std::string &camera_coeffs) : camera_calib(camera_coeffs), transformer(camera_calib) {}
 
+    /**
+     * Update BasicAiming decision-maker with frame and get where to aim.
+     * @param detection Result from the detection part.
+     * @return Euler angles, representing the aiming target.
+     */
     EulerAngles update(DetectArmorsFrame &detection);
 
-    EulerAngles predictFromTrack(ArmorTrack &track, Time predTime);
 };
 
 
