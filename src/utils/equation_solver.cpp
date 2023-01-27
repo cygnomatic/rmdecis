@@ -4,7 +4,7 @@
 
 #include "equation_solver.h"
 
-#define MAX_N_ITERATION 100
+#define MAX_N_ITERATION 200
 
 float EquationSolver::solveWithDer(const std::function<float(float)> &func,
                                    const std::function<float(float)> &derivative_func,

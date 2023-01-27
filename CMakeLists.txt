@@ -44,3 +44,6 @@ target_link_libraries(test_tracker ${OpenCV_LIBS} ${CONAN_LIBS})
 
 add_executable(test_detection ${MAIN_LIBS} ${UTILS_CONTRIB} tests/test_detection.cpp)
 target_link_libraries(test_detection ${OpenCV_LIBS} ${CONAN_LIBS})
+
+add_executable(test_basic_aiming ${MAIN_LIBS} ${UTILS_CONTRIB} tests/test_basic_aiming.cpp)
+target_link_libraries(test_basic_aiming ${OpenCV_LIBS} ${CONAN_LIBS})

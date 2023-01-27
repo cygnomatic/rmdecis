@@ -22,7 +22,7 @@ public:
      */
     static float solveWithDer(const std::function<float(float)> &func,
                               const std::function<float(float)> &derivative_func,
-                              float init_x = 0.1, float eps = 1E-6);
+                              float init_x = 0.0, float eps = 1E-2);
 
     /**
      * Solve an equation with Newton-Raphson method. Generate derivative function using numerical way.
@@ -33,7 +33,7 @@ public:
      * @return Root of the equation. Nan if equation has no solution.
      */
     static float solve(const std::function<float(float)> &func, float init_x = 0.1,
-                       float eps = 1E-6, float delta = 1E-7);
+                       float eps = 1E-2, float delta = 1E-3);
 };
 
 

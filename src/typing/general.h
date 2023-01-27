@@ -54,29 +54,21 @@ struct Time {
     }
 };
 
-struct AxisAngles3f {
-    float roll, pitch, yaw;
+struct EulerAngles {
+    float yaw, pitch, roll;
 
-    explicit AxisAngles3f(const float angles[]) {
-        roll = angles[0];
+    explicit EulerAngles() = default;
+
+    explicit EulerAngles(const float angles[]) {
+        yaw = angles[0];
         pitch = angles[1];
-        yaw = angles[2];
-    }
-};
-
-struct AxisAngles2f {
-    float pitch, yaw;
-
-    AxisAngles2f() = default;
-
-    explicit AxisAngles2f(const float angles[]) {
-        pitch = angles[0];
-        yaw = angles[1];
+        roll = angles[2];
     }
 
-    explicit AxisAngles2f(float pitch, float yaw) {
-        this->pitch = pitch;
+    explicit EulerAngles(float yaw, float pitch) {
         this->yaw = yaw;
+        this->pitch = pitch;
+        roll = 0.f;
     }
 };
 
