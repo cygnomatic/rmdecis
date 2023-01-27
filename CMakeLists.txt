@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.9)
-project(Cygnoides_Decision)
+project(Cygnoides_Decision VERSION 0.1 DESCRIPTION "CygnoidesRM Decision lib")
 
 set(CMAKE_CXX_STANDARD 14)
 #set(CMAKE_VERBOSE_MAKEFILE ON)

@@ -14,7 +14,7 @@ void Transformer::reconstructArmor3D(DetectArmorInfo &armor) {
 }
 
 void Transformer::reconstructArmor3D(std::vector<DetectArmorInfo> &armors) {
-    for (auto& armorInfo: armors) {
+    for (auto &armorInfo: armors) {
         reconstructArmor3D(armorInfo);
     }
 }

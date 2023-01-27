@@ -35,4 +35,13 @@ inline void drawPoint(cv::Mat &image, const cv::Point2f &point,
     cv::circle(image, point, size, color, -1);
 }
 
+/**
+ * Convert OpenCV coord to REP 103 coord represent.
+ * @param pt OpenCV point
+ * @return REP 103
+ */
+inline cv::Point3f opencvToRep(const cv::Point3f &pt) {
+    return {pt.z, -pt.x, -pt.y};
+}
+
 #endif //CYGNOIDES_DECISION_CV_UTILS_H

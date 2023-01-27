@@ -31,8 +31,8 @@ int main() {
             // String dist = "Distance: " + std::to_string(norm(trans_model2cam.tvec) / 1000);
             // putText(frame, dist, {50, 200}, FONT_HERSHEY_SIMPLEX, 2, {255, 255, 255}, 3);
 
-            String rot = fmt::format("tvec [x: {:.2f}, y: {:.2f}, z: {:.2f}]", trans_model2cam.tvec.at<double>(0),
-                                     trans_model2cam.tvec.at<double>(1), trans_model2cam.tvec.at<double>(2));
+            double x_ = trans_model2cam.tvec.at<double>(0), y_ = trans_model2cam.tvec.at<double>(1), z_ = trans_model2cam.tvec.at<double>(2);
+            String rot = fmt::format("tvec [x: {:.2f}, y: {:.2f}, z: {:.2f}]", z_ / 1e3, -x_ / 1e3, -y_ / 1e3);
             putText(frame, rot, {50, 200}, FONT_HERSHEY_SIMPLEX, 2, {255, 255, 255}, 3);
 
             // info("Rvec [x: {:.2f}, y: {:.2f}, z: {:.2f}]", trans_model2cam.rvec.at<double>(0), trans_model2cam.rvec.at<double>(1), trans_model2cam.rvec.at<double>(2));
