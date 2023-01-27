@@ -6,41 +6,44 @@
 #include "../utils_contrib/simple_video_player.h"
 #include "../utils_contrib/simulate_vision_result.h"
 
-using cv::Mat;
-using cv::rectangle;
+using namespace cv;
 
 int main() {
 
     set_level(spdlog::level::debug);
 
+    // Camera & detection part output simulation
     SimulateVisionOutput vision_output("../../data/vision_out/vision_result.yaml");
     SimpleVideoPlayer player("../../data/vision_out/video_input.avi");
 
+    // Initialize BasicAiming with path to camera calibration coeffs file.
     BasicAiming basic_aiming("../../config/cam_cali_coeffs.yml");
 
-    player.setPlaybackSpeed(1);
-
     while (true) {
+
         Mat frame = player.getFrame();
         if (frame.empty())
             break;
 
-        auto detection = vision_output.getData(player.frame_position);
+        // `vision_output.getData(player.frame_position)` simulates the detection part.
+        // It returns a `DetectArmorsFrame` instance, which is the result of detection.
+        DetectArmorsFrame detection = vision_output.getData(player.frame_position);
+
+        // Call `basic_aiming.update()` to get the angle to aim.
+        EulerAngles result = basic_aiming.update(detection);
+
+        // Simply ignore the following parts. They are just for displaying the result.
+        String result_display = fmt::format("Yaw: {:.2f}, Pitch: {:.2f}", result.yaw, result.pitch);
+        putText(frame, result_display, {50, 200}, FONT_HERSHEY_SIMPLEX, 2, {255, 255, 255}, 3);
 
         for (auto &t: detection.armor_info) {
             rectangle(frame, t.corners_img.getBoundingBox(), {255, 255, 0}, 2);
         }
 
-        auto result = basic_aiming.update(detection);
-        info("Yaw: {}, Pitch: {}", result.yaw, result.pitch);
-
         for (auto &p: basic_aiming.tracker.getTracks()) {
-
             auto track_info = p.second.predict(detection.time);
-
-            auto tmp = basic_aiming.transformer.cam2img(track_info.center_gimbal);
-            drawPoint(frame, tmp, {0, 255, 255}, 10);
-            debug("center: x={}, y={}", tmp.x, tmp.y);
+            auto center = basic_aiming.transformer.cam2img(track_info.center_gimbal);
+            drawPoint(frame, center, {0, 255, 255}, 10);
             rectangle(frame, track_info.bbox, {0, 255, 255}, 5);
         }
 

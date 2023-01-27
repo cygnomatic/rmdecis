@@ -15,7 +15,6 @@ EulerAngles BasicAiming::update(DetectArmorsFrame &detection) {
 
     if (tracks_map.find(last_aiming_id_) == tracks_map.end()) {
         // Last track lost, update target track
-        debug("Last track lost, update target track.");
         last_aiming_id_ = chooseNextTarget(tracks_map, detection.time);
     }
 
@@ -80,6 +79,9 @@ int BasicAiming::chooseNextTarget(std::map<int, ArmorTrack> &tracks_map, Time &p
             min_id = track_pair.second.tracking_id;
         }
     }
+
+    if (min_id != -1)
+        debug("New target. Track ID: {}", min_id);
 
     return min_id;
 
