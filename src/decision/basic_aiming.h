@@ -18,7 +18,7 @@ class BasicAiming {
 private:
 
     CameraCalib camera_calib;
-    BallisticCompensator compensator{0.1};
+    BallisticCompensator compensator;
 
     float ballet_init_speed = 15.0 * 1e3;
     float compensate_time = 0.0;
@@ -38,10 +38,16 @@ public:
 
     /**
      * Initialize BasicAiming decision-maker.
-     * @param camera_coeffs Path to camera calibration coeffs file.
+     * @param config_loader Config loader.
      */
-    explicit BasicAiming(ConfigLoader &config_loader, const std::string &camera_coeffs)
-            : camera_calib(camera_coeffs), transformer(camera_calib), tracker(config_loader) {}
+    explicit BasicAiming(ConfigLoader &config_loader)
+            : camera_calib(config_loader), transformer(camera_calib), tracker(config_loader),
+              compensator(config_loader.load("aiming").get<float>("airResistanceConst", 0.1)) {
+
+        Config cfg = config_loader.load("aiming");
+
+        compensate_time = cfg.get<float>("basic.compensateTime", 0.0);
+    }
 
     /**
      * Update BasicAiming decision-maker with frame and get where to aim.

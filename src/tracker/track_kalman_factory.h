@@ -41,9 +41,9 @@ public:
 
     cv::Mat getMeasurementNoiseCov(float dt);
 
-    static cv::Mat cvtDetection2MeasurementMat(const DetectArmorInfo &detection);;
+    static cv::Mat cvtDetection2MeasurementMat(const DetectArmorInfo &detection);
 
-    static TrackArmorInfo cvtStateMat2Result(const cv::Mat &state);;
+    static TrackArmorInfo cvtStateMat2Result(const cv::Mat &state);
 
     static cv::Mat getInitState(const DetectArmorInfo &detection);
 

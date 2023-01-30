@@ -16,8 +16,9 @@ int main() {
     SimulateVisionOutput vision_output("../../data/vision_out/vision_result.yaml");
     SimpleVideoPlayer player("../../data/vision_out/video_input.avi");
 
-    // Initialize BasicAiming with path to camera calibration coeffs file.
-    BasicAiming basic_aiming("../../config/cam_cali_coeffs.yml");
+    // Initialize BasicAiming with path to camera calibration coeffs file & config loader.
+    ConfigLoader config_loader("../../config");
+    BasicAiming basic_aiming(config_loader);
 
     while (true) {
 

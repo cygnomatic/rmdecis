@@ -37,7 +37,7 @@ SimulateVisionOutput::SimulateVisionOutput(const std::string &data_path) {
 
             data[seq_idx] = {seq_idx, time, armor_info};
 
-            debug("Loaded {}th data", seq_idx);
+            // debug("Loaded {}th data", seq_idx);
         }
         catch (YAML::BadConversion &e) {
             warn("Failed to get {}th data: {}", ++seq_idx, e.msg);

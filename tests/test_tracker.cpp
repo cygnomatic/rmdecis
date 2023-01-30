@@ -20,7 +20,7 @@ int main() {
 
     SimulateVisionOutput vision_output("../../data/vision_out/vision_result.yaml");
     SimpleVideoPlayer player("../../data/vision_out/video_input.avi");
-    CameraCalib camera_calib("../../config/cam_cali_coeffs.yml");
+    CameraCalib camera_calib("../../config/camera.yml");
     ConfigLoader config_loader("../../config");
     Transformer transformer(camera_calib);
 

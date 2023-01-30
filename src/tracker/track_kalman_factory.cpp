@@ -137,8 +137,8 @@ TrackKalmanFactory::TrackKalmanFactory(ConfigLoader config_loader) {
     SH = cfg.get<float>("processNoiseCov.SH", 1e-2);
     SC = cfg.get<float>("processNoiseCov.SC", 1e-2);
 
-    SDM = cfg.get<float>("processNoiseCov.SDM", 100);
-    SRM = cfg.get<float>("processNoiseCov.SRM", 10);
-    SHM = cfg.get<float>("processNoiseCov.SHM", 10);
-    SCM = cfg.get<float>("processNoiseCov.SCM", 50);
+    SDM = cfg.get<float>("measurementNoiseCov.SDM", 100);
+    SRM = cfg.get<float>("measurementNoiseCov.SRM", 10);
+    SHM = cfg.get<float>("measurementNoiseCov.SHM", 10);
+    SCM = cfg.get<float>("measurementNoiseCov.SCM", 50);
 }

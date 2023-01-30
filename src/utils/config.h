@@ -67,6 +67,8 @@ public:
     explicit ConfigLoader(std::string directory);
 
     Config load(std::string cfg_scope);
+
+    cv::FileStorage loadOpencvConfig(std::string cfg_scope);
 };
 
 #endif //CYGNOIDES_DECISION_CONFIG_H
