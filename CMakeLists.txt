@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.9)
 project(Cygnoides_Decision VERSION 0.1 DESCRIPTION "CygnoidesRM Decision lib")
 
-set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD 17)
 #set(CMAKE_VERBOSE_MAKEFILE ON)
 
 if (EXISTS ${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
@@ -47,3 +47,6 @@ target_link_libraries(test_detection ${OpenCV_LIBS} ${CONAN_LIBS})
 
 add_executable(test_basic_aiming ${MAIN_LIBS} ${UTILS_CONTRIB} tests/test_basic_aiming.cpp)
 target_link_libraries(test_basic_aiming ${OpenCV_LIBS} ${CONAN_LIBS})
+
+add_executable(test_config ${MAIN_LIBS} ${UTILS_CONTRIB} tests/test_config.cpp)
+target_link_libraries(test_config ${OpenCV_LIBS} ${CONAN_LIBS})
