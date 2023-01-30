@@ -12,6 +12,7 @@
 #include "typing/core.h"
 #include "utils/cv_utils.h"
 #include "compensator/ballistic_compensator.h"
+#include "utils/config.h"
 
 class BasicAiming {
 private:
@@ -32,14 +33,15 @@ private:
 public:
 
     // Should be private. Set to public for debug use.
-    Tracker tracker{0.75, 4, 3};
+    Tracker tracker;
     Transformer transformer;
 
     /**
      * Initialize BasicAiming decision-maker.
      * @param camera_coeffs Path to camera calibration coeffs file.
      */
-    explicit BasicAiming(const std::string &camera_coeffs) : camera_calib(camera_coeffs), transformer(camera_calib) {}
+    explicit BasicAiming(ConfigLoader &config_loader, const std::string &camera_coeffs)
+            : camera_calib(camera_coeffs), transformer(camera_calib), tracker(config_loader) {}
 
     /**
      * Update BasicAiming decision-maker with frame and get where to aim.

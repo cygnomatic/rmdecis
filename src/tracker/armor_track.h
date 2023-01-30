@@ -10,15 +10,14 @@
 
 #include "typing/core.h"
 #include "utils/cv_utils.h"
+#include "tracker/track_kalman_factory.h"
 
 class ArmorTrack {
 public:
     int tracking_id = -1;
     int missing_cnt = 0, hit_cnt = 0;
 
-    ArmorTrack() = default;
-
-    explicit ArmorTrack(int tracking_id, const DetectArmorInfo &detection);
+    explicit ArmorTrack(int tracking_id, const DetectArmorInfo &detection, const TrackKalmanFactory &factory);
 
     void init(const DetectArmorInfo &detection);
 
@@ -29,6 +28,8 @@ public:
     float calcSimilarity(const DetectArmorInfo &detection, Time time);
 
 private:
+
+    TrackKalmanFactory factory;
 
     Time last_correct_time_;
 

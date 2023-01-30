@@ -20,6 +20,7 @@ ConfigLoader::ConfigLoader(string directory) {
 }
 
 Config ConfigLoader::load(string cfg_scope) {
+    debug("Loading config scope: {}", cfg_scope);
     return Config(
             YAML::LoadFile(fmt::format("{}/{}.yml", path, cfg_scope)), cfg_scope);
 }
