@@ -8,7 +8,7 @@ using namespace cv;
 
 SimulateVisionOutput::SimulateVisionOutput(const std::string &data_path) {
 
-    info("Start to load data from {} ...", data_path);
+    info("Start to get data from {} ...", data_path);
 
     std::vector<YAML::Node> ys = YAML::LoadAllFromFile(data_path);
 
@@ -40,7 +40,7 @@ SimulateVisionOutput::SimulateVisionOutput(const std::string &data_path) {
             debug("Loaded {}th data", seq_idx);
         }
         catch (YAML::BadConversion &e) {
-            warn("Failed to load {}th data: {}", ++seq_idx, e.msg);
+            warn("Failed to get {}th data: {}", ++seq_idx, e.msg);
         }
     }
 
