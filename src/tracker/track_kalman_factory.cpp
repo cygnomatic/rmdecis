@@ -4,6 +4,7 @@
 
 #include "utils/config.h"
 #include "track_kalman_factory.h"
+#include "armor_track.h"
 
 cv::Mat TrackKalmanFactory::getInitError() {
     return (cv::Mat_<float>(14, 14)
@@ -38,37 +39,7 @@ cv::Mat TrackKalmanFactory::getInitState(const DetectArmorInfo &detection) {
             u, v, ratio, area, center.x, center.y, center.z, 0, 0, 0, 0, 0, 0, 0);
 }
 
-TrackArmorInfo TrackKalmanFactory::cvtStateMat2Result(const cv::Mat &state) {
-    auto pred_uv = cv::Point2f{state.at<float>(STATE_U), state.at<float>(STATE_V)};
-
-    // width^2 = (width * height) * (width / height) = area * ratio
-    float width = std::sqrt(state.at<float>(STATE_AREA) * state.at<float>(STATE_RATIO));
-    float height = width / state.at<float>(STATE_RATIO);
-
-    float x = state.at<float>(STATE_X);
-    float y = state.at<float>(STATE_Y);
-    float z = state.at<float>(STATE_Z);
-
-    // debug("State velocity: {} {} {} {}", state.at<float>(STATE_D_U), state.at<float>(STATE_D_V),
-    //       state.at<float>(STATE_D_AREA), state.at<float>(STATE_D_RATIO));
-
-    return {cv::Point3f{x, y, z}, cv::Rect2f{pred_uv, cv::Size2f{width, height}}};
-}
-
-cv::Mat TrackKalmanFactory::cvtDetection2MeasurementMat(const DetectArmorInfo &detection) {
-    cv::Rect2f bounding_box = (cv::Rect2f) detection.corners_img;
-    cv::Point3f center = detection.center_base;
-
-    float u = bounding_box.x, v = bounding_box.y;
-    float ratio = bounding_box.width / bounding_box.height;
-    float area = bounding_box.area();
-
-    // debug("Observation: u={}, v={}, r={}, a={}", u, v, ratio, area);
-
-    return (cv::Mat_<float>(7, 1) << u, v, ratio, area, center.x, center.y, center.z);
-}
-
-cv::Mat TrackKalmanFactory::getMeasurementNoiseCov(float dt) {
+cv::Mat TrackKalmanFactory::getMeasurementNoiseCov(float dt) const {
     cv::Mat measurementNoiseCov = (cv::Mat_<float>(7, 7)
             <<
             SDM, 0, 0, 0, 0, 0, 0,
@@ -82,7 +53,7 @@ cv::Mat TrackKalmanFactory::getMeasurementNoiseCov(float dt) {
     return measurementNoiseCov;
 }
 
-cv::Mat TrackKalmanFactory::getProcessNoiseCov(float dt) {
+cv::Mat TrackKalmanFactory::getProcessNoiseCov(float dt) const {
     cv::Mat processNoiseCov = (cv::Mat_<float>(14, 14)
             <<
             SD * dt * dt, 0, 0, 0, 0, 0, 0, SD * dt, 0, 0, 0, 0, 0, 0,

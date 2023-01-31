@@ -20,6 +20,7 @@ int main() {
     ConfigLoader config_loader("../../config");
     BasicAiming basic_aiming(config_loader);
 
+    auto compensate_t = config_loader.load("aiming").get<float>("basic.compensateTime");
     while (true) {
 
         Mat frame = player.getFrame();
@@ -42,7 +43,7 @@ int main() {
         }
 
         for (auto &p: basic_aiming.tracker.getTracks()) {
-            auto track_info = p.second.predict(detection.time);
+            auto track_info = p.second.predict(detection.time + compensate_t);
             auto center = basic_aiming.transformer.cam2img(track_info.center_gimbal);
             drawPoint(frame, center, {0, 255, 255}, 10);
             rectangle(frame, track_info.bbox, {0, 255, 255}, 5);

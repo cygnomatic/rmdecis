@@ -6,8 +6,8 @@
 #define CYGNOIDES_DECISION_TRANSFORMER_H
 
 #include "typing/core.h"
-#include <opencv2/core/eigen.hpp>
 #include <Eigen/Dense>
+#include <opencv2/core/eigen.hpp>
 
 class Transform;
 

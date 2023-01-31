@@ -20,10 +20,10 @@ int main() {
 
     SimulateVisionOutput vision_output("../../data/vision_out/vision_result.yaml");
     SimpleVideoPlayer player("../../data/vision_out/video_input.avi");
-    CameraCalib camera_calib("../../config/camera.yml");
-    ConfigLoader config_loader("../../config");
-    Reconstructor transformer(camera_calib);
 
+    ConfigLoader config_loader("../../config");
+    CameraCalib camera_calib(config_loader);
+    Reconstructor transformer(camera_calib);
 
     player.setPlaybackSpeed(1);
 
@@ -46,21 +46,18 @@ int main() {
 
         for (auto &p: tracker.getTracks()) {
 
-
-            track_info = p.second.predict(pred_result.time);
-
-            auto tmp = transformer.cam2img(track_info.center_gimbal);
-            drawPoint(frame, tmp, {0, 255, 255}, 10);
-            debug("center: x={}, y={}", tmp.x, tmp.y);
-            rectangle(frame, track_info.bbox, {0, 255, 255}, 5);
+            track_info = p.second.predict(pred_result.time + 10);
+            drawPoint(frame, transformer.cam2img(track_info.center_gimbal), {0, 50, 50}, 10);
+            rectangle(frame, track_info.bbox, {0, 50, 50}, 5);
 
             track_info = p.second.predict(pred_result.time + 5);
             drawPoint(frame, transformer.cam2img(track_info.center_gimbal), {0, 150, 150}, 10);
             rectangle(frame, track_info.bbox, {0, 150, 150}, 5);
 
-            track_info = p.second.predict(pred_result.time + 10);
-            drawPoint(frame, transformer.cam2img(track_info.center_gimbal), {0, 50, 50}, 10);
-            rectangle(frame, track_info.bbox, {0, 50, 50}, 5);
+            track_info = p.second.predict(pred_result.time);
+            drawPoint(frame, transformer.cam2img(track_info.center_gimbal), {0, 150, 150}, 10);
+            rectangle(frame, track_info.bbox, {0, 150, 150}, 5);
+
 
             // debug("i={}, bbox.x={}, bbox.y={}", i, track_info.x, track_info.y);
         }
