@@ -9,7 +9,7 @@
 #include "../utils_contrib/simple_video_player.h"
 #include "../utils_contrib/simulate_vision_result.h"
 #include "tracker/tracker.h"
-#include "reconstructor/transformer.h"
+#include "reconstructor/reconstructor.h"
 
 using cv::Mat;
 using cv::rectangle;
@@ -22,7 +22,7 @@ int main() {
     SimpleVideoPlayer player("../../data/vision_out/video_input.avi");
     CameraCalib camera_calib("../../config/camera.yml");
     ConfigLoader config_loader("../../config");
-    Transformer transformer(camera_calib);
+    Reconstructor transformer(camera_calib);
 
 
     player.setPlaybackSpeed(1);

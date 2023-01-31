@@ -1,6 +1,7 @@
 [requires]
 yaml-cpp/0.7.0
 spdlog/1.11.0
+eigen/3.4.0
 # opencv/4.5.5
 
 [generators]

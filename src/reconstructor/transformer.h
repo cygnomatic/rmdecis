@@ -1,39 +1,52 @@
 //
-// Created by catslashbin on 22-11-27.
+// Created by catslashbin on 23-1-31.
 //
 
 #ifndef CYGNOIDES_DECISION_TRANSFORMER_H
 #define CYGNOIDES_DECISION_TRANSFORMER_H
 
-#include <utility>
-
 #include "typing/core.h"
-#include "utils/cv_utils.h"
-#include "reconstructor/camera_calib.h"
+#include <opencv2/core/eigen.hpp>
+#include <Eigen/Dense>
 
-struct SolveArmorResult {
-    float delta_depth, delta_height;
-    float delta_yaw;
-};
+class Transform;
+
+class Frame;
 
 class Transformer {
 
-    Transform3d trans_model2cam, trans_cam2base;
+};
 
-    CameraCalib cam_calib;
+class Transform {
+private:
+    Eigen::AffineCompact3f transform_;
 
 public:
 
-    void reconstructArmor3D(DetectArmorInfo &armor);
+    Frame &parent_;
+    Frame &child_;
 
-    void reconstructArmor3D(std::vector<DetectArmorInfo> &armors);
+    Transform(Frame &parent, Frame &child);
 
-    explicit Transformer(CameraCalib camera_calib) : cam_calib(std::move(camera_calib)) {}
+    Transform(Frame &parent, Frame &child, const Eigen::Matrix3f &rot, const Eigen::Vector3f &trans);
 
-    cv::Point2f cam2img(const cv::Point3f &pt);
+    Transform(Frame &parent, Frame &child, const EulerAngles &rot, const Eigen::Vector3f &trans);
 
-    static void solveDistAndYaw(const cv::Point3f &center_gimbal, float &yaw_in_deg,
-                                float &horizontal_dist, float &vertical_dist) ;
+    Eigen::Vector3f applyTo(const Eigen::Vector3f& pt);
+
+    Eigen::Vector3f applyInverseTo(const Eigen::Vector3f& pt);
+};
+
+class Frame {
+private:
+    std::string name;
+
+public:
+    explicit Frame(std::string name) : name(name) {}
+
+    bool operator==(const Frame& other) const {
+        return name == other.name;
+    }
 };
 
 

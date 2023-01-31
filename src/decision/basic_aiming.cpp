@@ -43,7 +43,7 @@ EulerAngles BasicAiming::predictFromTrack(ArmorTrack &track, Time predTime) {
 
     TrackArmorInfo target_info = track.predict(predTime);
     Point3f center = opencvToRep(target_info.center_gimbal);
-    Transformer::solveDistAndYaw(center, yaw, horizontal_dist, vertical_dist);
+    Reconstructor::solveDistAndYaw(center, yaw, horizontal_dist, vertical_dist);
 
     // TODO: calcShootAngle can return pitch with nan if there is no solution.
     pitch = compensator.calcShootAngle(ballet_init_speed, horizontal_dist, vertical_dist);

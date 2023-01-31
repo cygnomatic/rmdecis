@@ -8,7 +8,7 @@
 #include <map>
 
 #include "tracker/tracker.h"
-#include "reconstructor/transformer.h"
+#include "reconstructor/reconstructor.h"
 #include "typing/core.h"
 #include "utils/cv_utils.h"
 #include "compensator/ballistic_compensator.h"
@@ -34,7 +34,7 @@ public:
 
     // Should be private. Set to public for debug use.
     Tracker tracker;
-    Transformer transformer;
+    Reconstructor transformer;
 
     /**
      * Initialize BasicAiming decision-maker.
