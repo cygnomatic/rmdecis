@@ -50,3 +50,6 @@ target_link_libraries(test_basic_aiming ${OpenCV_LIBS} ${CONAN_LIBS})
 
 add_executable(test_config ${MAIN_LIBS} ${UTILS_CONTRIB} tests/test_config.cpp)
 target_link_libraries(test_config ${OpenCV_LIBS} ${CONAN_LIBS})
+
+add_executable(test_kissfft ${MAIN_LIBS} ${UTILS_CONTRIB} tests/test_kissfft.cpp)
+target_link_libraries(test_kissfft ${OpenCV_LIBS} ${CONAN_LIBS})
