@@ -22,13 +22,13 @@ int main() {
     SimulateVisionOutput vision_output("../../data/vision_out/vision_result.yaml");
     SimpleVideoPlayer player("../../data/vision_out/video_input.avi");
 
-    ConfigLoader config_loader("../../config");
-    CameraCalib camera_calib(config_loader);
+    Config cfg("../../config/config.yml");
+    CameraCalib camera_calib(cfg);
     Reconstructor transformer(camera_calib);
 
     player.setPlaybackSpeed(1);
 
-    Tracker tracker(config_loader);
+    Tracker tracker(cfg);
     TrackArmorInfo track_info;
 
     for (int i = 0;; i++) {
