@@ -2,6 +2,9 @@
 yaml-cpp/0.7.0
 spdlog/1.11.0
 opencv/4.5.5
+eigen/3.4.0
+ceres-solver/2.1.0
+kissfft/131.1.0
 
 [generators]
 cmake

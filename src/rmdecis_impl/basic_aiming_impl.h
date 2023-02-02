@@ -2,22 +2,25 @@
 // Created by catslashbin on 23-1-24.
 //
 
-#ifndef CYGNOIDES_DECISION_BASIC_AIMING_H
-#define CYGNOIDES_DECISION_BASIC_AIMING_H
+#ifndef CYGNOIDES_DECISION_BASIC_AIMING_IMPL_H
+#define CYGNOIDES_DECISION_BASIC_AIMING_IMPL_H
 
 #include <map>
 
+#include "rmdecis/core.h"
 #include "tracker/tracker.h"
-#include "reconstructor/transformer.h"
-#include "typing/core.h"
-#include "utils/cv_utils.h"
+#include "reconstructor/reconstructor.h"
 #include "compensator/ballistic_compensator.h"
+#include "utils/cv_utils.h"
+#include "config_impl.h"
 
-class BasicAiming {
+#include "basic_aiming.h"
+
+class BasicAiming::BasicAimingImpl {
 private:
 
     CameraCalib camera_calib;
-    BallisticCompensator compensator{0.1};
+    BallisticCompensator compensator;
 
     float ballet_init_speed = 15.0 * 1e3;
     float compensate_time = 0.0;
@@ -32,17 +35,17 @@ private:
 public:
 
     // Should be private. Set to public for debug use.
-    Tracker tracker{0.75, 4, 3};
-    Transformer transformer;
+    Tracker tracker;
+    Reconstructor transformer;
 
     /**
-     * Initialize BasicAiming decision-maker.
-     * @param camera_coeffs Path to camera calibration coeffs file.
+     * Initialize BasicAimingImpl decision-maker.
+     * @param cfg Config.
      */
-    explicit BasicAiming(const std::string &camera_coeffs) : camera_calib(camera_coeffs), transformer(camera_calib) {}
+    explicit BasicAimingImpl(Config &cfg);
 
     /**
-     * Update BasicAiming decision-maker with frame and get where to aim.
+     * Update BasicAimingImpl decision-maker with frame and get where to aim.
      * @param detection Result from the detection part.
      * @return Euler angles, representing the aiming target.
      */
@@ -51,4 +54,4 @@ public:
 };
 
 
-#endif //CYGNOIDES_DECISION_BASIC_AIMING_H
+#endif //CYGNOIDES_DECISION_BASIC_AIMING_IMPL_H

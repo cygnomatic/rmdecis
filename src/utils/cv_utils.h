@@ -5,7 +5,9 @@
 #ifndef CYGNOIDES_DECISION_CV_UTILS_H
 #define CYGNOIDES_DECISION_CV_UTILS_H
 
-#include "typing/core.h"
+#include "typing.h"
+
+#include <opencv2/imgproc.hpp>
 
 inline void drawArmorCorners(cv::Mat &image, ArmorCorners2d &corners,
                              const cv::Scalar &color = cv::Scalar(255, 0, 0), int thickness = 2) {

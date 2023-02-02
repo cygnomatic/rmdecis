@@ -10,16 +10,8 @@
 #include "tracker.h"
 
 munkres::Matrix<float> hungarianMatching(munkres::Matrix<float> mat) {
-
-    // Debug
-    // std::cout << mat << std::endl;
-
     munkres::Munkres<float> m;
     m.solve(mat);
-
-    // Debug
-    // std::cout << mat << std::endl;
-
     return mat;
 }
 
@@ -42,7 +34,7 @@ void Tracker::update(const DetectArmorsFrame &reconstruct_armor_result) {
 
     // Update tracks with associated detections
     for (const auto &p: matched_track2det) {
-        auto &trk = armor_tracks_[p.first];
+        ArmorTrack &trk = armor_tracks_.at(p.first);
         trk.correct(p.second, reconstruct_armor_result.time);
         trk.hit_cnt++;
 
@@ -52,8 +44,8 @@ void Tracker::update(const DetectArmorsFrame &reconstruct_armor_result) {
 
     // Create new tracks for unmatched detections
     for (const auto &det: unmatched_detections) {
-        ArmorTrack track(curr_id_, det);
-        armor_tracks_[curr_id_++] = track;
+        ArmorTrack track(curr_id_, det, kf_factory);
+        armor_tracks_.emplace(curr_id_++, track);
     }
 
     // Update tracks lifecycle
@@ -123,4 +115,10 @@ std::map<int, ArmorTrack> Tracker::getTracks(bool include_probationary) {
             tracks.insert(p);
     }
     return tracks;
+}
+
+Tracker::Tracker(Config &cfg) : kf_factory(cfg) {
+    k_similarity_threshold = cfg.get<float>("tracker.similarityThreshold", 0.7);
+    k_max_missing_cnt = cfg.get<int>("tracker.maxMissingCount", 2);
+    k_min_hit_cnt = cfg.get<int>("tracker.minHitCount", 4);
 }

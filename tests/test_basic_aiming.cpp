@@ -2,7 +2,7 @@
 // Created by catslashbin on 23-1-27.
 //
 
-#include "decision/basic_aiming.h"
+#include "rmdecis_impl/basic_aiming_impl.h"
 #include "../utils_contrib/simple_video_player.h"
 #include "../utils_contrib/simulate_vision_result.h"
 
@@ -10,15 +10,17 @@ using namespace cv;
 
 int main() {
 
-    set_level(spdlog::level::debug);
+    spdlog::set_level(spdlog::level::debug);
 
     // Camera & detection part output simulation
     SimulateVisionOutput vision_output("../../data/vision_out/vision_result.yaml");
     SimpleVideoPlayer player("../../data/vision_out/video_input.avi");
 
-    // Initialize BasicAiming with path to camera calibration coeffs file.
-    BasicAiming basic_aiming("../../config/cam_cali_coeffs.yml");
+    // Initialize BasicAimingImpl with path to camera calibration coeffs file & config loader.
+    Config cfg("../../config/config.yml");
+    BasicAiming basic_aiming(cfg);
 
+    // auto compensate_t = cfg.get<float>("aiming.basic.compensateTime");
     while (true) {
 
         Mat frame = player.getFrame();
@@ -40,12 +42,12 @@ int main() {
             rectangle(frame, t.corners_img.getBoundingBox(), {255, 255, 0}, 2);
         }
 
-        for (auto &p: basic_aiming.tracker.getTracks()) {
-            auto track_info = p.second.predict(detection.time);
-            auto center = basic_aiming.transformer.cam2img(track_info.center_gimbal);
-            drawPoint(frame, center, {0, 255, 255}, 10);
-            rectangle(frame, track_info.bbox, {0, 255, 255}, 5);
-        }
+        // for (auto &p: basic_aiming.tracker.getTracks()) {
+        //     auto track_info = p.second.predict(detection.time + compensate_t);
+        //     auto center = basic_aiming.transformer.cam2img(track_info.center_gimbal);
+        //     drawPoint(frame, center, {0, 255, 255}, 10);
+        //     rectangle(frame, track_info.bbox, {0, 255, 255}, 5);
+        // }
 
         player.update(frame);
     }

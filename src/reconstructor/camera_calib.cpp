@@ -6,25 +6,21 @@
 
 using namespace cv;
 
-CameraCalib::CameraCalib(const CameraCoeffs &cam_coeffs) {
-    cam_mat = cam_coeffs.cam_mat;
-    dist_coeffs = cam_coeffs.dist_coeffs;
-}
+CameraCalib::CameraCalib(Config& cfg) {
 
-CameraCalib::CameraCalib(const std::string &coeffs_path) {
-    cv::FileStorage fs(coeffs_path, FileStorage::READ);
+    auto coeffs_path = cfg.get<std::string>("camera.coeffsPath");
+    cv::FileStorage fs(coeffs_path, cv::FileStorage::READ);
+
     if (!fs.isOpened()) {
         throw std::runtime_error("Can not open file: " + coeffs_path);
     }
 
-    String calib_info;
-    fs["Info"] >> calib_info;
     fs["CameraMatrix"] >> cam_mat;
     fs["DistortCoeffs"] >> dist_coeffs;
 
     fs.release();
 
-    info("Loaded camera coeffs. CalibInfo: {}", calib_info);
+    info("Loaded camera coeffs. ");
 }
 
 Mat CameraCalib::undistort(const Mat &img) {

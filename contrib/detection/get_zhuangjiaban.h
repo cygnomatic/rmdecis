@@ -9,7 +9,7 @@
 #include <opencv2/core/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
 
-#include "../src/typing/core.h"
+#include "../../include/typing.h"
 
 using namespace std;
 using namespace cv;

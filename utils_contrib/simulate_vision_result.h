@@ -8,7 +8,8 @@
 #include <string>
 #include <yaml-cpp/yaml.h>
 
-#include "../src/typing/core.h"
+#include "rmdecis/core.h"
+#include "../include/typing.h"
 
 class SimulateVisionOutput {
     int next_idx = 0;

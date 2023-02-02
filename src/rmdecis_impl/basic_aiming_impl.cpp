@@ -2,11 +2,11 @@
 // Created by catslashbin on 23-1-24.
 //
 
-#include "basic_aiming.h"
+#include "basic_aiming_impl.h"
 
 using namespace cv;
 
-EulerAngles BasicAiming::update(DetectArmorsFrame &detection) {
+EulerAngles BasicAiming::BasicAimingImpl::update(DetectArmorsFrame &detection) {
 
     transformer.reconstructArmor3D(detection.armor_info);
     tracker.update(detection);
@@ -37,13 +37,13 @@ EulerAngles BasicAiming::update(DetectArmorsFrame &detection) {
 /**
  * WARNING: The return of this func can be nan!
  */
-EulerAngles BasicAiming::predictFromTrack(ArmorTrack &track, Time predTime) {
+EulerAngles BasicAiming::BasicAimingImpl::predictFromTrack(ArmorTrack &track, Time predTime) {
 
     float horizontal_dist, vertical_dist, yaw, pitch;
 
     TrackArmorInfo target_info = track.predict(predTime);
     Point3f center = opencvToRep(target_info.center_gimbal);
-    Transformer::solveDistAndYaw(center, yaw, horizontal_dist, vertical_dist);
+    Reconstructor::solveDistAndYaw(center, yaw, horizontal_dist, vertical_dist);
 
     // TODO: calcShootAngle can return pitch with nan if there is no solution.
     pitch = compensator.calcShootAngle(ballet_init_speed, horizontal_dist, vertical_dist);
@@ -52,7 +52,7 @@ EulerAngles BasicAiming::predictFromTrack(ArmorTrack &track, Time predTime) {
 
 }
 
-int BasicAiming::chooseNextTarget(std::map<int, ArmorTrack> &tracks_map, Time &predTime) {
+int BasicAiming::BasicAimingImpl::chooseNextTarget(std::map<int, ArmorTrack> &tracks_map, Time &predTime) {
 
     if (tracks_map.empty()) {
         // No targets found.
@@ -85,4 +85,11 @@ int BasicAiming::chooseNextTarget(std::map<int, ArmorTrack> &tracks_map, Time &p
 
     return min_id;
 
+}
+
+BasicAiming::BasicAimingImpl::BasicAimingImpl(Config &cfg)
+        : camera_calib(cfg), transformer(camera_calib), tracker(cfg),
+          compensator(cfg.get<float>("aiming.basic.airResistanceConst", 0.1)) {
+
+    compensate_time = cfg.get<float>("aiming.basic.compensateTime", 0.0);
 }

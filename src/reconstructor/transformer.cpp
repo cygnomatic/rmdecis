@@ -1,42 +1,43 @@
 //
-// Created by catslashbin on 22-11-27.
+// Created by catslashbin on 23-1-31.
 //
 
 #include "transformer.h"
 
-using namespace cv;
+using cv::Point3f;
+using Eigen::Matrix3f;
 
-void Transformer::reconstructArmor3D(DetectArmorInfo &armor) {
-    armor.trans_model2cam = cam_calib.armorSolvePnP(armor.corners_model, armor.corners_img);
-    armor.center_cam = mat2Point3f(armor.trans_model2cam.tvec);
+/**
+ * Convert intrinsic euler angle To Right-hand Rotation Matrix.
+ * @param euler euler angle, Intrinsic, {z,y',x'}
+ * @return Rotation Matrix
+ * @see https://dominicplein.medium.com/extrinsic-intrinsic-rotation-do-i-multiply-from-right-or-left-357c38c1abfd
+ */
+static Matrix3f cvtEulerToRotMat(const EulerAngles &euler) {
 
-    armor.center_base = armor.center_cam;
+    Eigen::AngleAxisf rz(euler.yaw, Eigen::Vector3f::UnitZ());
+    Eigen::AngleAxisf ry(euler.pitch, Eigen::Vector3f::UnitY());
+    Eigen::AngleAxisf rx(euler.roll, Eigen::Vector3f::UnitX());
+
+    Eigen::Quaternionf q = rz * ry * rx;
+    return q.matrix();
 }
 
-void Transformer::reconstructArmor3D(std::vector<DetectArmorInfo> &armors) {
-    for (auto &armorInfo: armors) {
-        reconstructArmor3D(armorInfo);
-    }
+Transform::Transform(Frame &parent, Frame &child) : parent_(parent), child_(child) {}
+
+Transform::Transform(Frame &parent, Frame &child, const Eigen::Matrix3f &rot, const Eigen::Vector3f &trans)
+        : Transform(parent, child) {
+    transform_.rotate(rot);
+    transform_.translate(trans);
 }
 
-Point2f Transformer::cam2img(const Point3f &pt) {
-    return cam_calib.projectToImage({pt}).at(0);
+Transform::Transform(Frame &parent, Frame &child, const EulerAngles &rot, const Eigen::Vector3f& trans)
+        : Transform(parent, child, cvtEulerToRotMat(rot), trans) {}
+
+Eigen::Vector3f Transform::applyTo(const Eigen::Vector3f &pt) {
+    return transform_ * pt;
 }
 
-void Transformer::solveDistAndYaw(const Point3f& center_gimbal, float& yaw_in_deg, float &horizontal_dist, float &vertical_dist) {
-    horizontal_dist = sqrtf(powf(center_gimbal.x, 2) + powf(center_gimbal.y, 2));
-    vertical_dist = center_gimbal.z;
-    yaw_in_deg = atan2f(center_gimbal.y, center_gimbal.x);
-
-    assert(!(std::isnan(horizontal_dist) || std::isnan(vertical_dist) || std::isnan(yaw_in_deg)));
+Eigen::Vector3f Transform::applyInverseTo(const Eigen::Vector3f &pt) {
+    return transform_.inverse(Eigen::Affine) * pt;
 }
-
-// std::vector<Point3f> Transformer::modelToCam(const std::vector<Point3f>& pts_model)
-// {
-//
-// }
-//
-// std::vector<Point2f> Transformer::modelToImg(const std::vector<Point3f>& pts_model)
-// {
-//
-// }
