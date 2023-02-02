@@ -14,7 +14,7 @@ using namespace cv;
 int main() {
     SimulateVisionOutput vision_output("../../data/vision_out/vision_result.yaml");
     SimpleVideoPlayer player("../../data/vision_out/video_input.avi");
-    CameraCalib camera_calib("../../config/camera.yml");
+    CameraCalib camera_calib("../../config/camera_coeffs.yml");
 
     player.setPlaybackSpeed(0.5);
 

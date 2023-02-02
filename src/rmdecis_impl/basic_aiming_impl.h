@@ -12,7 +12,7 @@
 #include "reconstructor/reconstructor.h"
 #include "compensator/ballistic_compensator.h"
 #include "utils/cv_utils.h"
-#include "utils/config.h"
+#include "config_impl.h"
 
 #include "basic_aiming.h"
 
@@ -40,9 +40,9 @@ public:
 
     /**
      * Initialize BasicAimingImpl decision-maker.
-     * @param config_loader Config loader.
+     * @param cfg Config.
      */
-    explicit BasicAimingImpl(ConfigLoader &config_loader);
+    explicit BasicAimingImpl(Config &cfg);
 
     /**
      * Update BasicAimingImpl decision-maker with frame and get where to aim.

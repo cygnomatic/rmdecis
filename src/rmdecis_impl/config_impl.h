@@ -2,16 +2,18 @@
 // Created by catslashbin on 23-1-29.
 //
 
-#ifndef CYGNOIDES_DECISION_CONFIG_H
-#define CYGNOIDES_DECISION_CONFIG_H
+#ifndef CYGNOIDES_DECISION_CONFIG_IMPL_H
+#define CYGNOIDES_DECISION_CONFIG_IMPL_H
 
 #include "rmdecis/core.h"
+#include "config.h"
 
 #include <yaml-cpp/yaml.h>
 
-class Config {
+class Config::ConfigImpl {
 private:
 
+    std::string path;
     std::string scope;
     YAML::Node node;
 
@@ -19,8 +21,14 @@ private:
 
 public:
 
+    /**
+     * Initialize config loader
+     * @param path Path to config directory
+     */
+    explicit ConfigImpl(std::string path);
+
     template<class T>
-    T get(const std::string field) {
+    T get(std::string field) {
         auto split_str = split(field, ".");
 
         // Construct a new temporary node for recursion.
@@ -39,7 +47,7 @@ public:
     }
 
     template<class T>
-    T get(const std::string field, const T default_value) {
+    T get(std::string field, T default_value) {
         T ret;
         try {
             ret = get<T>(field);
@@ -49,26 +57,6 @@ public:
         }
         return ret;
     }
-
-    explicit Config(const YAML::Node &node, std::string &scope) : node(node), scope(scope) {
-        assert(node.IsDefined());
-    }
 };
 
-class ConfigLoader {
-public:
-
-    std::string path;
-
-    /**
-     * Initialize config loader
-     * @param directory Path to config directory
-     */
-    explicit ConfigLoader(std::string directory);
-
-    Config load(std::string cfg_scope);
-
-    cv::FileStorage loadOpencvConfig(std::string cfg_scope);
-};
-
-#endif //CYGNOIDES_DECISION_CONFIG_H
+#endif //CYGNOIDES_DECISION_CONFIG_IMPL_H

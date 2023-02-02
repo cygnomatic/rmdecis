@@ -111,7 +111,7 @@ int main() {
 
     CameraCalibrator camera_calibrator(Size(1200, 900));
     camera_calibrator.calculateCaliCoeffs(imgs, Size(BOARD_ROW, BOARD_COLUMN), GRID_LEN);
-    camera_calibrator.saveCoeffs("../../config/camera.yml", "Test calib");
+    camera_calibrator.saveCoeffs("../../config/camera_coeffs.yml", "Test calib");
 
     return 0;
 }

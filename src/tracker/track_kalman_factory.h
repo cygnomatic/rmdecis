@@ -5,7 +5,7 @@
 #ifndef CYGNOIDES_DECISION_TRACK_KALMAN_FACTORY_H
 #define CYGNOIDES_DECISION_TRACK_KALMAN_FACTORY_H
 
-#include "utils/config.h"
+#include "rmdecis_impl/config_impl.h"
 
 class TrackKalmanFactory {
 
@@ -14,7 +14,7 @@ class TrackKalmanFactory {
 
 public:
 
-    explicit TrackKalmanFactory(ConfigLoader config_loader);
+    explicit TrackKalmanFactory(Config& cfg);
 
     static cv::Mat getTransitionMatrix(float dt);
 

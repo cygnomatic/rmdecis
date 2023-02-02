@@ -9,7 +9,7 @@
 #include <iostream>
 
 #include "../../include/typing.h"
-#include "utils/config.h"
+#include "rmdecis_impl/config_impl.h"
 
 class CameraCalib {
     // CameraCoeffs cam_coeffs;
@@ -21,7 +21,7 @@ public:
      * Instantiate Cam3DReconstructor with coeffs in a .yml file.
      * @param cam_coeffs The file contains camera coeffs.
      */
-    explicit CameraCalib(ConfigLoader &config_loader);
+    explicit CameraCalib(Config &cfg);
 
     /**
      * Undistort the img.

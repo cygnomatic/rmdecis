@@ -11,7 +11,7 @@
 #include "reconstructor/camera_calib.h"
 #include "munkres-cpp/munkres.h"
 #include "armor_track.h"
-#include "utils/config.h"
+#include "rmdecis_impl/config_impl.h"
 
 class Tracker {
 private:
@@ -28,12 +28,7 @@ private:
 public:
 
 
-    explicit Tracker(ConfigLoader &config_loader) : kf_factory(config_loader) {
-        Config cfg = config_loader.load("tracker");
-        k_similarity_threshold = cfg.get<float>("similarityThreshold", 0.7);
-        k_max_missing_cnt = cfg.get<int>("maxMissingCount", 2);
-        k_min_hit_cnt = cfg.get<int>("minHitCount", 4);
-    }
+    explicit Tracker(Config &cfg);
 
     void update(const DetectArmorsFrame &reconstruct_armor_result);
 

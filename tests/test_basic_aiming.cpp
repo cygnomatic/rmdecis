@@ -17,10 +17,10 @@ int main() {
     SimpleVideoPlayer player("../../data/vision_out/video_input.avi");
 
     // Initialize BasicAimingImpl with path to camera calibration coeffs file & config loader.
-    ConfigLoader config_loader("../../config");
-    BasicAiming basic_aiming(config_loader);
+    Config cfg("../../config/config.yml");
+    BasicAiming basic_aiming(cfg);
 
-    auto compensate_t = config_loader.load("aiming").get<float>("basic.compensateTime");
+    // auto compensate_t = cfg.get<float>("aiming.basic.compensateTime");
     while (true) {
 
         Mat frame = player.getFrame();

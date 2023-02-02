@@ -6,15 +6,15 @@
 #define CYGNOIDES_DECISION_BASIC_AIMING_H
 
 #include "typing.h"
-#include "utils/config.h"
+#include "config.h"
 
 class BasicAiming {
 public:
     /**
      * Initialize BasicAiming decision-maker.
-     * @param config_loader Config loader.
+     * @param cfg Config loader.
      */
-    explicit BasicAiming(ConfigLoader &config_loader);
+    explicit BasicAiming(Config &cfg);
 
     /**
      * Update BasicAiming decision-maker with frame and get where to aim.

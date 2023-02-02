@@ -2,12 +2,11 @@
 // Created by catslashbin on 23-1-29.
 //
 
-#include "utils/config.h"
+#include "rmdecis_impl/config_impl.h"
 
 int main() {
-    auto cl = ConfigLoader("../../config");
-    auto cfg = cl.load("kalman");
-    info("processNoiseCov, SD: {}", cfg.get<float>("processNoiseCov.SD"));
-    info("processNoiseCov, SD: {}", cfg.get<float>("processNoiseCov.SD"));
+    auto cfg = Config("../../config/config.yml");
+    info("processNoiseCov, SD: {}", cfg.get<float>("kalman.processNoiseCov.SD"));
+    info("processNoiseCov, SD: {}", cfg.get<float>("kalman.processNoiseCov.SD"));
     info("processNoiseCov, NOTHING: {}", cfg.get<float>("processNoiseCov.N.O.T.H.I.N.G", 0.1));
 }

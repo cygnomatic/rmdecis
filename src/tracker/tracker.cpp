@@ -10,16 +10,8 @@
 #include "tracker.h"
 
 munkres::Matrix<float> hungarianMatching(munkres::Matrix<float> mat) {
-
-    // Debug
-    // std::cout << mat << std::endl;
-
     munkres::Munkres<float> m;
     m.solve(mat);
-
-    // Debug
-    // std::cout << mat << std::endl;
-
     return mat;
 }
 
@@ -123,4 +115,10 @@ std::map<int, ArmorTrack> Tracker::getTracks(bool include_probationary) {
             tracks.insert(p);
     }
     return tracks;
+}
+
+Tracker::Tracker(Config &cfg) : kf_factory(cfg) {
+    k_similarity_threshold = cfg.get<float>("tracker.similarityThreshold", 0.7);
+    k_max_missing_cnt = cfg.get<int>("tracker.maxMissingCount", 2);
+    k_min_hit_cnt = cfg.get<int>("tracker.minHitCount", 4);
 }

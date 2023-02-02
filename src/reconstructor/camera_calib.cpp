@@ -6,9 +6,14 @@
 
 using namespace cv;
 
-CameraCalib::CameraCalib(ConfigLoader& config_loader) {
+CameraCalib::CameraCalib(Config& cfg) {
 
-    FileStorage fs = config_loader.loadOpencvConfig("camera");
+    auto coeffs_path = cfg.get<std::string>("camera.coeffsPath");
+    cv::FileStorage fs(coeffs_path, cv::FileStorage::READ);
+
+    if (!fs.isOpened()) {
+        throw std::runtime_error("Can not open file: " + coeffs_path);
+    }
 
     fs["CameraMatrix"] >> cam_mat;
     fs["DistortCoeffs"] >> dist_coeffs;

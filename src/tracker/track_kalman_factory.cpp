@@ -2,7 +2,7 @@
 // Created by catslashbin on 23-1-30.
 //
 
-#include "utils/config.h"
+#include "rmdecis_impl/config_impl.h"
 #include "track_kalman_factory.h"
 #include "armor_track.h"
 
@@ -100,16 +100,15 @@ cv::Mat TrackKalmanFactory::getTransitionMatrix(float dt) {
     return transitionMatrix;
 }
 
-TrackKalmanFactory::TrackKalmanFactory(ConfigLoader config_loader) {
-    Config cfg = config_loader.load("kalman");
+TrackKalmanFactory::TrackKalmanFactory(Config& cfg) {
 
-    SD = cfg.get<float>("processNoiseCov.SD", 1e-1);
-    SR = cfg.get<float>("processNoiseCov.SR", 1e-2);
-    SH = cfg.get<float>("processNoiseCov.SH", 1e-2);
-    SC = cfg.get<float>("processNoiseCov.SC", 1e-2);
+    SD = cfg.get<float>("kalman.processNoiseCov.SD", 1e-1);
+    SR = cfg.get<float>("kalman.processNoiseCov.SR", 1e-2);
+    SH = cfg.get<float>("kalman.processNoiseCov.SH", 1e-2);
+    SC = cfg.get<float>("kalman.processNoiseCov.SC", 1e-2);
 
-    SDM = cfg.get<float>("measurementNoiseCov.SDM", 100);
-    SRM = cfg.get<float>("measurementNoiseCov.SRM", 10);
-    SHM = cfg.get<float>("measurementNoiseCov.SHM", 10);
-    SCM = cfg.get<float>("measurementNoiseCov.SCM", 50);
+    SDM = cfg.get<float>("kalman.measurementNoiseCov.SDM", 100);
+    SRM = cfg.get<float>("kalman.measurementNoiseCov.SRM", 10);
+    SHM = cfg.get<float>("kalman.measurementNoiseCov.SHM", 10);
+    SCM = cfg.get<float>("kalman.measurementNoiseCov.SCM", 50);
 }
