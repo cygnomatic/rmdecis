@@ -7,7 +7,7 @@
 
 #include <utility>
 
-#include "typing/core.h"
+#include "../../include/typing.h"
 #include "utils/cv_utils.h"
 #include "reconstructor/camera_calib.h"
 

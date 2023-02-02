@@ -5,6 +5,7 @@
 #include "utils/config.h"
 #include "armor_track.h"
 #include "track_kalman_factory.h"
+#include "typing.h"
 
 using namespace cv;
 

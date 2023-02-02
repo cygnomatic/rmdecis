@@ -8,7 +8,7 @@
 #include <utility>
 #include <iostream>
 
-#include "typing/core.h"
+#include "../../include/typing.h"
 #include "utils/config.h"
 
 class CameraCalib {

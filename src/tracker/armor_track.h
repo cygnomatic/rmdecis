@@ -8,7 +8,7 @@
 #include <opencv2/video/tracking.hpp>
 #include <numeric>
 
-#include "typing/core.h"
+#include "../../include/typing.h"
 #include "utils/cv_utils.h"
 #include "tracker/track_kalman_factory.h"
 
