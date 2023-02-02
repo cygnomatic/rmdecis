@@ -2,10 +2,9 @@
 // Created by catslashbin on 22-11-21.
 //
 
-#include "utils/config.h"
 #include "armor_track.h"
 #include "track_kalman_factory.h"
-#include "typing.h"
+#include "rmdecis/core.h"
 
 using namespace cv;
 

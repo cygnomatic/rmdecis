@@ -2,19 +2,21 @@
 // Created by catslashbin on 23-1-24.
 //
 
-#ifndef CYGNOIDES_DECISION_BASIC_AIMING_H
-#define CYGNOIDES_DECISION_BASIC_AIMING_H
+#ifndef CYGNOIDES_DECISION_BASIC_AIMING_IMPL_H
+#define CYGNOIDES_DECISION_BASIC_AIMING_IMPL_H
 
 #include <map>
 
+#include "rmdecis/core.h"
 #include "tracker/tracker.h"
 #include "reconstructor/reconstructor.h"
-#include "../../include/typing.h"
-#include "utils/cv_utils.h"
 #include "compensator/ballistic_compensator.h"
+#include "utils/cv_utils.h"
 #include "utils/config.h"
 
-class BasicAiming {
+#include "basic_aiming.h"
+
+class BasicAiming::BasicAimingImpl {
 private:
 
     CameraCalib camera_calib;
@@ -37,20 +39,13 @@ public:
     Reconstructor transformer;
 
     /**
-     * Initialize BasicAiming decision-maker.
+     * Initialize BasicAimingImpl decision-maker.
      * @param config_loader Config loader.
      */
-    explicit BasicAiming(ConfigLoader &config_loader)
-            : camera_calib(config_loader), transformer(camera_calib), tracker(config_loader),
-              compensator(config_loader.load("aiming").get<float>("airResistanceConst", 0.1)) {
-
-        Config cfg = config_loader.load("aiming");
-
-        compensate_time = cfg.get<float>("basic.compensateTime", 0.0);
-    }
+    explicit BasicAimingImpl(ConfigLoader &config_loader);
 
     /**
-     * Update BasicAiming decision-maker with frame and get where to aim.
+     * Update BasicAimingImpl decision-maker with frame and get where to aim.
      * @param detection Result from the detection part.
      * @return Euler angles, representing the aiming target.
      */
@@ -59,4 +54,4 @@ public:
 };
 
 
-#endif //CYGNOIDES_DECISION_BASIC_AIMING_H
+#endif //CYGNOIDES_DECISION_BASIC_AIMING_IMPL_H

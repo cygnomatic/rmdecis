@@ -5,21 +5,9 @@
 #ifndef CYGNOIDES_TYPING_GENERAL_H
 #define CYGNOIDES_TYPING_GENERAL_H
 
-#include <iostream>
-#include <utility>
-#include <opencv2/highgui.hpp>
-#include <opencv2/videoio.hpp>
-#include <opencv2/imgcodecs.hpp>
-#include <opencv2/calib3d.hpp>
-#include <opencv2/imgproc.hpp>
-#include <opencv2/core/utility.hpp>
 #include <opencv2/core.hpp>
-#include <spdlog/spdlog.h>
-#include <spdlog/fmt/ostr.h>
 
-#include "armor.h"
-
-using namespace spdlog;
+#include "consts.h"
 
 /**
  * Type of time.

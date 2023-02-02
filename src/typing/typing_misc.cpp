@@ -2,7 +2,7 @@
 // Created by catslashbin on 23-2-2.
 //
 
-#include "typing.h"
+#include "rmdecis/core.h"
 
 Time::Time(int sec, int usec) : sec(sec), usec(usec), isDefined(true) {}
 

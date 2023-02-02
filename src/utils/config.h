@@ -5,7 +5,7 @@
 #ifndef CYGNOIDES_DECISION_CONFIG_H
 #define CYGNOIDES_DECISION_CONFIG_H
 
-#include "../../include/typing.h"
+#include "rmdecis/core.h"
 
 #include <yaml-cpp/yaml.h>
 

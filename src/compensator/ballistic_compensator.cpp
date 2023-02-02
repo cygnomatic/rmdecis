@@ -1,8 +1,8 @@
 //
 // Created by catslashbin on 22-11-18.
 //
-#include "ballistic_compensator.h"
 
+#include "ballistic_compensator.h"
 
 std::function<float(float)> BallisticCompensator::getBallisticFunc(float v0, float x, float y) {
     return [v0, x, y, this](float theta) { return ballistic(v0, x, theta) - y; };

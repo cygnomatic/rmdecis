@@ -10,7 +10,7 @@
 #include <functional>
 #include <cmath>
 
-#include "../utils/equation_solver.h"
+#include "utils/equation_solver.h"
 
 class BallisticCompensator {
     float k;

@@ -1,7 +1,8 @@
 //
 // Created by catslashbin on 23-2-2.
 //
-#include "typing.h"
+
+#include "rmdecis/core.h"
 
 ArmorCorners2d::ArmorCorners2d(cv::Point2f *corners) {
     tr = corners[0];
@@ -42,7 +43,7 @@ ArmorCorners2d::operator cv::Rect2f() const {
 }
 
 cv::Rect2f ArmorCorners2d::getBoundingBox() const {
-    return boundingRect(std::vector<cv::Point2f>({tr, tl, dl, dr}));
+    return cv::boundingRect(std::vector<cv::Point2f>({tr, tl, dl, dr}));
 }
 
 std::vector<cv::Point2f> ArmorCorners2d::toPts() {

@@ -8,6 +8,7 @@
 #include <string>
 #include <yaml-cpp/yaml.h>
 
+#include "rmdecis/core.h"
 #include "../include/typing.h"
 
 class SimulateVisionOutput {

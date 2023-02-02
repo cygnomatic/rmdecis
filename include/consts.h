@@ -2,8 +2,8 @@
 // Created by catslashbin on 22-11-28.
 //
 
-#ifndef CYGNOIDES_DECISION_ARMOR_H
-#define CYGNOIDES_DECISION_ARMOR_H
+#ifndef CYGNOIDES_DECISION_CONSTS_H
+#define CYGNOIDES_DECISION_CONSTS_H
 
 #define SMALL_ARMOR_WIDTH 135.0f
 #define SMALL_ARMOR_HEIGHT 125.0f
@@ -43,4 +43,4 @@ static ArmorType getArmorTypeFormID(FacilityID id) {
     else return BIG_ARMOR;
 }
 
-#endif //CYGNOIDES_DECISION_ARMOR_H
+#endif //CYGNOIDES_DECISION_CONSTS_H

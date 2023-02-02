@@ -10,13 +10,14 @@
 #include "../utils_contrib/simulate_vision_result.h"
 #include "tracker/tracker.h"
 #include "reconstructor/reconstructor.h"
+#include "rmdecis/core.h"
 
 using cv::Mat;
 using cv::rectangle;
 
 int main() {
 
-    set_level(spdlog::level::debug);
+    spdlog::set_level(spdlog::level::debug);
 
     SimulateVisionOutput vision_output("../../data/vision_out/vision_result.yaml");
     SimpleVideoPlayer player("../../data/vision_out/video_input.avi");
