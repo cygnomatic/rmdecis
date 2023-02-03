@@ -16,9 +16,22 @@ public:
      */
     explicit Config(std::string path);
 
+    /**
+     * Get item from config.
+     * @tparam T Type
+     * @param field Config field
+     * @return The corresponding config item, throw runtime_error if not exist.
+     */
     template<class T>
     T get(std::string field);
 
+    /**
+     * Get item form config with default value.
+     * @tparam T Type
+     * @param field Config field
+     * @param default_value Default value
+     * @return The corresponding config item if the item exist. Otherwise return the default value .
+     */
     template<class T>
     T get(std::string field, T default_value);
 
