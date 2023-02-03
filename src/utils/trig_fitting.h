@@ -6,20 +6,28 @@
 #define CYGNOIDES_DECISION_TRIG_FITTING_H
 
 #include <kiss_fftr.h>
+#include "rmdecis/core.h"
 
 /**
  * A C++ wrapper for kissfft. TrigFitting (real input) only.
  */
 
+#define MAX_FFT_SAMPLE_NUM 5000
+
 class TrigFitting
 {
-    void *buffer;
-    kiss_fftr_cfg cfg;
+    kiss_fft_cpx fftr_result[MAX_FFT_SAMPLE_NUM]{};
+    float amp{}, omega{}, phase{}, offset{};
+    std::function<float(float)> fit_func;
 
 public:
-    TrigFitting();
+    explicit TrigFitting(Config& cfg);
 
     ~TrigFitting();
+
+    float Update(Time time, float y);
+
+    void fftr(const std::vector<float> &data);
 };
 
 

@@ -21,5 +21,6 @@ using spdlog::error;
 
 #include "typing.h"
 #include "consts.h"
+#include "config.h"
 
 #endif //CYGNOIDES_DECISION_CORE_H

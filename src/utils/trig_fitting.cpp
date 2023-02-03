@@ -4,16 +4,16 @@
 
 #include "trig_fitting.h"
 
-#include <cstdlib>
-#include <vector>
+TrigFitting::TrigFitting(Config& cfg) {
 
-#define BUFFER_MEM_SIZE (10 * 1024 * 1024)
-
-TrigFitting::TrigFitting()
-{
-    buffer = malloc(BUFFER_MEM_SIZE); // 10 Mb
 }
 
-TrigFitting::~TrigFitting() {
-    free(buffer);
+
+float TrigFitting::Update(Time time, float y) {
+
+}
+
+void TrigFitting::fftr(const std::vector<float>& data) {
+    auto fftr_cfg = kiss_fftr_alloc(data.size(), false, nullptr, nullptr);
+    kiss_fftr(fftr_cfg, data.data(), fftr_result);
 }

@@ -4,11 +4,13 @@
 
 #ifndef CYGNOIDES_DECISION_CONFIG_IMPL_H
 #define CYGNOIDES_DECISION_CONFIG_IMPL_H
-
-#include "rmdecis/core.h"
 #include "config.h"
 
 #include <yaml-cpp/yaml.h>
+#include <spdlog/spdlog.h>
+#include <fmt/format.h>
+
+using namespace spdlog;
 
 class Config::ConfigImpl {
 private:
