@@ -81,6 +81,16 @@ struct ArmorCorners2d {
      */
     explicit ArmorCorners2d(std::vector<cv::Point2f> corners);
 
+    /**
+     * Construct ArmorCorners2d with four corners coord.
+     * @note The corner points will be "moved" to this structure. Do not reuse original points.
+     * @param tr Top-Right corner
+     * @param tl Top-Left corner
+     * @param dl Down-Right corner
+     * @param dr Down-Left corner
+     */
+    explicit ArmorCorners2d(cv::Point2f tr, cv::Point2f tl, cv::Point2f dl, cv::Point2f dr);
+
     cv::Point2f tr; // Top-Right
     cv::Point2f tl; // Top-Left
     cv::Point2f dl; // Down-Left
@@ -159,19 +169,29 @@ struct DetectArmorInfo {
 
     explicit DetectArmorInfo() = default;
 
-    explicit DetectArmorInfo(FacilityID armor_type, const ArmorCorners2d &corners_img, float detection_confidence = 1.0);
+    /**
+     * Construct a struct to save the detection result of an armor.
+     * @param facility_id Facility ID
+     * @param corners_img Armor corners
+     * @param detection_confidence Detection confidence
+     * @note corners_img is moved into the struct. Do not reuse it.
+     */
+    explicit DetectArmorInfo(FacilityID facility_id, ArmorCorners2d corners_img, float detection_confidence = 1.0);
 };
 
-/**
- * The output of the Vision Armor detection.
- * @param seq_idx For test only. Index of the corresponding frame.
- * @param time The time **the frame is shot**. NOT THE TIME FINISH THE VISION PROCESS.
- * @param armor_info Detected armor info.
- */
 struct DetectArmorsFrame {
     int seq_idx = -1;
     Time time{};
     std::vector<DetectArmorInfo> armor_info{};
+
+    /**
+     * The output of the Vision Armor detection.
+     * @param seq_idx For test only. Index of the corresponding frame.
+     * @param time The time **the frame is shot**. NOT THE TIME FINISH THE VISION PROCESS.
+     * @param armor_info Detected armor info.
+     * @note armor_info is moved into the struct. Do not reuse it.
+     */
+    explicit DetectArmorsFrame(int seq_idx, Time time, std::vector<DetectArmorInfo> armor_info);
 };
 
 

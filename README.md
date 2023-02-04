@@ -2,26 +2,25 @@
 
 北邮鸿雁战队 视觉组 - 决策部分 代码仓库
 
-## Setup
+## Setup & Installation
 
 1. 配置 C++ 环境
 
     ```bash
+   ### Runtime requirements:
    sudo apt install gcc python3 build-essential make cmake
-   sudo apt install dbg clang-tidy # For debug
+   
+   ### Debug requirements:
+   # sudo apt install dbg clang-tidy
    ```
-2. 安装 OpenCV
-   ```bash
-   sudo apt install libopencv-dev
-   ``` 
 
-3. 安装 C++ 包管理器 Conan
+2. 安装 C++ 包管理器 Conan
     
     ```bash
    pip3 install conan
    ```
 
-4. 配置 Conan
+3. 配置 Conan
    ```bash
    # Check gcc version.
    $ gcc -v
@@ -32,16 +31,13 @@
    
    # Set conan profile.
    $ conan profile update settings.compiler.version=12 default
+   $ conan profile update settings.compiler.libcxx=libstdc++11 default
    ```
 
-5. 使用 Conan 安装库依赖
-    ```bash
-   # `cmake-build-debug` is the default build dest of Clion. 
-   # Remove `-s build_type=Debug` for release build.
-   conan install . -s build_type=Debug --install-folder=cmake-build-debug
+4. 运行 `install.sh`
+   ```bash
+   $ sudo sh install.sh
    ```
-
-6. Build 即可
 
 ## File Structure
 ```

@@ -8,8 +8,7 @@
 #include <utility>
 #include <iostream>
 
-#include "../../include/typing.h"
-#include "rmdecis_impl/config_impl.h"
+#include "rmdecis/core.h"
 
 class CameraCalib {
     // CameraCoeffs cam_coeffs;

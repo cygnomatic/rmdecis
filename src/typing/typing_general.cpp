@@ -2,7 +2,11 @@
 // Created by catslashbin on 23-2-2.
 //
 
+#include <utility>
+
 #include "rmdecis/core.h"
+#include "typing.h"
+
 
 ArmorCorners2d::ArmorCorners2d(cv::Point2f *corners) {
     tr = corners[0];
@@ -49,6 +53,9 @@ cv::Rect2f ArmorCorners2d::getBoundingBox() const {
 std::vector<cv::Point2f> ArmorCorners2d::toPts() {
     return std::vector<cv::Point2f>({tr, tl, dl, dr});
 }
+
+ArmorCorners2d::ArmorCorners2d(cv::Point2f tr, cv::Point2f tl, cv::Point2f dl, cv::Point2f dr)
+        : tr(std::move(tr)), tl(std::move(tl)), dl(std::move(dl)), dr(std::move(dr)) {}
 
 ArmorCorners3d::ArmorCorners3d(cv::Point3f *corners) {
     tr = corners[0];
@@ -105,7 +112,10 @@ cv::Point3f ArmorCorners3d::getCenter() const {
     return (tr + tl + dl + dr) / 4;
 }
 
-DetectArmorInfo::DetectArmorInfo(FacilityID armor_type, const ArmorCorners2d &corners_img, float detection_confidence) :
-        facility_id(armor_type), corners_img(corners_img), detection_confidence(detection_confidence) {
+DetectArmorInfo::DetectArmorInfo(FacilityID armor_type, ArmorCorners2d corners_img, float detection_confidence) :
+        facility_id(armor_type), corners_img(std::move(corners_img)), detection_confidence(detection_confidence) {
     corners_model = ArmorCorners3d{getArmorTypeFormID(facility_id)};
 }
+
+DetectArmorsFrame::DetectArmorsFrame(int seq_idx, Time time, std::vector<DetectArmorInfo> armor_info)
+        : seq_idx(seq_idx), time(time), armor_info(std::move(armor_info)) {}

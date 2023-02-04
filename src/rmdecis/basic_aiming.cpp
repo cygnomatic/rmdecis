@@ -7,6 +7,8 @@
 
 BasicAiming::BasicAiming(Config &config_loader) : impl(new BasicAimingImpl(config_loader)) {}
 
-EulerAngles BasicAiming::update(DetectArmorsFrame &detection) {
-    return impl->update(detection);
+BasicAiming::~BasicAiming() = default;
+
+EulerAngles BasicAiming::update(DetectArmorsFrame detection) {
+    return impl->update(std::move(detection));
 }

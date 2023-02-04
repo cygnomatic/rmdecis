@@ -7,11 +7,11 @@
 
 #include <map>
 
-#include "../../include/typing.h"
+#include "rmdecis/core.h"
+
 #include "reconstructor/camera_calib.h"
+#include "tracker/armor_track.h"
 #include "munkres-cpp/munkres.h"
-#include "armor_track.h"
-#include "rmdecis_impl/config_impl.h"
 
 class Tracker {
 private:

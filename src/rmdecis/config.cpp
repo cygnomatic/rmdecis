@@ -7,6 +7,8 @@
 
 Config::Config(std::string path) : impl(new ConfigImpl(path)) {}
 
+Config::~Config() = default;
+
 template<class T>
 T Config::get(std::string field, T default_value) {
     return impl->get<T>(field, default_value);

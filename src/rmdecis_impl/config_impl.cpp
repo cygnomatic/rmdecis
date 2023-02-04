@@ -4,7 +4,7 @@
 
 #include <filesystem>
 #include <string>
-#include <opencv2/core.hpp>
+#include <spdlog/spdlog.h>
 
 #include "config.h"
 #include "config_impl.h"
