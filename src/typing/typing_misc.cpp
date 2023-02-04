@@ -3,6 +3,8 @@
 //
 
 #include "rmdecis/core.h"
+#include "typing.h"
+
 
 Time::Time(int sec, int usec) : sec(sec), usec(usec), isDefined(true) {}
 

@@ -1,0 +1,24 @@
+camera:
+  coeffsPath: "../config/camera_coeffs.yml"
+aiming:
+  basic:
+    compensateTime: 5.0
+  airResistanceConst: 0.1
+tracker:
+  minHitCount: 2
+  maxMissingCount: 5
+  similarityThreshold: 0.65
+kalman:
+  processNoiseCov:
+    SD: 1e-1
+    SR: 1e-1
+    SH: 1e-1
+    SC: 1e-1
+  measurementNoiseCov:
+    SDM: 150
+    SRM: 100
+    SHM: 100
+    SCM: 100
+predictor:
+  rune:
+    avgUpdateTimeInterval: 0.03

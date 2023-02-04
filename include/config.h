@@ -16,6 +16,8 @@ public:
      */
     explicit Config(std::string path);
 
+    ~Config();
+
     /**
      * Get item from config.
      * @tparam T Type

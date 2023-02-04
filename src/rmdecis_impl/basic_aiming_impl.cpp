@@ -6,7 +6,7 @@
 
 using namespace cv;
 
-EulerAngles BasicAiming::BasicAimingImpl::update(DetectArmorsFrame &detection) {
+EulerAngles BasicAiming::BasicAimingImpl::update(DetectArmorsFrame detection) {
 
     transformer.reconstructArmor3D(detection.armor_info);
     tracker.update(detection);

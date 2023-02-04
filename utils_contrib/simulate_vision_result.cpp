@@ -35,7 +35,7 @@ SimulateVisionOutput::SimulateVisionOutput(const std::string &data_path) {
                 armor_info.emplace_back(armor_type, corners, confidence);
             }
 
-            data[seq_idx] = {seq_idx, time, armor_info};
+            data.emplace(seq_idx, DetectArmorsFrame{seq_idx, time, armor_info});
 
             // debug("Loaded {}th data", seq_idx);
         }
@@ -55,7 +55,9 @@ DetectArmorsFrame SimulateVisionOutput::getNextData() {
 
 DetectArmorsFrame SimulateVisionOutput::getData(int seq_idx) {
     auto i = data.find(seq_idx);
-    if (i == data.end())
-        return DetectArmorsFrame{};
-    return data[seq_idx];
+    if (i == data.end()) {
+        warn("Invalid seq_idx. Failed to find corresponding data.");
+        return DetectArmorsFrame(seq_idx, Time(), {});
+    }
+    return data.at(seq_idx);
 }
