@@ -5,8 +5,10 @@
 #ifndef CYGNOIDES_DECISION_CORE_H
 #define CYGNOIDES_DECISION_CORE_H
 
+#include <iostream>
 #include <string>
 #include <cmath>
+#include <numeric>
 #include <vector>
 
 #include <opencv2/imgproc.hpp>
