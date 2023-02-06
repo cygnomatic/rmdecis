@@ -26,14 +26,23 @@ vector<string> Config::ConfigImpl::split(const string &str, const string delimit
 }
 
 Config::ConfigImpl::ConfigImpl(std::string path) : path(path) {
+    try {
+        path = filesystem::absolute(path).lexically_normal().string();
+    } catch (exception &e) {
+        error("Failed to load config form: {}", path);
+        throw runtime_error(fmt::format("Failed to load config: {}", e.what()));
+    }
     info("Loading config form: {}", path);
 
     try {
         node = YAML::LoadFile(path);
-    } catch (exception &e){
+    } catch (exception &e) {
+        error("Failed to load config from: {}", path);
         throw runtime_error(fmt::format("Failed to load config: {}", e.what()));
     }
 
-    if (!node.IsDefined())
+    if (!node.IsDefined()) {
+        error("Invalid config: {}", path);
         throw std::runtime_error(fmt::format("Invalid config path: {}", path));
+    }
 }

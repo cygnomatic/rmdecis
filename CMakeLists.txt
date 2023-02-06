@@ -76,3 +76,5 @@ add_executable(test_basic_aiming ${rmdecis_LIBS} ${rmdecis_UTILS} tests/test_bas
 add_executable(test_config ${rmdecis_LIBS} ${rmdecis_UTILS} tests/test_config.cpp)
 
 add_executable(test_kissfft ${rmdecis_LIBS} ${rmdecis_UTILS} tests/test_kissfft.cpp)
+
+add_executable(test_trig_fitting ${rmdecis_LIBS} ${rmdecis_UTILS} tests/test_trig_fitting.cpp)

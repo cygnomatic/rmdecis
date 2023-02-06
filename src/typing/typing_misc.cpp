@@ -17,7 +17,13 @@ float Time::operator-(const Time &rhs) const {
 }
 
 Time Time::operator+(const float rhs) const {
-    return Time{sec + int(rhs), usec + int((rhs - int(rhs)) * 1e6)};
+    int sec_ = sec + int(rhs);
+    int usec_ = usec + int((rhs - int(rhs)) * 1e6);
+
+    sec_ += usec_ / int(1e6);
+    usec_ = usec_ % int(1e6);
+
+    return Time{sec_, usec_};
 }
 
 EulerAngles::EulerAngles(const float *angles) {
