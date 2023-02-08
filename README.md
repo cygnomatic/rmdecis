@@ -17,20 +17,14 @@
 2. 安装 C++ 包管理器 Conan
     
     ```bash
-   pip3 install conan
+   sudo pip3 install conan
    ```
 
 3. 配置 Conan
    ```bash
-   # Check gcc version.
-   $ gcc -v
-   Using built-in specs.
-   COLLECT_GCC=gcc
-   ...
-   gcc version 12.1.0 (Ubuntu 12.1.0-2ubuntu1~22.04)
-   
    # Set conan profile.
-   $ conan profile update settings.compiler.version=12 default
+   # $ conan profile update settings.compiler.version=12 default
+   $ conan profile new default --detect
    $ conan profile update settings.compiler.libcxx=libstdc++11 default
    ```
 
