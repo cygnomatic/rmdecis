@@ -46,6 +46,8 @@ struct EulerAngles {
 
     explicit EulerAngles(const float angles[]);
 
+    explicit EulerAngles(float yaw, float pitch, float roll);
+
     explicit EulerAngles(float yaw, float pitch);
 };
 

@@ -32,11 +32,9 @@ EulerAngles::EulerAngles(const float *angles) {
     roll = angles[2];
 }
 
-EulerAngles::EulerAngles(float yaw, float pitch) {
-    this->yaw = yaw;
-    this->pitch = pitch;
-    roll = 0.f;
-}
+EulerAngles::EulerAngles(float yaw, float pitch): yaw(yaw), pitch(pitch), roll(0.f) {}
+
+EulerAngles::EulerAngles(float yaw, float pitch, float roll) : yaw(yaw), pitch(pitch), roll(roll) {}
 
 Transform3d::Transform3d(cv::Mat rvec, cv::Mat tvec) {
     this->rvec = std::move(rvec);

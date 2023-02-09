@@ -5,48 +5,47 @@
 #ifndef CYGNOIDES_DECISION_TRANSFORMER_H
 #define CYGNOIDES_DECISION_TRANSFORMER_H
 
-#include "../../include/typing.h"
 #include <Eigen/Dense>
 #include <opencv2/core/eigen.hpp>
 
-class Transform;
-
-class Frame;
-
-class Transformer {
-
-};
+#include "rmdecis/core.h"
 
 class Transform {
 private:
+
     Eigen::AffineCompact3f transform_;
 
 public:
 
-    Frame &parent_;
-    Frame &child_;
+    Transform();
 
-    Transform(Frame &parent, Frame &child);
+    Transform(const Eigen::Matrix3f &rot, const Eigen::Vector3f &trans);
 
-    Transform(Frame &parent, Frame &child, const Eigen::Matrix3f &rot, const Eigen::Vector3f &trans);
+    Transform(const EulerAngles &rot, const Eigen::Vector3f &trans);
 
-    Transform(Frame &parent, Frame &child, const EulerAngles &rot, const Eigen::Vector3f &trans);
+    Transform(Config &cfg, std::string field);
 
     Eigen::Vector3f applyTo(const Eigen::Vector3f& pt);
 
     Eigen::Vector3f applyInverseTo(const Eigen::Vector3f& pt);
 };
 
-class Frame {
-private:
-    std::string name;
+class Transformer {
 
-public:
-    explicit Frame(std::string name) : name(name) {}
+    Transform trans_cam2gt_;
+    Transform trans_gt2gimbal_;
+    Transform trans_gimbal2world_;
 
-    bool operator==(const Frame& other) const {
-        return name == other.name;
-    }
+    explicit Transformer(Config& cfg);
+
+    void update(float gimbal_yaw, float gimbal_pitch);
+
+    Eigen::Vector3f camToGimbal(const cv::Point3f& pt);
+
+    Eigen::Vector3f gimbalToWorld(const Eigen::Vector3f& pt);
+
+    Eigen::Vector3f camToWorld(const cv::Point3f & pt);
+
 };
 
 
