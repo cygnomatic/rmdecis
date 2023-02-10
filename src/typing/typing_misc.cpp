@@ -12,7 +12,7 @@ Time::Time() : sec(0), usec(0), isDefined(false) {}
 
 float Time::operator-(const Time &rhs) const {
     if (isDefined && rhs.isDefined)
-        return (sec - rhs.sec) + (usec - rhs.usec) * 1e-6f;
+        return float(sec - rhs.sec) + float(usec - rhs.usec) * 1e-6f;
     return 0.f;
 }
 
@@ -32,16 +32,16 @@ EulerAngles::EulerAngles(const float *angles) {
     roll = angles[2];
 }
 
-EulerAngles::EulerAngles(float yaw, float pitch): yaw(yaw), pitch(pitch), roll(0.f) {}
+EulerAngles::EulerAngles(float yaw, float pitch) : yaw(yaw), pitch(pitch), roll(0.f) {}
 
 EulerAngles::EulerAngles(float yaw, float pitch, float roll) : yaw(yaw), pitch(pitch), roll(roll) {}
 
-Transform3d::Transform3d(cv::Mat rvec, cv::Mat tvec) {
+CvTransform3f::CvTransform3f(cv::Mat rvec, cv::Mat tvec) {
     this->rvec = std::move(rvec);
     this->tvec = std::move(tvec);
 }
 
-std::vector<cv::Point3f> Transform3d::applyTo(const std::vector<cv::Point3f> &pts) const {
+std::vector<cv::Point3f> CvTransform3f::applyTo(const std::vector<cv::Point3f> &pts) const {
     cv::Mat rot_mat;
     std::vector<cv::Point3f> ret;
     Rodrigues(rvec, rot_mat);
@@ -55,6 +55,6 @@ std::vector<cv::Point3f> Transform3d::applyTo(const std::vector<cv::Point3f> &pt
     return ret;
 }
 
-cv::Point3f Transform3d::applyTo(const cv::Point3f &pt) const {
+cv::Point3f CvTransform3f::applyTo(const cv::Point3f &pt) const {
     return applyTo(std::vector<cv::Point3f>{pt}).at(0);
 }

@@ -6,9 +6,9 @@
 
 using namespace cv;
 
-EulerAngles BasicAiming::BasicAimingImpl::update(DetectArmorsFrame detection) {
+EulerAngles BasicAiming::BasicAimingImpl::update(FrameInput detection) {
 
-    transformer.reconstructArmor3D(detection.armor_info);
+    reconstructor.reconstructArmor(detection);
     tracker.update(detection);
 
     auto tracks_map = tracker.getTracks();
@@ -88,7 +88,7 @@ int BasicAiming::BasicAimingImpl::chooseNextTarget(std::map<int, ArmorTrack> &tr
 }
 
 BasicAiming::BasicAimingImpl::BasicAimingImpl(Config &cfg)
-        : camera_calib(cfg), transformer(camera_calib), tracker(cfg),
+        : reconstructor(cfg), tracker(cfg),
           compensator(cfg.get<float>("aiming.basic.airResistanceConst", 0.1)) {
 
     compensate_time = cfg.get<float>("aiming.basic.compensateTime", 0.0);

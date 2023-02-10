@@ -102,7 +102,7 @@ TrackArmorInfo ArmorTrack::cvtStateMat2Result(const Mat &state) {
 
 Mat ArmorTrack::cvtDetection2MeasurementMat(const DetectArmorInfo &detection) {
     Rect2f bounding_box = (Rect2f) detection.corners_img;
-    Point3f center = detection.center_base;
+    Point3f center = detection.center_world;
 
     float u = bounding_box.x, v = bounding_box.y;
     float ratio = bounding_box.width / bounding_box.height;

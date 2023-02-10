@@ -117,5 +117,9 @@ DetectArmorInfo::DetectArmorInfo(FacilityID armor_type, ArmorCorners2d corners_i
     corners_model = ArmorCorners3d{getArmorTypeFormID(facility_id)};
 }
 
-DetectArmorsFrame::DetectArmorsFrame(int seq_idx, Time time, std::vector<DetectArmorInfo> armor_info)
-        : seq_idx(seq_idx), time(time), armor_info(std::move(armor_info)) {}
+FrameInput::FrameInput(int seq_idx, Time time, std::vector<DetectArmorInfo> armor_info, RobotState robot_state) :
+        seq_idx(seq_idx), time(time), armor_info(std::move(armor_info)), robot_state(robot_state) {}
+
+
+RobotState::RobotState(float gimbal_yaw, float gimbal_pitch, float ballet_init_speed) :
+        gimbal_pitch(gimbal_pitch), gimbal_yaw(gimbal_yaw), ballet_init_speed(ballet_init_speed) {}

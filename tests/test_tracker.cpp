@@ -23,8 +23,7 @@ int main() {
     SimpleVideoPlayer player("../../data/vision_out/video_input.avi");
 
     Config cfg("../../config/config.yml");
-    CameraCalib camera_calib(cfg);
-    Reconstructor transformer(camera_calib);
+    Reconstructor reconstructor(cfg);
 
     player.setPlaybackSpeed(1);
 
@@ -36,27 +35,27 @@ int main() {
         if (frame.empty())
             break;
 
-        auto pred_result = vision_output.getData(player.frame_position);
-        transformer.reconstructArmor3D(pred_result.armor_info);
+        auto detect_result = vision_output.getData(player.frame_position);
+        reconstructor.reconstructArmor(detect_result);
 
-        tracker.update(pred_result);
+        tracker.update(detect_result);
 
-        for (auto &t: pred_result.armor_info) {
+        for (auto &t: detect_result.armor_info) {
             rectangle(frame, t.corners_img.getBoundingBox(), {255, 255, 0}, 2);
         }
 
         for (auto &p: tracker.getTracks()) {
 
-            track_info = p.second.predict(pred_result.time + 10);
-            drawPoint(frame, transformer.cam2img(track_info.center_gimbal), {0, 50, 50}, 10);
+            track_info = p.second.predict(detect_result.time + 10);
+            drawPoint(frame, reconstructor.cam2img(track_info.center_gimbal), {0, 50, 50}, 10);
             rectangle(frame, track_info.bbox, {0, 50, 50}, 5);
 
-            track_info = p.second.predict(pred_result.time + 5);
-            drawPoint(frame, transformer.cam2img(track_info.center_gimbal), {0, 150, 150}, 10);
+            track_info = p.second.predict(detect_result.time + 5);
+            drawPoint(frame, reconstructor.cam2img(track_info.center_gimbal), {0, 150, 150}, 10);
             rectangle(frame, track_info.bbox, {0, 150, 150}, 5);
 
-            track_info = p.second.predict(pred_result.time);
-            drawPoint(frame, transformer.cam2img(track_info.center_gimbal), {0, 150, 150}, 10);
+            track_info = p.second.predict(detect_result.time);
+            drawPoint(frame, reconstructor.cam2img(track_info.center_gimbal), {0, 150, 150}, 10);
             rectangle(frame, track_info.bbox, {0, 150, 150}, 5);
 
 

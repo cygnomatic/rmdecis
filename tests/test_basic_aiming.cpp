@@ -29,7 +29,7 @@ int main() {
 
         // `vision_output.getData(player.frame_position)` simulates the detection part.
         // It returns a `DetectArmorsFrame` instance, which is the result of detection.
-        DetectArmorsFrame detection = vision_output.getData(player.frame_position);
+        FrameInput detection = vision_output.getData(player.frame_position);
 
         // Call `basic_aiming.update()` to get the angle to aim.
         EulerAngles result = basic_aiming.update(detection);

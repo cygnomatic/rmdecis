@@ -24,7 +24,7 @@ public:
      * @return Euler angles, representing the aiming target.
      * @note The DetectArmorsFrame object is passed in by `move`. Do not reuse the detection.
      */
-    EulerAngles update(DetectArmorsFrame detection);
+    EulerAngles update(FrameInput detection);
 
 private:
     class BasicAimingImpl;

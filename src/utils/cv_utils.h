@@ -5,9 +5,9 @@
 #ifndef CYGNOIDES_DECISION_CV_UTILS_H
 #define CYGNOIDES_DECISION_CV_UTILS_H
 
-#include "typing.h"
-
-#include <opencv2/imgproc.hpp>
+#include "rmdecis/core.h"
+#include <Eigen/Dense>
+#include <opencv2/core/eigen.hpp>
 
 inline void drawArmorCorners(cv::Mat &image, ArmorCorners2d &corners,
                              const cv::Scalar &color = cv::Scalar(255, 0, 0), int thickness = 2) {
@@ -25,11 +25,19 @@ inline float calculateIoU(const cv::Rect2f &rect1, const cv::Rect2f &rect2) {
     return std::isnan(iou) ? 0.f : iou;
 }
 
-inline cv::Point3f mat2Point3f(const cv::Mat &mat) {
+inline cv::Point3f cvMat2Point3f(const cv::Mat &mat) {
     assert(mat.rows == 3 && mat.cols == 1);
     cv::Mat float_mat;
     mat.convertTo(float_mat, CV_32F);
     return {float_mat.at<float>(0), float_mat.at<float>(1), float_mat.at<float>(2)};
+}
+
+inline Eigen::Vector3f cvPtToEigenVec3f(const cv::Point3f &pt) {
+    return {pt.x, pt.y, pt.z};
+}
+
+inline cv::Point3f eigenVecToCvPt3f(const Eigen::Vector3f &pt) {
+    return {pt.x(), pt.y(), pt.z()};
 }
 
 inline void drawPoint(cv::Mat &image, const cv::Point2f &point,

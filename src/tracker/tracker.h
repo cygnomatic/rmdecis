@@ -30,7 +30,7 @@ public:
 
     explicit Tracker(Config &cfg);
 
-    void update(const DetectArmorsFrame &reconstruct_armor_result);
+    void update(const FrameInput &reconstruct_armor_result);
 
     void associate(const std::vector<DetectArmorInfo> &armor_detections, Time time,
                    std::vector<DetectArmorInfo> &unmatched_detections,

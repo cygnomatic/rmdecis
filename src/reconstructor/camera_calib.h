@@ -29,13 +29,13 @@ public:
      */
     cv::Mat undistort(const cv::Mat &img);
 
-    Transform3d solvePnP(const std::vector<cv::Point3f> &obj_pts, const std::vector<cv::Point2f> &img_pts);
+    CvTransform3f solvePnP(const std::vector<cv::Point3f> &obj_pts, const std::vector<cv::Point2f> &img_pts);
 
-    Transform3d armorSolvePnP(const ArmorCorners3d &corners_model, const ArmorCorners2d &corners_img);
+    CvTransform3f armorSolvePnP(const ArmorCorners3d &corners_model, const ArmorCorners2d &corners_img);
 
-    void drawAxes(cv::Mat &img, const Transform3d &trans);
+    void drawAxes(cv::Mat &img, const CvTransform3f &trans);
 
-    std::vector<cv::Point2f> projectToImage(const std::vector<cv::Point3f> &space_pts, const Transform3d &trans = {});
+    std::vector<cv::Point2f> projectToImage(const std::vector<cv::Point3f> &space_pts, const CvTransform3f &trans = {});
 };
 
 

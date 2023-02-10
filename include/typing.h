@@ -51,13 +51,13 @@ struct EulerAngles {
     explicit EulerAngles(float yaw, float pitch);
 };
 
-struct Transform3d {
+struct CvTransform3f {
     cv::Mat rvec = cv::Mat::zeros(3, 1, CV_64F);
     cv::Mat tvec = cv::Mat::zeros(3, 1, CV_64F);
 
-    Transform3d() = default;
+    CvTransform3f() = default;
 
-    Transform3d(cv::Mat rvec, cv::Mat tvec);
+    CvTransform3f(cv::Mat rvec, cv::Mat tvec);
 
     std::vector<cv::Point3f> applyTo(const std::vector<cv::Point3f> &pts) const;
 
@@ -163,10 +163,11 @@ struct DetectArmorInfo {
     ArmorCorners3d corners_model;
     float detection_confidence = 1.0;
 
-    // Info form reconstructor
-    cv::Point3f center_base;
+    // Info from reconstructor
     cv::Point3f center_cam;
-    Transform3d trans_model2cam;
+    cv::Point3f center_gimbal;
+    cv::Point3f center_world;
+    CvTransform3f trans_model2cam;
     float reconstruct_confidence = 0.0;
 
     explicit DetectArmorInfo() = default;
@@ -181,36 +182,51 @@ struct DetectArmorInfo {
     explicit DetectArmorInfo(FacilityID facility_id, ArmorCorners2d corners_img, float detection_confidence = 1.0);
 };
 
-struct DetectArmorsFrame {
+struct RobotState {
+    float gimbal_yaw, gimbal_pitch;
+    float ballet_init_speed;
+
+    /**
+     * Current robot state input
+     * @param gimbal_yaw in degree
+     * @param gimbal_pitch in degree
+     * @param ballet_init_speed in mm/s
+     */
+    explicit RobotState(float gimbal_yaw, float gimbal_pitch, float ballet_init_speed);
+};
+
+struct FrameInput {
     int seq_idx = -1;
-    Time time{};
-    std::vector<DetectArmorInfo> armor_info{};
+    Time time;
+    RobotState robot_state;
+    std::vector<DetectArmorInfo> armor_info;
 
     /**
      * The output of the Vision Armor detection.
      * @param seq_idx For test only. Index of the corresponding frame.
      * @param time The time **the frame is shot**. NOT THE TIME FINISH THE VISION PROCESS.
      * @param armor_info Detected armor info.
+     * @param robot_state State info of the robot.
      * @note armor_info is moved into the struct. Do not reuse it.
      */
-    explicit DetectArmorsFrame(int seq_idx, Time time, std::vector<DetectArmorInfo> armor_info);
+    explicit FrameInput(int seq_idx, Time time, std::vector<DetectArmorInfo> armor_info, RobotState robot_state);
 };
 
 
-/**
- * [DEPRECATED] The output of the Vision Part.
- * @param time The time **the frame is shot**. NOT THE TIME FINISH THE VISION PROCESS.
- * @param armor_type Type of armor.
- * @param corners_img_coord Detected armor corners in image coord.
- * @param confidence Confidence of the prediction.
- * @deprecated This struct is DEPRECATED. Use DetectArmorResult instead.
- */
-struct ArmorPredResult {
-    Time time{};
-    FacilityID armor_type = UNKNOWN;
-    ArmorCorners2d corners_img;
-    float confidence{};
-};
+// /**
+//  * [DEPRECATED] The output of the Vision Part.
+//  * @param time The time **the frame is shot**. NOT THE TIME FINISH THE VISION PROCESS.
+//  * @param armor_type Type of armor.
+//  * @param corners_img_coord Detected armor corners in image coord.
+//  * @param confidence Confidence of the prediction.
+//  * @deprecated This struct is DEPRECATED. Use DetectArmorResult instead.
+//  */
+// struct ArmorPredResult {
+//     Time time{};
+//     FacilityID armor_type = UNKNOWN;
+//     ArmorCorners2d corners_img;
+//     float confidence{};
+// };
 
 struct TrackArmorInfo {
     cv::Point3f center_gimbal;

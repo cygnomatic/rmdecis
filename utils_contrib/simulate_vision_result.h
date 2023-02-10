@@ -13,15 +13,15 @@
 
 class SimulateVisionOutput {
     int next_idx = 0;
-    std::map<int, DetectArmorsFrame> data;
+    std::map<int, FrameInput> data;
 
 public:
 
     explicit SimulateVisionOutput(const std::string &data_path);
 
-    DetectArmorsFrame getData(int index);
+    FrameInput getData(int index);
 
-    DetectArmorsFrame getNextData();
+    FrameInput getNextData();
 };
 
 #endif //CYGNOIDES_DECISION_SIMULATE_VISION_RESULT_H

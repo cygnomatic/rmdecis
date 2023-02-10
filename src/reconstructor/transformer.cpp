@@ -24,8 +24,9 @@ static Matrix3f cvtEulerToRotMat(const EulerAngles &euler) {
 }
 
 Transform::Transform(const Eigen::Matrix3f &rot, const Eigen::Vector3f &trans) {
+    transform_.setIdentity();
     transform_.rotate(rot);
-    transform_.translate(trans);
+    transform_.pretranslate(trans);
 }
 
 Transform::Transform(const EulerAngles &rot, const Eigen::Vector3f &trans)
@@ -38,8 +39,9 @@ Transform::Transform(Config &cfg, std::string field) {
     auto trans = Eigen::Vector3f(cfg.get<float>(field + ".trans.x"),
                                  cfg.get<float>(field + ".trans.y"),
                                  cfg.get<float>(field + ".trans.z"));
+    transform_.setIdentity();
     transform_.rotate(cvtEulerToRotMat(rot));
-    transform_.translate(trans);
+    transform_.pretranslate(trans);
 }
 
 Eigen::Vector3f Transform::applyTo(const Eigen::Vector3f &pt) {
@@ -56,21 +58,20 @@ Transformer::Transformer(Config &cfg) {
     trans_cam2gt_ = Transform(cfg, "transformer.camToGimbalT");
 }
 
-void Transformer::update(float gimbal_yaw, float gimbal_pitch) {
-    trans_gt2gimbal_ = Transform(EulerAngles(0, -gimbal_pitch, 0), {});
-    trans_gimbal2world_ = Transform(EulerAngles(-gimbal_yaw, 0, 0), {});
+void Transformer::update(const RobotState& robot_state) {
+    trans_gt2gimbal_ = Transform(EulerAngles(0, -robot_state.gimbal_pitch, 0), Eigen::Vector3f(0, 0, 0));
+    trans_gimbal2world_ = Transform(EulerAngles(-robot_state.gimbal_yaw, 0, 0), Eigen::Vector3f(0, 0, 0));
 }
 
-Eigen::Vector3f Transformer::camToGimbal(const cv::Point3f& pt) {
+Point3f Transformer::camToGimbal(const cv::Point3f& pt) {
     // OpenCV Point3f to Eigen Vector3f
-    Eigen::Vector3f eigen_pt = {pt.z, -pt.x, -pt.y};
-    return trans_gt2gimbal_.applyTo(trans_cam2gt_.applyTo(eigen_pt));
+    return eigenVecToCvPt3f(trans_gt2gimbal_.applyTo(trans_cam2gt_.applyTo(cvPtToEigenVec3f(pt))));
 }
 
-Eigen::Vector3f Transformer::gimbalToWorld(const Eigen::Vector3f& pt) {
-    return trans_gimbal2world_.applyTo(pt);
+Point3f Transformer::gimbalToWorld(const cv::Point3f & pt) {
+    return eigenVecToCvPt3f(trans_gimbal2world_.applyTo(cvPtToEigenVec3f(pt)));
 }
 
-Eigen::Vector3f Transformer::camToWorld(const cv::Point3f &pt) {
+Point3f Transformer::camToWorld(const cv::Point3f &pt) {
     return gimbalToWorld(camToGimbal(pt));
 }

@@ -7,33 +7,26 @@
 
 #include <utility>
 
-#include "../../include/typing.h"
+#include "rmdecis/core.h"
 #include "utils/cv_utils.h"
 #include "reconstructor/camera_calib.h"
-
-struct SolveArmorResult {
-    float delta_depth, delta_height;
-    float delta_yaw;
-};
+#include "reconstructor/transformer.h"
 
 class Reconstructor {
 
-    Transform3d trans_model2cam, trans_cam2base;
-
+    Transformer transformer;
     CameraCalib cam_calib;
 
 public:
 
-    void reconstructArmor3D(DetectArmorInfo &armor);
+    explicit Reconstructor(Config& cfg);
 
-    void reconstructArmor3D(std::vector<DetectArmorInfo> &armors);
-
-    explicit Reconstructor(CameraCalib camera_calib) : cam_calib(std::move(camera_calib)) {}
+    void reconstructArmor(FrameInput& frame_input);
 
     cv::Point2f cam2img(const cv::Point3f &pt);
 
     static void solveDistAndYaw(const cv::Point3f &center_gimbal, float &yaw_in_deg,
-                                float &horizontal_dist, float &vertical_dist) ;
+                                float &horizontal_dist, float &vertical_dist);
 };
 
 

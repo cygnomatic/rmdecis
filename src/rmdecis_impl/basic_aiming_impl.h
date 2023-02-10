@@ -19,7 +19,6 @@
 class BasicAiming::BasicAimingImpl {
 private:
 
-    CameraCalib camera_calib;
     BallisticCompensator compensator;
 
     float ballet_init_speed = 15.0 * 1e3;
@@ -36,7 +35,7 @@ public:
 
     // Should be private. Set to public for debug use.
     Tracker tracker;
-    Reconstructor transformer;
+    Reconstructor reconstructor;
 
     /**
      * Initialize BasicAimingImpl decision-maker.
@@ -49,7 +48,7 @@ public:
      * @param detection Result from the detection part.
      * @return Euler angles, representing the aiming target.
      */
-    EulerAngles update(DetectArmorsFrame detection);
+    EulerAngles update(FrameInput detection);
 
 };
 

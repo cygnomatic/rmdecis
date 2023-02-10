@@ -9,11 +9,12 @@
 #include <opencv2/core/eigen.hpp>
 
 #include "rmdecis/core.h"
+#include "utils/cv_utils.h"
 
 class Transform {
 private:
 
-    Eigen::AffineCompact3f transform_;
+    Eigen::Affine3f transform_;
 
 public:
 
@@ -25,27 +26,30 @@ public:
 
     Transform(Config &cfg, std::string field);
 
-    Eigen::Vector3f applyTo(const Eigen::Vector3f& pt);
+    Eigen::Vector3f applyTo(const Eigen::Vector3f &pt);
 
-    Eigen::Vector3f applyInverseTo(const Eigen::Vector3f& pt);
+    Eigen::Vector3f applyInverseTo(const Eigen::Vector3f &pt);
 };
 
 class Transformer {
+public:
+
+    void update(const RobotState &robot_state);
+
+    cv::Point3f camToGimbal(const cv::Point3f &pt);
+
+    cv::Point3f gimbalToWorld(const cv::Point3f &pt);
+
+    cv::Point3f camToWorld(const cv::Point3f &pt);
+
+    explicit Transformer(Config &cfg);
+
+
+private:
 
     Transform trans_cam2gt_;
     Transform trans_gt2gimbal_;
     Transform trans_gimbal2world_;
-
-    explicit Transformer(Config& cfg);
-
-    void update(float gimbal_yaw, float gimbal_pitch);
-
-    Eigen::Vector3f camToGimbal(const cv::Point3f& pt);
-
-    Eigen::Vector3f gimbalToWorld(const Eigen::Vector3f& pt);
-
-    Eigen::Vector3f camToWorld(const cv::Point3f & pt);
-
 };
 
 

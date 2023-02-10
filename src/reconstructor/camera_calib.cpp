@@ -29,21 +29,21 @@ Mat CameraCalib::undistort(const Mat &img) {
     return ret;
 }
 
-Transform3d CameraCalib::solvePnP(const std::vector<Point3f> &obj_pts, const std::vector<Point2f> &img_pts) {
+CvTransform3f CameraCalib::solvePnP(const std::vector<Point3f> &obj_pts, const std::vector<Point2f> &img_pts) {
     Mat rvec, tvec;
     cv::solvePnP(Mat(obj_pts), Mat(img_pts), cam_mat, dist_coeffs, rvec, tvec);
-    return Transform3d{rvec, tvec};
+    return CvTransform3f{rvec, tvec};
 }
 
-Transform3d CameraCalib::armorSolvePnP(const ArmorCorners3d &corners_model, const ArmorCorners2d &corners_img) {
+CvTransform3f CameraCalib::armorSolvePnP(const ArmorCorners3d &corners_model, const ArmorCorners2d &corners_img) {
     return solvePnP((std::vector<Point3f>) corners_model, (std::vector<Point2f>) corners_img);
 }
 
-void CameraCalib::drawAxes(Mat &img, const Transform3d &trans) {
+void CameraCalib::drawAxes(Mat &img, const CvTransform3f &trans) {
     drawFrameAxes(img, cam_mat, dist_coeffs, trans.rvec, trans.tvec, 100);
 }
 
-std::vector<Point2f> CameraCalib::projectToImage(const std::vector<Point3f> &space_pts, const Transform3d &trans) {
+std::vector<Point2f> CameraCalib::projectToImage(const std::vector<Point3f> &space_pts, const CvTransform3f &trans) {
     Mat img_pts;
     std::vector<Point2f> ret;
 
