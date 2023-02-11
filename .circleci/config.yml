@@ -16,6 +16,8 @@ jobs:
       - run: sudo apt update
       - run: sudo apt install gcc build-essential make cmake libspdlog-dev libceres-dev libyaml-cpp-dev libeigen3-dev libkissfft-dev libopencv-dev
       - run: sudo sh build.sh
+      - store_artifacts:
+          path: build
 
 # Invoke jobs via workflows
 # See: https://circleci.com/docs/2.0/configuration-reference/#workflows
