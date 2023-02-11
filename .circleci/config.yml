@@ -9,17 +9,22 @@ jobs:
   build-release:
     machine:
       image: ubuntu-2204:2022.10.2
-    resource_class: arm.medium
+    resource_class: arm.large
     steps:
       - checkout
       - restore_cache:
           keys:
             - build-cache
-      - run: sudo apt update
-      - run: sudo apt install gcc build-essential make cmake libspdlog-dev libceres-dev libyaml-cpp-dev libeigen3-dev libkissfft-dev libopencv-dev
-      - run: sh build.sh
+      - run: 
+          name: Installing dependencies
+          command: |
+            sudo apt update
+            sudo apt install gcc build-essential make cmake libspdlog-dev libceres-dev libyaml-cpp-dev libeigen3-dev libkissfft-dev libopencv-dev
+      - run:
+          name: Build
+          command: sh build.sh
       - store_artifacts:
-          path: build/rmdecis*.so
+          path: build/librmdecis*.so
       - save_cache:
           key: build-cache
           paths: 
