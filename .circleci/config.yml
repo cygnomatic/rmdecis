@@ -23,8 +23,11 @@ jobs:
       - run:
           name: Build
           command: sh build.sh
+      - run:
+          name: Compress Artifacts
+          command: tar -cvzf build.tar build
       - store_artifacts:
-          path: build/librmdecis.so
+          path: build.tar
       - save_cache:
           key: build-cache
           paths: 
