@@ -24,7 +24,7 @@ jobs:
           name: Build
           command: sh build.sh
       - store_artifacts:
-          path: build/librmdecis*.so
+          path: build/librmdecis.so
       - save_cache:
           key: build-cache
           paths: 
