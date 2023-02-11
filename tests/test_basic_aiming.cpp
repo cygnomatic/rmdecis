@@ -13,11 +13,11 @@ int main() {
     spdlog::set_level(spdlog::level::debug);
 
     // Camera & detection part output simulation
-    SimulateVisionOutput vision_output("../../data/vision_out/vision_result.yaml");
-    SimpleVideoPlayer player("../../data/vision_out/video_input.avi");
+    SimulateVisionOutput vision_output("../data/vision_out/vision_result.yaml");
+    SimpleVideoPlayer player("../data/vision_out/video_input.avi");
 
     // Initialize BasicAimingImpl with path to camera calibration coeffs file & config loader.
-    Config cfg("../../config/config.yml");
+    Config cfg("../config/config.yml");
     BasicAiming basic_aiming(cfg);
 
     // auto compensate_t = cfg.get<float>("aiming.basic.compensateTime");

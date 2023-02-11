@@ -5,8 +5,4 @@ mkdir -p build
 echo ">>> Building rmdecis lib ..."
 cmake -DCMAKE_BUILD_TYPE=Release -S . -B ./build
 cmake --build ./build --target rmdecis --parallel $(($(nproc) - 1))
-echo ">>> Installing rmdecis lib to system ..."
-sudo cmake --install ./build --config Release
-echo ">>> Update ldconfig ..."
-sudo ldconfig
-echo ">>> Lib rmdecis installed."
+echo ">>> rmdecis build finished"

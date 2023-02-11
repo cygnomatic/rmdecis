@@ -1,29 +1,33 @@
 cmake_minimum_required(VERSION 3.9)
-project(Cygnoides_Decision VERSION 2023.3 DESCRIPTION "CygnoidesRM Decision lib")
+project(Cygnoides_Decision VERSION 2023.4 DESCRIPTION "CygnoidesRM Decision lib")
 
 set(CMAKE_CXX_STANDARD 17)
 
 
-### Initialize Conan
+#### Initialize Conan
+#
+#if (EXISTS ${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
+#    include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
+#    conan_basic_setup()
+#else ()
+#    message(WARNING "The file conanbuildinfo.cmake doesn't exist, you have to run conan install first")
+#endif ()
+#link_libraries(${CONAN_LIBS})
 
-if (EXISTS ${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
-    include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
-    conan_basic_setup()
-else ()
-    message(WARNING "The file conanbuildinfo.cmake doesn't exist, you have to run conan install first")
-endif ()
-link_libraries(${CONAN_LIBS})
 
-
-### Link OpenCV
+### Link libraries
 
 find_package(OpenCV REQUIRED)
-link_libraries(${OpenCV_LIBS})
-
+find_package(Ceres REQUIRED)
+find_package(Eigen3 REQUIRED)
+find_package(KissFFT REQUIRED)
+find_package(fmt REQUIRED)
+find_package(yaml-cpp REQUIRED)
+link_libraries(${OpenCV_LIBS} ${CERES_LIBRARIES} Eigen3::Eigen fmt::fmt kissfft-float yaml-cpp)
+include_directories(PRIVATE ${OpenCV_INCLUDE_DIRS} ${CERES_INCLUDE_DIRS})
 
 ### Set directories & Get targets
 
-include_directories(PRIVATE ${OpenCV_INCLUDE_DIRS})
 include_directories(PRIVATE ${PROJECT_SOURCE_DIR}/contrib)
 include_directories(PRIVATE ${PROJECT_SOURCE_DIR}/src)
 include_directories(PUBLIC ${PROJECT_SOURCE_DIR}/include)

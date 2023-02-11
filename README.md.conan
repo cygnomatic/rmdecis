@@ -2,23 +2,35 @@
 
 北邮鸿雁战队 视觉组 - 决策部分 代码仓库
 
-## Build & install
+## Setup & Installation
 
 1. 配置 C++ 环境
 
     ```bash
-   ### Build requirements:
-   sudo apt install gcc build-essential make cmake libspdlog-dev libceres-dev libyaml-cpp-dev libeigen3-dev libkissfft-dev libopencv-dev
+   ### Runtime requirements:
+   sudo apt install gcc python3 build-essential make cmake
+   
+   ### Debug requirements:
+   # sudo apt install dbg clang-tidy
    ```
 
-2. 运行 `build.sh`
-   ```bash
-   $ sh build.sh
+2. 安装 C++ 包管理器 Conan
+    
+    ```bash
+   sudo pip3 install conan
    ```
 
-3. （可选）安装库
+3. 配置 Conan
    ```bash
-   $ sh install.sh
+   # Set conan profile.
+   # $ conan profile update settings.compiler.version=12 default
+   $ conan profile new default --detect
+   $ conan profile update settings.compiler.libcxx=libstdc++11 default
+   ```
+
+4. 运行 `install.sh`
+   ```bash
+   $ sudo sh install.sh
    ```
 
 ## File Structure

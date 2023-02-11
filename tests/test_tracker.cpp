@@ -19,10 +19,10 @@ int main() {
 
     spdlog::set_level(spdlog::level::debug);
 
-    SimulateVisionOutput vision_output("../../data/vision_out/vision_result.yaml");
-    SimpleVideoPlayer player("../../data/vision_out/video_input.avi");
+    SimulateVisionOutput vision_output("../data/vision_out/vision_result.yaml");
+    SimpleVideoPlayer player("../data/vision_out/video_input.avi");
 
-    Config cfg("../../config/config.yml");
+    Config cfg("../config/config.yml");
     Reconstructor reconstructor(cfg);
 
     player.setPlaybackSpeed(1);
