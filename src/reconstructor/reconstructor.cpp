@@ -10,9 +10,9 @@ void Reconstructor::reconstructArmor(FrameInput &frame_input) {
     transformer.update(frame_input.robot_state);
     for (auto &armor: frame_input.armor_info) {
         armor.trans_model2cam = cam_calib.armorSolvePnP(armor.corners_model, armor.corners_img);
-        armor.center_cam = cvMat2Point3f(armor.trans_model2cam.tvec);
-        armor.center_gimbal = transformer.camToGimbal(armor.center_cam);
-        armor.center_world = transformer.gimbalToWorld(armor.center_gimbal);
+        armor.target_cam = cvMat2Point3f(armor.trans_model2cam.tvec);
+        armor.target_gimbal = transformer.camToGimbal(armor.target_cam);
+        armor.target_world = transformer.gimbalToWorld(armor.target_gimbal);
     }
 }
 

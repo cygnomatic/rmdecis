@@ -9,12 +9,12 @@
 #include <Eigen/Dense>
 #include <opencv2/core/eigen.hpp>
 
-inline void drawArmorCorners(cv::Mat &image, ArmorCorners2d &corners,
+inline void drawArmorCorners(cv::Mat &image, Corners2f &corners,
                              const cv::Scalar &color = cv::Scalar(255, 0, 0), int thickness = 2) {
-    cv::line(image, corners[0], corners[1], color, thickness);
-    cv::line(image, corners[1], corners[2], color, thickness);
-    cv::line(image, corners[2], corners[3], color, thickness);
-    cv::line(image, corners[3], corners[0], color, thickness);
+    for (int i = 0; i < corners.size() - 1; i++) {
+        cv::line(image, corners[i], corners[i+1], color, thickness);
+    }
+    cv::line(image, corners[corners.size()-1], corners[0], color, thickness);
 }
 
 inline float calculateIoU(const cv::Rect2f &rect1, const cv::Rect2f &rect2) {

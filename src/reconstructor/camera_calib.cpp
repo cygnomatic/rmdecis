@@ -29,13 +29,13 @@ Mat CameraCalib::undistort(const Mat &img) {
     return ret;
 }
 
-CvTransform3f CameraCalib::solvePnP(const std::vector<Point3f> &obj_pts, const std::vector<Point2f> &img_pts) {
+CvTransform3f CameraCalib::solvePnP(const std::vector<cv::Point3f> &obj_pts, const std::vector<cv::Point2f> &img_pts) {
     Mat rvec, tvec;
     cv::solvePnP(Mat(obj_pts), Mat(img_pts), cam_mat, dist_coeffs, rvec, tvec);
     return CvTransform3f{rvec, tvec};
 }
 
-CvTransform3f CameraCalib::armorSolvePnP(const ArmorCorners3d &corners_model, const ArmorCorners2d &corners_img) {
+CvTransform3f CameraCalib::armorSolvePnP(const Corners3f& corners_model, const Corners2f& corners_img) {
     return solvePnP((std::vector<Point3f>) corners_model, (std::vector<Point2f>) corners_img);
 }
 

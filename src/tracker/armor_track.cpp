@@ -68,7 +68,7 @@ TrackArmorInfo ArmorTrack::predict(Time time) {
 }
 
 float ArmorTrack::calcSimilarity(const DetectArmorInfo &detection, Time time) {
-    auto new_bounding_box = (Rect2f) detection.corners_img;
+    auto new_bounding_box = detection.corners_img.getBoundingBox();
     auto pred_bounding_box = predict(time).bbox;
 
     float iou = calculateIoU(pred_bounding_box, new_bounding_box);
@@ -101,8 +101,8 @@ TrackArmorInfo ArmorTrack::cvtStateMat2Result(const Mat &state) {
 }
 
 Mat ArmorTrack::cvtDetection2MeasurementMat(const DetectArmorInfo &detection) {
-    Rect2f bounding_box = (Rect2f) detection.corners_img;
-    Point3f center = detection.center_world;
+    Rect2f bounding_box = detection.corners_img.getBoundingBox();
+    Point3f center = detection.target_world;
 
     float u = bounding_box.x, v = bounding_box.y;
     float ratio = bounding_box.width / bounding_box.height;

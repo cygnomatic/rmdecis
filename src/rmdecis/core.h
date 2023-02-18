@@ -10,6 +10,7 @@
 #include <cmath>
 #include <numeric>
 #include <vector>
+#include <iterator>
 
 #include <opencv2/imgproc.hpp>
 #include <opencv2/calib3d.hpp>

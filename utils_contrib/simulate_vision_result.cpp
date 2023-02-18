@@ -30,7 +30,7 @@ SimulateVisionOutput::SimulateVisionOutput(const std::string &data_path) {
                 Point2f lt{d["lt_x"].as<float>(), d["lt_y"].as<float>()};
                 Point2f ld{d["ld_x"].as<float>(), d["ld_y"].as<float>()};
                 Point2f rd{d["rd_x"].as<float>(), d["rd_y"].as<float>()};
-                ArmorCorners2d corners{{rt, lt, ld, rd}};
+                RectCorners2f corners{{rt, lt, ld, rd}};
 
                 armor_info.emplace_back(armor_type, corners, confidence);
             }

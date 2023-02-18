@@ -64,24 +64,45 @@ struct CvTransform3f {
     cv::Point3f applyTo(const cv::Point3f &pt) const;
 };
 
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+struct Corners2fImpl {
+
+    Corners2fImpl() = default;
+
+    /**
+     * Construct ArmorCorners2d with four corners coord.
+     * @param corners Corners. Start form Top-Right, goes counter-clockwise to Down-Right.
+     */
+    explicit Corners2fImpl(std::vector<cv::Point2f> corners);
+
+    cv::Point2f &operator[](int index);
+
+    explicit operator std::vector<cv::Point2f>() const;
+
+    size_t size();
+
+    /**
+     * Get the bounding box of Armor corners.
+     * @return The bounding rect.
+     */
+    virtual cv::Rect2f getBoundingBox() const = 0;
+
+protected:
+    std::vector<cv::Point2f> corners_;
+};
+
 /**
  * Struct for the four corners of an Armor.
  * Corners coord in 2D.
  */
-struct ArmorCorners2d {
-    ArmorCorners2d() = default;
+struct RectCorners2f : Corners2fImpl {
 
-    /**
-     * Construct ArmorCorners2d with four corners coord.
-     * @param corners Corners. Start form Top-Right, goes counter-clockwise to Down-Right.
-     */
-    explicit ArmorCorners2d(cv::Point2f corners[]);
-
-    /**
-     * Construct ArmorCorners2d with four corners coord.
-     * @param corners Corners. Start form Top-Right, goes counter-clockwise to Down-Right.
-     */
-    explicit ArmorCorners2d(std::vector<cv::Point2f> corners);
+    using Corners2fImpl::Corners2fImpl;
 
     /**
      * Construct ArmorCorners2d with four corners coord.
@@ -91,64 +112,113 @@ struct ArmorCorners2d {
      * @param dl Down-Right corner
      * @param dr Down-Left corner
      */
-    explicit ArmorCorners2d(cv::Point2f tr, cv::Point2f tl, cv::Point2f dl, cv::Point2f dr);
+    explicit RectCorners2f(cv::Point2f tr, cv::Point2f tl, cv::Point2f dl, cv::Point2f dr);
 
-    cv::Point2f tr; // Top-Right
-    cv::Point2f tl; // Top-Left
-    cv::Point2f dl; // Down-Left
-    cv::Point2f dr; // Down-Right
+    cv::Rect2f getBoundingBox() const override;
+};
+
+struct RuneCorners2f : Corners2fImpl {
+
+    using Corners2fImpl::Corners2fImpl;
+
+    /**
+     * Construct ArmorCorners2d with four corners coord.
+     * @note The corner points will be "moved" to this structure. Do not reuse original points.
+     */
+    explicit RuneCorners2f(cv::Point2f center, cv::Point2f dr, cv::Point2f tr,
+                           cv::Point2f top, cv::Point2f tl, cv::Point2f dl);
+
+    cv::Rect2f getBoundingBox() const override;
+};
+
+struct Corners2f {
+public:
+    Corners2f() = default;
+
+    Corners2f(RectCorners2f corners);
+
+    Corners2f(RuneCorners2f corners);
 
     cv::Point2f &operator[](int index);
 
     explicit operator std::vector<cv::Point2f>() const;
 
-    /**
-     * Get the bounding box of Armor corners.
-     * @return The bounding rect.
-     */
-    explicit operator cv::Rect2f() const;
+    size_t size();
 
-    /**
-     * Get the bounding box of Armor corners.
-     * @return The bounding rect.
-     */
     cv::Rect2f getBoundingBox() const;
 
-    std::vector<cv::Point2f> toPts();
+private:
+    std::shared_ptr<Corners2fImpl> impl;
 };
 
-struct ArmorCorners3d {
-    ArmorCorners3d() = default;
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    explicit ArmorCorners3d(cv::Point3f corners[]);
 
-    explicit ArmorCorners3d(std::vector<cv::Point3f> corners);
+struct Corners3fImpl {
+    explicit Corners3fImpl() = default;
 
-    /**
-     * Construct a new ArmorCorners3d object. The center of the Armor is the origin.
-     * @param armor_size Armor size.
-     */
-    explicit ArmorCorners3d(const cv::Size_<float> &armor_size);
-
-    /**
-     * Construct a new ArmorCorners3d object. The center of the Armor is the origin and size is defined.
-     * Used to construct armors in Model Coordinate.
-     * @param armorType The armor type.
-     */
-    explicit ArmorCorners3d(ArmorType armorType);
-
-    cv::Point3f tr; // Top-Right
-    cv::Point3f tl; // Top-Left
-    cv::Point3f dl; // Down-Left
-    cv::Point3f dr; // Down-Right
+    explicit Corners3fImpl(std::vector<cv::Point3f> corners);
 
     cv::Point3f &operator[](int index);
 
     explicit operator std::vector<cv::Point3f>() const;
 
-    cv::Point3f getCenter() const;
-
+protected:
+    std::vector<cv::Point3f> corners_;
 };
+
+struct RectCorners3f : Corners3fImpl {
+    using Corners3fImpl::Corners3fImpl;
+
+    /**
+     * Construct a new ArmorCorners3d object. The center of the Armor is the origin.
+     */
+    explicit RectCorners3f(const cv::Size_<float> &armor_size);
+};
+
+struct SmallRectCorners3f : RectCorners3f {
+    using RectCorners3f::RectCorners3f;
+
+    explicit SmallRectCorners3f();
+};
+
+struct LargeRectCorners3f : RectCorners3f {
+    using RectCorners3f::RectCorners3f;
+
+    explicit LargeRectCorners3f();
+};
+
+struct RuneCorners3f : Corners3fImpl {
+    using Corners3fImpl::Corners3fImpl;
+
+    explicit RuneCorners3f();
+};
+
+struct Corners3f {
+public:
+
+    Corners3f() = default;
+
+    Corners3f(SmallRectCorners3f corners);
+
+    Corners3f(LargeRectCorners3f corners);
+
+    Corners3f(RuneCorners3f corners);
+
+    cv::Point3f &operator[](int index);
+
+    explicit operator std::vector<cv::Point3f>() const;
+
+private:
+    std::shared_ptr<Corners3fImpl> impl;
+};
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 
 /**
  * The detect result of armor.
@@ -157,16 +227,16 @@ struct DetectArmorInfo {
 
     // Info from vision detection part
     FacilityID facility_id = UNKNOWN_BOT;
-    ArmorType armorType = SMALL_ARMOR;
 
-    ArmorCorners2d corners_img;
-    ArmorCorners3d corners_model;
+    Corners2f corners_img;
+    Corners3f corners_model;
     float detection_confidence = 1.0;
 
     // Info from reconstructor
-    cv::Point3f center_cam;
-    cv::Point3f center_gimbal;
-    cv::Point3f center_world;
+    cv::Point3f target_cam;
+    cv::Point3f target_gimbal;
+    cv::Point3f target_world;
+
     CvTransform3f trans_model2cam;
     float reconstruct_confidence = 0.0;
 
@@ -177,10 +247,16 @@ struct DetectArmorInfo {
      * @param facility_id Facility ID
      * @param corners_img Armor corners
      * @param detection_confidence Detection confidence
-     * @note corners_img is moved into the struct. Do not reuse it.
      */
-    explicit DetectArmorInfo(FacilityID facility_id, ArmorCorners2d corners_img, float detection_confidence = 1.0);
+    explicit DetectArmorInfo(FacilityID facility_id, Corners2f corners_img,
+                             float detection_confidence);
 };
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 
 struct RobotState {
     float gimbal_yaw, gimbal_pitch;
@@ -211,22 +287,6 @@ struct FrameInput {
      */
     explicit FrameInput(int seq_idx, Time time, std::vector<DetectArmorInfo> armor_info, RobotState robot_state);
 };
-
-
-// /**
-//  * [DEPRECATED] The output of the Vision Part.
-//  * @param time The time **the frame is shot**. NOT THE TIME FINISH THE VISION PROCESS.
-//  * @param armor_type Type of armor.
-//  * @param corners_img_coord Detected armor corners in image coord.
-//  * @param confidence Confidence of the prediction.
-//  * @deprecated This struct is DEPRECATED. Use DetectArmorResult instead.
-//  */
-// struct ArmorPredResult {
-//     Time time{};
-//     FacilityID armor_type = UNKNOWN;
-//     ArmorCorners2d corners_img;
-//     float confidence{};
-// };
 
 struct TrackArmorInfo {
     cv::Point3f center_gimbal;

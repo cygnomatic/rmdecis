@@ -27,7 +27,7 @@ cv::Mat TrackKalmanFactory::getInitError() {
 
 cv::Mat TrackKalmanFactory::getInitState(const DetectArmorInfo &detection) {
     cv::Rect2f bounding_box = detection.corners_img.getBoundingBox();
-    cv::Point3f center = detection.center_world;
+    cv::Point3f center = detection.target_world;
 
 
     float u = bounding_box.x, v = bounding_box.y;

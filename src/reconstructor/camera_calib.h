@@ -31,7 +31,7 @@ public:
 
     CvTransform3f solvePnP(const std::vector<cv::Point3f> &obj_pts, const std::vector<cv::Point2f> &img_pts);
 
-    CvTransform3f armorSolvePnP(const ArmorCorners3d &corners_model, const ArmorCorners2d &corners_img);
+    CvTransform3f armorSolvePnP(const Corners3f& corners_model, const Corners2f& corners_img);
 
     void drawAxes(cv::Mat &img, const CvTransform3f &trans);
 
