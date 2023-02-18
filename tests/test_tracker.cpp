@@ -19,8 +19,8 @@ int main() {
 
     spdlog::set_level(spdlog::level::debug);
 
-    SimulateVisionOutput vision_output("../data/vision_out/vision_result.yaml");
-    SimpleVideoPlayer player("../data/vision_out/video_input.avi");
+    SimulateVisionOutput vision_output("../data/vision_out/vision_result_1.yaml");
+    SimpleVideoPlayer player("../data/vision_out/video_input_1.avi");
 
     Config cfg("../config/config.yml");
     Reconstructor reconstructor(cfg);

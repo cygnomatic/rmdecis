@@ -12,9 +12,17 @@
 inline void drawArmorCorners(cv::Mat &image, Corners2f &corners,
                              const cv::Scalar &color = cv::Scalar(255, 0, 0), int thickness = 2) {
     for (int i = 0; i < corners.size() - 1; i++) {
-        cv::line(image, corners[i], corners[i+1], color, thickness);
+        cv::line(image, corners[i], corners[i + 1], color, thickness);
     }
-    cv::line(image, corners[corners.size()-1], corners[0], color, thickness);
+    cv::line(image, corners[corners.size() - 1], corners[0], color, thickness);
+}
+
+inline void drawPolygons(cv::Mat &image, std::vector<cv::Point2f> &pts,
+                             const cv::Scalar &color = cv::Scalar(255, 0, 0), int thickness = 2) {
+    for (int i = 0; i < pts.size() - 1; i++) {
+        cv::line(image, pts[i], pts[i + 1], color, thickness);
+    }
+    cv::line(image, pts[pts.size() - 1], pts[0], color, thickness);
 }
 
 inline float calculateIoU(const cv::Rect2f &rect1, const cv::Rect2f &rect2) {
