@@ -34,8 +34,8 @@ RectCorners2f::RectCorners2f(cv::Point2f tr, cv::Point2f tl, cv::Point2f dl, cv:
         RectCorners2f({std::move(tr), std::move(tl), std::move(dl), std::move(dr)}) {}
 
 RuneCorners2f::RuneCorners2f(cv::Point2f center, cv::Point2f dr, cv::Point2f tr,
-                             cv::Point2f top, cv::Point2f tl, cv::Point2f dl):
-        RuneCorners2f({std::move(center),std::move(dr), std::move(tr),
+                             cv::Point2f top, cv::Point2f tl, cv::Point2f dl) :
+        RuneCorners2f({std::move(center), std::move(dr), std::move(tr),
                        std::move(top), std::move(tl), std::move(dl)}) {}
 
 cv::Rect2f RuneCorners2f::getBoundingBox() const {
@@ -89,9 +89,15 @@ SmallRectCorners3f::SmallRectCorners3f() : SmallRectCorners3f(cv::Size(SMALL_ARM
 
 LargeRectCorners3f::LargeRectCorners3f() : LargeRectCorners3f(cv::Size(BIG_ARMOR_WIDTH, BIG_ARMOR_HEIGHT)) {}
 
-RuneCorners3f::RuneCorners3f() {
-    throw std::logic_error("Function not yet implemented");
-}
+RuneCorners3f::RuneCorners3f() :
+        RuneCorners3f(
+                {{0.0,    -698.5, 172.5}, // Center "R"
+                 {157.8,  -61.5,  26.5},  // Right-down
+                 {157.8,  61.5,   26.5},  // Right-top
+                 {0.0,    174.3,  26.5},  // Top
+                 {-157.8, 61.5,   26.5},  // Left-up
+                 {-157.8, -61.5,  26.5}}  // Left-down
+        ) {}
 
 Corners3f::Corners3f(SmallRectCorners3f corners) {
     impl = std::make_shared<SmallRectCorners3f>(std::move(corners));
