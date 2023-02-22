@@ -6,6 +6,7 @@
 #define CYGNOIDES_DECISION_BASIC_AIMING_IMPL_H
 
 #include <map>
+#include <Eigen/Dense>
 
 #include "rmdecis/core.h"
 #include "tracker/tracker.h"
@@ -14,7 +15,7 @@
 #include "utils/cv_utils.h"
 #include "config.h"
 
-#include "large_rune_aiming.h"
+#include "large_rune_aiming.h.t"
 
 class LargeRuneAiming::LargeRuneAimingImpl {
 private:
@@ -25,17 +26,25 @@ private:
     float compensate_time = 0.0;
 
     int last_aiming_id_ = -1;
+    int n_updates = 0;
     EulerAngles last_aiming_angle_{};
+
+    Eigen::Vector3f normal{0, 0, 0};
+    Eigen::Vector3f rune_center_world;
 
     int chooseNextTarget(std::map<int, ArmorTrack> &tracks_map, Time &predTime);
 
     EulerAngles predictFromTrack(ArmorTrack &track, Time predTime);
 
+    float getAngleFromDetect(ArmorTrack &track);
+
+
 public:
 
     // Should be private. Set to public for debug use.
     Tracker tracker;
-    Reconstructor reconstructor;
+    Transformer transformer;
+    CameraCalib camera_calib;
 
     /**
      * Initialize BasicAimingImpl decision-maker.

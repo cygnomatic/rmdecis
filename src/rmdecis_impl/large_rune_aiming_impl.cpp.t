@@ -2,35 +2,51 @@
 // Created by catslashbin on 23-1-24.
 //
 
-#include "large_rune_aiming_impl.h"
+#include "large_rune_aiming_impl.h.t"
+#include <Eigen/Dense>
 
 using namespace cv;
 
-EulerAngles LargeRuneAiming::LargeRuneAimingImpl::update(FrameInput detection) {
+EulerAngles LargeRuneAiming::LargeRuneAimingImpl::update(FrameInput frame_input) {
 
-    reconstructor.reconstructArmor(detection);
-    tracker.update(detection);
+    if (frame_input.armor_info.empty())
+        return last_aiming_angle_;
 
-    auto tracks_map = tracker.getTracks();
+    assert(frame_input.armor_info.size() == 1);
+    DetectArmorInfo armor = frame_input.armor_info[0];
 
-    if (tracks_map.find(last_aiming_id_) == tracks_map.end()) {
-        // Last track lost, update target track
-        last_aiming_id_ = chooseNextTarget(tracks_map, detection.time);
-    }
+    // Reconstruct
+    transformer.update(frame_input.robot_state);
+    CvTransform3f trans_model2cam = camera_calib.solvePnP(armor.corners_model, armor.corners_img);
+    rune_center_world = transformer.camToWorld(trans_model2cam.applyTo(armor.corners_model[0]));
+    Point3f target_world = transformer.camToWorld(trans_model2cam.applyTo({0.0, 0.0, 0.0}));
 
-    // Check if there is a target
-    if (last_aiming_id_ != -1) {
-        auto pred_angle = predictFromTrack(tracks_map.at(last_aiming_id_), detection.time + compensate_time);
+    // Get degree
+    
 
-        // Avoid nan from predictFromTrack
-        if (!(std::isnan(pred_angle.yaw) || std::isnan(pred_angle.pitch))) {
-            last_aiming_angle_ = pred_angle;
-        } else {
-            warn("Got nan from predictFromTrack!");
-        }
-    }
 
-    return last_aiming_angle_;
+    // tracker.update(detection);
+    //
+    // auto tracks_map = tracker.getTracks();
+    //
+    // if (tracks_map.find(last_aiming_id_) == tracks_map.end()) {
+    //     // Last track lost, update target track
+    //     last_aiming_id_ = chooseNextTarget(tracks_map, detection.time);
+    // }
+    //
+    // // Check if there is a target
+    // if (last_aiming_id_ != -1) {
+    //     auto pred_angle = predictFromTrack(tracks_map.at(last_aiming_id_), detection.time + compensate_time);
+    //
+    //     // Avoid nan from predictFromTrack
+    //     if (!(std::isnan(pred_angle.yaw) || std::isnan(pred_angle.pitch))) {
+    //         last_aiming_angle_ = pred_angle;
+    //     } else {
+    //         warn("Got nan from predictFromTrack!");
+    //     }
+    // }
+    //
+    // return last_aiming_angle_;
 
 }
 
@@ -41,7 +57,7 @@ EulerAngles LargeRuneAiming::LargeRuneAimingImpl::predictFromTrack(ArmorTrack &t
 
     float horizontal_dist, vertical_dist, yaw, pitch;
 
-    TrackArmorInfo target_info = track.predict(predTime);
+    // TrackArmorInfo target_info = track.predict(predTime);
     Point3f center = opencvToRep(target_info.center_gimbal);
     Reconstructor::solveDistAndYaw(center, yaw, horizontal_dist, vertical_dist);
 
@@ -88,8 +104,13 @@ int LargeRuneAiming::LargeRuneAimingImpl::chooseNextTarget(std::map<int, ArmorTr
 }
 
 LargeRuneAiming::LargeRuneAimingImpl::LargeRuneAimingImpl(Config &cfg)
-        : reconstructor(cfg), tracker(cfg),
+        : transformer(cfg), camera_calib(cfg), tracker(cfg),
           compensator(cfg.get<float>("aiming.basic.airResistanceConst", 0.1)) {
 
     compensate_time = cfg.get<float>("aiming.basic.compensateTime", 0.0);
+}
+
+float LargeRuneAiming::LargeRuneAimingImpl::getAngleFromDetect(DetectArmorInfo &armor) {
+
+
 }

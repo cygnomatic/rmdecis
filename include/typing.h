@@ -141,7 +141,7 @@ public:
 
     cv::Point2f &operator[](int index);
 
-    explicit operator std::vector<cv::Point2f>() const;
+    operator std::vector<cv::Point2f>() const;
 
     size_t size();
 
@@ -209,7 +209,7 @@ public:
 
     cv::Point3f &operator[](int index);
 
-    explicit operator std::vector<cv::Point3f>() const;
+    operator std::vector<cv::Point3f>() const;
 
 private:
     std::shared_ptr<Corners3fImpl> impl;

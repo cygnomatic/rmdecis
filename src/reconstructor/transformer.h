@@ -42,11 +42,11 @@ public:
 
     cv::Point3f camToWorld(const cv::Point3f &pt);
 
+    cv::Point3f worldToGimbal(const cv::Point3f &pt);
+
     explicit Transformer(Config &cfg);
 
-
 private:
-
     Transform trans_cam2gt_;
     Transform trans_gt2gimbal_;
     Transform trans_gimbal2world_;
