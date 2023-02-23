@@ -62,4 +62,13 @@ inline cv::Point3f opencvToRep(const cv::Point3f &pt) {
     return {pt.z, -pt.x, -pt.y};
 }
 
+/**
+ * Convert REP 103 to OpenCV coord represent.
+ * @param pt REP 103
+ * @return OpenCV point
+ */
+inline cv::Point3f repToOpencv(const cv::Point3f &pt) {
+    return {-pt.y, -pt.z, pt.x};
+}
+
 #endif //CYGNOIDES_DECISION_CV_UTILS_H

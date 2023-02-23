@@ -3,6 +3,7 @@
 //
 
 #include "camera_calib.h"
+#include "utils/cv_utils.h"
 
 using namespace cv;
 
@@ -31,7 +32,7 @@ Mat CameraCalib::undistort(const Mat &img) {
 
 CvTransform3f CameraCalib::solvePnP(const std::vector<cv::Point3f> &obj_pts, const std::vector<cv::Point2f> &img_pts) {
     Mat rvec, tvec;
-    cv::solvePnP(Mat(obj_pts), Mat(img_pts), cam_mat, dist_coeffs, rvec, tvec);
+    cv::solvePnP(obj_pts, img_pts, cam_mat, dist_coeffs, rvec, tvec);
     return CvTransform3f{rvec, tvec};
 }
 
@@ -43,12 +44,16 @@ void CameraCalib::drawAxes(Mat &img, const CvTransform3f &trans) {
     drawFrameAxes(img, cam_mat, dist_coeffs, trans.rvec, trans.tvec, 100);
 }
 
-std::vector<Point2f> CameraCalib::projectToImage(const std::vector<Point3f> &space_pts, const CvTransform3f &trans) {
-    Mat img_pts;
+std::vector<Point2f> CameraCalib::projectToImage(std::vector<Point3f> pts_cam_rep) {
     std::vector<Point2f> ret;
-
-    projectPoints(Mat(space_pts), trans.rvec, trans.tvec, cam_mat, dist_coeffs, img_pts);
-
-    img_pts.copyTo(ret);
+    for (auto &pt: pts_cam_rep) {
+        pt = repToOpencv(pt);
+    }
+    projectPoints(pts_cam_rep, cv::Mat::zeros(3, 1, CV_64F), cv::Mat::zeros(3, 1, CV_64F), cam_mat, dist_coeffs, ret);
     return ret;
+}
+
+Point2f CameraCalib::projectToImage(Point3f pt_cam_rep) {
+    std::vector<Point3f> inp({pt_cam_rep});
+    return projectToImage(inp)[0];
 }

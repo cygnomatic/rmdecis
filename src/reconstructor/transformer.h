@@ -36,13 +36,23 @@ public:
 
     void update(const RobotState &robot_state);
 
+    Eigen::Vector3f camToGimbal(const Eigen::Vector3f &pt);
+
     cv::Point3f camToGimbal(const cv::Point3f &pt);
+
+    Eigen::Vector3f gimbalToWorld(const Eigen::Vector3f &pt);
 
     cv::Point3f gimbalToWorld(const cv::Point3f &pt);
 
+    Eigen::Vector3f camToWorld(const Eigen::Vector3f &pt);
+
     cv::Point3f camToWorld(const cv::Point3f &pt);
 
+    Eigen::Vector3f worldToGimbal(const Eigen::Vector3f &pt);
+
     cv::Point3f worldToGimbal(const cv::Point3f &pt);
+
+    static cv::Point3f modelToCam(const cv::Point3f &pt, const CvTransform3f &trans_model2cam);
 
     explicit Transformer(Config &cfg);
 

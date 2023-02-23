@@ -63,21 +63,42 @@ void Transformer::update(const RobotState &robot_state) {
     trans_gimbal2world_ = Transform(EulerAngles(-robot_state.gimbal_yaw, 0, 0), Eigen::Vector3f(0, 0, 0));
 }
 
-Point3f Transformer::camToGimbal(const cv::Point3f &pt) {
+Eigen::Vector3f Transformer::camToGimbal(const Eigen::Vector3f &pt) {
     // OpenCV Point3f to Eigen Vector3f
-    return eigenVecToCvPt3f(trans_gt2gimbal_.applyTo(trans_cam2gt_.applyTo(cvPtToEigenVec3f(pt))));
+    return trans_gt2gimbal_.applyTo(trans_cam2gt_.applyTo(pt));
 }
 
-Point3f Transformer::gimbalToWorld(const cv::Point3f &pt) {
-    return eigenVecToCvPt3f(trans_gimbal2world_.applyTo(cvPtToEigenVec3f(pt)));
+Eigen::Vector3f Transformer::gimbalToWorld(const Eigen::Vector3f &pt) {
+    return trans_gimbal2world_.applyTo(pt);
 }
 
-Point3f Transformer::camToWorld(const cv::Point3f &pt) {
-    return eigenVecToCvPt3f(trans_gimbal2world_.applyTo(
-            trans_gt2gimbal_.applyTo(trans_cam2gt_.applyTo(cvPtToEigenVec3f(pt)))
-    ));
+Eigen::Vector3f Transformer::camToWorld(const Eigen::Vector3f &pt) {
+    return trans_gimbal2world_.applyTo(
+            trans_gt2gimbal_.applyTo(trans_cam2gt_.applyTo(pt))
+    );
 }
 
-Point3f Transformer::worldToGimbal(const cv::Point3f &pt) {
-    return eigenVecToCvPt3f(trans_gimbal2world_.applyInverseTo(cvPtToEigenVec3f(pt)));
+Eigen::Vector3f Transformer::worldToGimbal(const Eigen::Vector3f &pt) {
+    return trans_gimbal2world_.applyInverseTo(pt);
+}
+
+cv::Point3f Transformer::camToGimbal(const Point3f &pt) {
+    throw std::logic_error("Method not implement yet!");
+}
+
+cv::Point3f Transformer::gimbalToWorld(const Point3f &pt) {
+    throw std::logic_error("Method not implement yet!");
+}
+
+cv::Point3f Transformer::camToWorld(const Point3f &pt) {
+    throw std::logic_error("Method not implement yet!");
+}
+
+cv::Point3f Transformer::worldToGimbal(const Point3f &pt) {
+    throw std::logic_error("Method not implement yet!");
+}
+
+cv::Point3f Transformer::modelToCam(const Point3f &pt, const CvTransform3f &trans_model2cam) {
+    // OpenCV has use different camera frame standard from REP. Convert it to REP103 standard.
+    return opencvToRep(trans_model2cam.applyTo(pt));
 }

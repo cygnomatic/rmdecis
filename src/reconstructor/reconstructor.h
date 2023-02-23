@@ -13,11 +13,10 @@
 #include "reconstructor/transformer.h"
 
 class Reconstructor {
+public:
 
     Transformer transformer;
     CameraCalib cam_calib;
-
-public:
 
     explicit Reconstructor(Config& cfg);
 
@@ -25,8 +24,8 @@ public:
 
     cv::Point2f cam2img(const cv::Point3f &pt);
 
-    static void solveDistAndYaw(const cv::Point3f &center_gimbal, float &yaw_in_deg,
-                                float &horizontal_dist, float &vertical_dist);
+    static void solveDistAndYaw(const cv::Point3f &center_gimbal, float *yaw_in_deg,
+                                float *horizontal_dist, float *vertical_dist);
 };
 
 

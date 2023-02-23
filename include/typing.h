@@ -57,11 +57,15 @@ struct CvTransform3f {
 
     CvTransform3f() = default;
 
+    /**
+     * @param rvec In opencv standard
+     * @param tvec
+     */
     CvTransform3f(cv::Mat rvec, cv::Mat tvec);
 
-    std::vector<cv::Point3f> applyTo(const std::vector<cv::Point3f> &pts) const;
+    std::vector<cv::Point3f> applyTo(std::vector<cv::Point3f> pts) const;
 
-    cv::Point3f applyTo(const cv::Point3f &pt) const;
+    cv::Point3f applyTo(cv::Point3f pt) const;
 };
 
 

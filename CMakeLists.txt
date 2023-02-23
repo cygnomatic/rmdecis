@@ -67,7 +67,7 @@ install(FILES ${CMAKE_BINARY_DIR}/rmdecis.pc
 
 add_executable(test_video_playback ${rmdecis_UTILS} ${rmdecis_LIBS} tests/test_video_playback.cpp)
 
-#add_executable(test_reconstructor ${rmdecis_UTILS} ${rmdecis_LIBS} tests/test_reconstructor.cpp)
+add_executable(test_reconstructor ${rmdecis_UTILS} ${rmdecis_LIBS} tests/test_reconstructor.cpp)
 
 #add_executable(test_armor_track ${rmdecis_LIBS} ${rmdecis_UTILS} tests/test_armor_track.cpp)
 
