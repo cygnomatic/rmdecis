@@ -14,3 +14,12 @@ ArmorInfo::ArmorInfo(DetectArmorInfo detect_armor_info) {
 
     corners_model = SmallRectCorners3f();
 }
+
+VaneInfo::VaneInfo(DetectVaneInfo detect_vane_info) {
+
+    is_target = detect_vane_info.is_target;
+    corners_img = std::move(detect_vane_info.corners_img);
+    detection_confidence = detect_vane_info.detection_confidence;
+
+    corners_model = RuneCorners3f();
+}

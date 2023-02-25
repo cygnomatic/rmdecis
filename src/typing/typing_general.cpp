@@ -123,7 +123,7 @@ DetectArmorInfo::DetectArmorInfo(FacilityID armor_type, Corners2f corners_img,
                                  float detection_confidence) :
         facility_id(armor_type), corners_img(std::move(corners_img)), detection_confidence(detection_confidence) {}
 
-DetectRuneInfo::DetectRuneInfo(bool is_target, Corners2f corners_img,
+DetectVaneInfo::DetectVaneInfo(bool is_target, Corners2f corners_img,
                                float detection_confidence) :
         is_target(is_target), corners_img(std::move(corners_img)), detection_confidence(detection_confidence) {}
 

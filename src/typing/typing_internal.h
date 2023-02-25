@@ -7,29 +7,46 @@
 
 #include "consts.h"
 #include "typing.h"
+#include "Eigen/Dense"
 
-/**
- * The detect result of armor.
- */
 struct ArmorInfo {
 
     // Info from vision detection part
     FacilityID facility_id = UNKNOWN_BOT;
-    Corners3f corners_model;
     Corners2f corners_img;
     float detection_confidence = 1.0;
 
     // Info from reconstructor
+    Corners3f corners_model;
+    CvTransform3f trans_model2cam;
+    float reconstruct_confidence = 0.0;
     cv::Point3f target_cam;
     cv::Point3f target_gimbal;
     cv::Point3f target_world;
 
-    CvTransform3f trans_model2cam;
-    float reconstruct_confidence = 0.0;
-
     explicit ArmorInfo() = default;
 
     explicit ArmorInfo(DetectArmorInfo detect_armor_info);
+};
+
+struct VaneInfo {
+
+    // Info from vision detection part
+    bool is_target = true;
+    Corners2f corners_img;
+    float detection_confidence = 1.0;
+
+    // Info from reconstructor
+    Corners3f corners_model;
+    CvTransform3f trans_model2cam;
+    float reconstruct_confidence = 0.0;
+    Eigen::Vector3f center_pt_cam, center_pt_world;
+    Eigen::Vector3f target_pt_cam, target_pt_world;
+    Eigen::Vector3f normal_pt_cam, normal_pt_world;
+
+    explicit VaneInfo() = default;
+
+    explicit VaneInfo(DetectVaneInfo detect_vane_info);
 };
 
 

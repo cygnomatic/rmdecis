@@ -52,8 +52,8 @@ EulerAngles LargeRuneAiming::LargeRuneAimingImpl::update(ArmorFrameInput frame_i
     float dot = up_vec_plane_world.dot(target_vec_plane_world);
     float det = normal_vec_world_.dot(up_vec_plane_world.cross(target_vec_plane_world)); // Triple product
     float angle = atan2(det, dot);
-
 }
+
 
 
 LargeRuneAiming::LargeRuneAimingImpl::LargeRuneAimingImpl(Config &cfg)

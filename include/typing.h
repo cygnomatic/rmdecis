@@ -259,20 +259,20 @@ struct DetectArmorInfo {
                        float detection_confidence);
 };
 
-struct DetectRuneInfo {
+struct DetectVaneInfo {
     bool is_target = true;
     Corners2f corners_img;
     float detection_confidence = 1.0;
 
-    explicit DetectRuneInfo() = default;
+    explicit DetectVaneInfo() = default;
 
     /**
      * Construct a struct to save the detection result of an rune armor.
      * @param is_target
-     * @param corners_img Armor corners
+     * @param corners_img Vane corners
      * @param detection_confidence Detection confidence
      */
-    explicit DetectRuneInfo(bool is_target, Corners2f corners_img, float detection_confidence);
+    explicit DetectVaneInfo(bool is_target, Corners2f corners_img, float detection_confidence);
 };
 
 
