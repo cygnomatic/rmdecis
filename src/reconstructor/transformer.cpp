@@ -102,3 +102,8 @@ cv::Point3f Transformer::modelToCam(const Point3f &pt, const CvTransform3f &tran
     // OpenCV has use different camera frame standard from REP. Convert it to REP103 standard.
     return opencvToRep(trans_model2cam.applyTo(pt));
 }
+
+Eigen::Vector3f Transformer::modelToCam(const Eigen::Vector3f &pt, const CvTransform3f &trans_model2cam) {
+    // OpenCV has use different camera frame standard from REP. Convert it to REP103 standard.
+    return cvPtToEigenVec3f(modelToCam(eigenVecToCvPt3f(pt), trans_model2cam));
+}

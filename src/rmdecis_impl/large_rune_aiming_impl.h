@@ -15,28 +15,19 @@
 #include "utils/cv_utils.h"
 #include "config.h"
 
-#include "large_rune_aiming.h.t"
+#include "large_rune_aiming.h"
 
 class LargeRuneAiming::LargeRuneAimingImpl {
 private:
 
     BallisticCompensator compensator;
 
-    float ballet_init_speed = 15.0 * 1e3;
-    float compensate_time = 0.0;
+    int n_updates = 0; // Nums update
 
-    int last_aiming_id_ = -1;
-    int n_updates = 0;
     EulerAngles last_aiming_angle_{};
 
-    Eigen::Vector3f normal{0, 0, 0};
-    Eigen::Vector3f rune_center_world;
-
-    int chooseNextTarget(std::map<int, ArmorTrack> &tracks_map, Time &predTime);
-
-    EulerAngles predictFromTrack(ArmorTrack &track, Time predTime);
-
-    float getAngleFromDetect(ArmorTrack &track);
+    Eigen::Vector3f normal_vec_world_;
+    Eigen::Vector3f center_pt_world_;
 
 
 public:
