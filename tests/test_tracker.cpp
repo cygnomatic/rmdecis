@@ -11,7 +11,6 @@
 #include "tracker/tracker.h"
 #include "reconstructor/reconstructor.h"
 #include "rmdecis/core.h"
-#include "typing_internal.h"
 
 using cv::Mat;
 using cv::rectangle;
@@ -37,9 +36,14 @@ int main() {
             break;
 
         auto detect_result = vision_output.getData(player.frame_position);
-        reconstructor.reconstructArmor(detect_result);
 
-        tracker.update(detect_result);
+        std::vector<ArmorInfo> armor_infos;
+        for (auto &a: detect_result.armor_info) {
+            armor_infos.emplace_back(a);
+        }
+
+        reconstructor.reconstructArmors(armor_infos, detect_result.robot_state);
+        tracker.update(armor_infos, detect_result.time);
 
         for (auto &t: detect_result.armor_info) {
             rectangle(frame, t.corners_img.getBoundingBox(), {255, 255, 0}, 2);

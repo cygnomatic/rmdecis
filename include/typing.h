@@ -286,7 +286,7 @@ struct ArmorFrameInput {
 
     Time time;
     RobotState robot_state;
-    std::vector<ArmorInfo> armor_info;
+    std::vector<DetectArmorInfo> armor_info;
 
     /**
      * The output of the Vision Armor detection.

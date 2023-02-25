@@ -12,7 +12,6 @@
 #include "reconstructor/camera_calib.h"
 #include "tracker/armor_track.h"
 #include "munkres-cpp/munkres.h"
-#include "typing_internal.h"
 
 class Tracker {
 private:

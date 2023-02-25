@@ -21,7 +21,7 @@ void Tracker::update(const std::vector<ArmorInfo> &armor_detections, Time time) 
     std::map<int, ArmorInfo> matched_track2det;
 
     if (armor_detections.empty()) {
-        // warn("Received empty detection. Skip.");
+        warn("Received empty detection. Skip.");
     } else {
         if (armor_tracks_.empty()) {
             debug("No tracking armors.");

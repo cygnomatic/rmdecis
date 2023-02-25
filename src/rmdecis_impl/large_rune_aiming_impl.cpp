@@ -3,7 +3,6 @@
 //
 
 #include "large_rune_aiming_impl.h"
-#include "typing_internal.h"
 
 using namespace cv;
 using namespace Eigen;
@@ -14,7 +13,7 @@ EulerAngles LargeRuneAiming::LargeRuneAimingImpl::update(ArmorFrameInput frame_i
         return last_aiming_angle_;
 
     assert(frame_input.armor_info.size() == 1);
-    ArmorInfo armor = frame_input.armor_info[0];
+    ArmorInfo armor = ArmorInfo(frame_input.armor_info[0]);
 
     // Reconstruct
     transformer.update(frame_input.robot_state);

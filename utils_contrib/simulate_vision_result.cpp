@@ -3,7 +3,6 @@
 //
 
 #include "simulate_vision_result.h"
-#include "typing_internal.h"
 
 using namespace cv;
 
@@ -36,7 +35,7 @@ SimulateVisionOutput::SimulateVisionOutput(const std::string &data_path) {
                 armor_info.emplace_back(armor_type, corners, confidence);
             }
 
-            data.emplace(seq_idx, ArmorFrameInput{seq_idx, time, armor_info, RobotState{0, 0, 15000}});
+            data.emplace(seq_idx, ArmorFrameInput(seq_idx, time, RobotState{0, 0, 15000}, armor_info));
 
             // debug("Loaded {}th data", seq_idx);
         }
@@ -58,7 +57,7 @@ ArmorFrameInput SimulateVisionOutput::getData(int seq_idx) {
     auto i = data.find(seq_idx);
     if (i == data.end()) {
         warn("Invalid seq_idx. Failed to find corresponding data.");
-        return ArmorFrameInput(seq_idx, Time(), {}, RobotState(0, 0, 15000));
+        return ArmorFrameInput(seq_idx, Time(), RobotState(0, 0, 15000), {});
     }
     return data.at(seq_idx);
 }

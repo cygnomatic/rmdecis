@@ -6,7 +6,6 @@
 #define CYGNOIDES_DECISION_TRACK_KALMAN_FACTORY_H
 
 #include "rmdecis_impl/config_impl.h"
-#include "typing_internal.h"
 
 class TrackKalmanFactory {
 
