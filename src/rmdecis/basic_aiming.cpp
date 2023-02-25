@@ -9,6 +9,6 @@ BasicAiming::BasicAiming(Config &config_loader) : impl(new BasicAimingImpl(confi
 
 BasicAiming::~BasicAiming() = default;
 
-EulerAngles BasicAiming::update(FrameInput detection) {
+EulerAngles BasicAiming::update(ArmorFrameInput detection) {
     return impl->update(std::move(detection));
 }

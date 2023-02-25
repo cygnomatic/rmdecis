@@ -8,12 +8,12 @@
 
 using namespace cv;
 
-ArmorTrack::ArmorTrack(int tracking_id, const DetectArmorInfo &detection, const TrackKalmanFactory &factory)
+ArmorTrack::ArmorTrack(int tracking_id, const ArmorInfo &detection, const TrackKalmanFactory &factory)
         : factory(factory), tracking_id(tracking_id) {
     init(detection);
 }
 
-void ArmorTrack::init(const DetectArmorInfo &detection) {
+void ArmorTrack::init(const ArmorInfo &detection) {
 
     kf = KalmanFilter(14, 7);
 
@@ -33,7 +33,7 @@ void ArmorTrack::updateKalmanFilterMats(float dt) {
 }
 
 
-void ArmorTrack::correct(const DetectArmorInfo &detection, Time time) {
+void ArmorTrack::correct(const ArmorInfo &detection, Time time) {
     updateKalmanFilterMats(time - last_correct_time_);
     last_correct_time_ = time;
 
@@ -67,7 +67,7 @@ TrackArmorInfo ArmorTrack::predict(Time time) {
     return cvtStateMat2Result(state);
 }
 
-float ArmorTrack::calcSimilarity(const DetectArmorInfo &detection, Time time) {
+float ArmorTrack::calcSimilarity(const ArmorInfo &detection, Time time) {
     auto new_bounding_box = detection.corners_img.getBoundingBox();
     auto pred_bounding_box = predict(time).bbox;
 
@@ -100,7 +100,7 @@ TrackArmorInfo ArmorTrack::cvtStateMat2Result(const Mat &state) {
     return {Point3f{x, y, z}, Rect2f{pred_uv, Size2f{width, height}}};
 }
 
-Mat ArmorTrack::cvtDetection2MeasurementMat(const DetectArmorInfo &detection) {
+Mat ArmorTrack::cvtDetection2MeasurementMat(const ArmorInfo &detection) {
     Rect2f bounding_box = detection.corners_img.getBoundingBox();
     Point3f center = detection.target_world;
 

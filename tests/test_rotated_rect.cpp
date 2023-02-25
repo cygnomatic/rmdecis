@@ -23,7 +23,7 @@ int main() {
         if (frame.empty())
             break;
 
-        FrameInput detection = vision_output.getData(player.frame_position);
+        ArmorFrameInput detection = vision_output.getData(player.frame_position);
 
         for (auto &t: detection.armor_info) {
             std::vector<Point2f> pts(4);

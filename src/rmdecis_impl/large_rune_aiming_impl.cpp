@@ -3,11 +3,12 @@
 //
 
 #include "large_rune_aiming_impl.h"
+#include "typing_internal.h"
 
 using namespace cv;
 using namespace Eigen;
 
-EulerAngles LargeRuneAiming::LargeRuneAimingImpl::update(FrameInput frame_input) {
+EulerAngles LargeRuneAiming::LargeRuneAimingImpl::update(ArmorFrameInput frame_input) {
 
     if (frame_input.armor_info.empty())
         return last_aiming_angle_;

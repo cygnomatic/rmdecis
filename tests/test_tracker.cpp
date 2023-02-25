@@ -11,6 +11,7 @@
 #include "tracker/tracker.h"
 #include "reconstructor/reconstructor.h"
 #include "rmdecis/core.h"
+#include "typing_internal.h"
 
 using cv::Mat;
 using cv::rectangle;

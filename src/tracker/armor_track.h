@@ -8,9 +8,10 @@
 #include <opencv2/video/tracking.hpp>
 #include <numeric>
 
-#include "../../include/typing.h"
+#include "rmdecis/core.h"
 #include "utils/cv_utils.h"
 #include "tracker/track_kalman_factory.h"
+#include "typing/typing_internal.h"
 
 #define NUM_STATE 7
 enum StateMatDesc {
@@ -35,15 +36,15 @@ public:
     int tracking_id = -1;
     int missing_cnt = 0, hit_cnt = 0;
 
-    explicit ArmorTrack(int tracking_id, const DetectArmorInfo &detection, const TrackKalmanFactory &factory);
+    explicit ArmorTrack(int tracking_id, const ArmorInfo &detection, const TrackKalmanFactory &factory);
 
-    void init(const DetectArmorInfo &detection);
+    void init(const ArmorInfo &detection);
 
-    void correct(const DetectArmorInfo &detection, Time time);
+    void correct(const ArmorInfo &detection, Time time);
 
     TrackArmorInfo predict(Time time);
 
-    float calcSimilarity(const DetectArmorInfo &detection, Time time);
+    float calcSimilarity(const ArmorInfo &detection, Time time);
 
 private:
 
@@ -59,7 +60,7 @@ private:
 
     void updateKalmanFilterMats(float dt);
 
-    static cv::Mat cvtDetection2MeasurementMat(const DetectArmorInfo &detection);
+    static cv::Mat cvtDetection2MeasurementMat(const ArmorInfo &detection);
 
     static TrackArmorInfo cvtStateMat2Result(const cv::Mat &state);
 };

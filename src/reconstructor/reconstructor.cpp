@@ -7,7 +7,7 @@
 
 using namespace cv;
 
-void Reconstructor::reconstructArmor(FrameInput &frame_input) {
+void Reconstructor::reconstructArmor(ArmorFrameInput &frame_input) {
     transformer.update(frame_input.robot_state);
     for (auto &armor: frame_input.armor_info) {
         armor.trans_model2cam = cam_calib.armorSolvePnP(armor.corners_model, armor.corners_img);

@@ -119,16 +119,16 @@ Corners3f::operator std::vector<cv::Point3f>() const {
     return impl->operator std::vector<cv::Point3f>();
 }
 
-
 DetectArmorInfo::DetectArmorInfo(FacilityID armor_type, Corners2f corners_img,
                                  float detection_confidence) :
-        facility_id(armor_type), corners_img(std::move(corners_img)), detection_confidence(detection_confidence) {
-    corners_model = SmallRectCorners3f();
-}
+        facility_id(armor_type), corners_img(std::move(corners_img)), detection_confidence(detection_confidence) {}
 
-FrameInput::FrameInput(int seq_idx, Time time, std::vector<DetectArmorInfo> armor_info, RobotState robot_state) :
-        seq_idx(seq_idx), time(time), armor_info(std::move(armor_info)), robot_state(robot_state) {}
+DetectRuneInfo::DetectRuneInfo(bool is_target, Corners2f corners_img,
+                               float detection_confidence) :
+        is_target(is_target), corners_img(std::move(corners_img)), detection_confidence(detection_confidence) {}
 
+ArmorFrameInput::ArmorFrameInput(int seq_idx, Time time, RobotState robot_state, std::vector<DetectArmorInfo> armor_info) :
+        armor_info(std::move(armor_info)), seq_idx(seq_idx), time(time), robot_state(robot_state) {}
 
 RobotState::RobotState(float gimbal_yaw, float gimbal_pitch, float ballet_init_speed) :
         gimbal_pitch(gimbal_pitch), gimbal_yaw(gimbal_yaw), ballet_init_speed(ballet_init_speed) {}

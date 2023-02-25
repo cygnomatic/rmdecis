@@ -69,6 +69,20 @@ struct CvTransform3f {
 };
 
 
+struct RobotState {
+    float gimbal_yaw, gimbal_pitch;
+    float ballet_init_speed;
+
+    /**
+     * Current robot state input
+     * @param gimbal_yaw in degree
+     * @param gimbal_pitch in degree
+     * @param ballet_init_speed in mm/s
+     */
+    explicit RobotState(float gimbal_yaw, float gimbal_pitch, float ballet_init_speed);
+};
+
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -229,20 +243,9 @@ private:
  */
 struct DetectArmorInfo {
 
-    // Info from vision detection part
     FacilityID facility_id = UNKNOWN_BOT;
-
     Corners2f corners_img;
-    Corners3f corners_model;
     float detection_confidence = 1.0;
-
-    // Info from reconstructor
-    cv::Point3f target_cam;
-    cv::Point3f target_gimbal;
-    cv::Point3f target_world;
-
-    CvTransform3f trans_model2cam;
-    float reconstruct_confidence = 0.0;
 
     explicit DetectArmorInfo() = default;
 
@@ -256,27 +259,31 @@ struct DetectArmorInfo {
                              float detection_confidence);
 };
 
+struct DetectRuneInfo {
+    bool is_target = true;
+    Corners2f corners_img;
+    float detection_confidence = 1.0;
 
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-struct RobotState {
-    float gimbal_yaw, gimbal_pitch;
-    float ballet_init_speed;
+    explicit DetectRuneInfo() = default;
 
     /**
-     * Current robot state input
-     * @param gimbal_yaw in degree
-     * @param gimbal_pitch in degree
-     * @param ballet_init_speed in mm/s
+     * Construct a struct to save the detection result of an rune armor.
+     * @param is_target
+     * @param corners_img Armor corners
+     * @param detection_confidence Detection confidence
      */
-    explicit RobotState(float gimbal_yaw, float gimbal_pitch, float ballet_init_speed);
+    explicit DetectRuneInfo(bool is_target, Corners2f corners_img, float detection_confidence);
 };
 
-struct FrameInput {
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+struct ArmorFrameInput {
     int seq_idx = -1;
+
     Time time;
     RobotState robot_state;
     std::vector<DetectArmorInfo> armor_info;
@@ -285,16 +292,11 @@ struct FrameInput {
      * The output of the Vision Armor detection.
      * @param seq_idx For test only. Index of the corresponding frame.
      * @param time The time **the frame is shot**. NOT THE TIME FINISH THE VISION PROCESS.
-     * @param armor_info Detected armor info.
      * @param robot_state State info of the robot.
+     * @param armor_info Detected armor info.
      * @note armor_info is moved into the struct. Do not reuse it.
      */
-    explicit FrameInput(int seq_idx, Time time, std::vector<DetectArmorInfo> armor_info, RobotState robot_state);
-};
-
-struct TrackArmorInfo {
-    cv::Point3f center_gimbal;
-    cv::Rect2f bbox;
+    ArmorFrameInput(int seq_idx, Time time, RobotState robot_state, std::vector<DetectArmorInfo> armor_info);
 };
 
 

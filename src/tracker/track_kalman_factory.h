@@ -6,6 +6,7 @@
 #define CYGNOIDES_DECISION_TRACK_KALMAN_FACTORY_H
 
 #include "rmdecis_impl/config_impl.h"
+#include "typing_internal.h"
 
 class TrackKalmanFactory {
 
@@ -24,7 +25,7 @@ public:
 
     cv::Mat getMeasurementNoiseCov(float dt) const;
 
-    static cv::Mat getInitState(const DetectArmorInfo &detection);
+    static cv::Mat getInitState(const ArmorInfo &detection);
 
     static cv::Mat getInitError();
 };

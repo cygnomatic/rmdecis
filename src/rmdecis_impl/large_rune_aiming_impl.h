@@ -48,7 +48,7 @@ public:
      * @param detection Result from the detection part.
      * @return Euler angles, representing the aiming target.
      */
-    EulerAngles update(FrameInput detection);
+    EulerAngles update(ArmorFrameInput detection);
 
 };
 

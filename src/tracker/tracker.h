@@ -12,6 +12,7 @@
 #include "reconstructor/camera_calib.h"
 #include "tracker/armor_track.h"
 #include "munkres-cpp/munkres.h"
+#include "typing_internal.h"
 
 class Tracker {
 private:
@@ -30,11 +31,11 @@ public:
 
     explicit Tracker(Config &cfg);
 
-    void update(const FrameInput &reconstruct_armor_result);
+    void update(const ArmorFrameInput &reconstruct_armor_result);
 
-    void associate(const std::vector<DetectArmorInfo> &armor_detections, Time time,
-                   std::vector<DetectArmorInfo> &unmatched_detections,
-                   std::map<int, DetectArmorInfo> &matched_track2det);
+    void associate(const std::vector<ArmorInfo> &armor_detections, Time time,
+                   std::vector<ArmorInfo> &unmatched_detections,
+                   std::map<int, ArmorInfo> &matched_track2det);
 
     std::map<int, ArmorTrack> getTracks(bool include_probationary = false);
 

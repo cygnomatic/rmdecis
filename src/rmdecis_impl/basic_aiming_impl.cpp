@@ -3,10 +3,11 @@
 //
 
 #include "basic_aiming_impl.h"
+#include "rmdecis/core.h"
 
 using namespace cv;
 
-EulerAngles BasicAiming::BasicAimingImpl::update(FrameInput detection) {
+EulerAngles BasicAiming::BasicAimingImpl::update(ArmorFrameInput detection) {
 
     reconstructor.reconstructArmor(detection);
     tracker.update(detection);

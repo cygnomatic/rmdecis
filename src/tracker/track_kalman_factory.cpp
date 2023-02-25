@@ -5,6 +5,7 @@
 #include "rmdecis_impl/config_impl.h"
 #include "track_kalman_factory.h"
 #include "armor_track.h"
+#include "typing_internal.h"
 
 cv::Mat TrackKalmanFactory::getInitError() {
     return (cv::Mat_<float>(14, 14)
