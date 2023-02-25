@@ -256,7 +256,7 @@ struct DetectArmorInfo {
      * @param detection_confidence Detection confidence
      */
     explicit DetectArmorInfo(FacilityID facility_id, Corners2f corners_img,
-                             float detection_confidence);
+                       float detection_confidence);
 };
 
 struct DetectRuneInfo {
@@ -286,7 +286,7 @@ struct ArmorFrameInput {
 
     Time time;
     RobotState robot_state;
-    std::vector<DetectArmorInfo> armor_info;
+    std::vector<ArmorInfo> armor_info;
 
     /**
      * The output of the Vision Armor detection.

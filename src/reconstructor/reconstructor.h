@@ -20,7 +20,7 @@ public:
 
     explicit Reconstructor(Config& cfg);
 
-    void reconstructArmor(ArmorFrameInput& frame_input);
+    void reconstructArmors(std::vector<ArmorInfo> &armors, const RobotState &robot_state);
 
     cv::Point2f cam2img(const cv::Point3f &pt);
 

@@ -8,7 +8,7 @@
  */
 
 #include "tracker.h"
-#include "typing_internal.h"
+#include "rmdecis/core.h"
 
 munkres::Matrix<float> hungarianMatching(munkres::Matrix<float> mat) {
     munkres::Munkres<float> m;
@@ -16,27 +16,25 @@ munkres::Matrix<float> hungarianMatching(munkres::Matrix<float> mat) {
     return mat;
 }
 
-void Tracker::update(const ArmorFrameInput &reconstruct_armor_result) {
+void Tracker::update(const std::vector<ArmorInfo> &armor_detections, Time time) {
+    std::vector<ArmorInfo> unmatched_detections;
+    std::map<int, ArmorInfo> matched_track2det;
 
-    const std::vector<DetectArmorInfo> &armor_detections = reconstruct_armor_result.armor_info;
-    std::vector<DetectArmorInfo> unmatched_detections;
-    std::map<int, DetectArmorInfo> matched_track2det;
-
-    if (reconstruct_armor_result.armor_info.empty()) {
+    if (armor_detections.empty()) {
         // warn("Received empty detection. Skip.");
     } else {
         if (armor_tracks_.empty()) {
             debug("No tracking armors.");
-            unmatched_detections = {reconstruct_armor_result.armor_info[0]};
+            unmatched_detections = {armor_detections[0]};
         } else {
-            associate(armor_detections, reconstruct_armor_result.time, unmatched_detections, matched_track2det);
+            associate(armor_detections, time, unmatched_detections, matched_track2det);
         }
     }
 
     // Update tracks with associated detections
     for (const auto &p: matched_track2det) {
         ArmorTrack &trk = armor_tracks_.at(p.first);
-        trk.correct(p.second, reconstruct_armor_result.time);
+        trk.correct(p.second, time);
         trk.hit_cnt++;
 
         // Set to minus one to cancel out the extra addition of `missing_cnt` in `Update tracks lifecycle`.
@@ -66,9 +64,9 @@ void Tracker::update(const ArmorFrameInput &reconstruct_armor_result) {
     }
 }
 
-void Tracker::associate(const std::vector<DetectArmorInfo> &armor_detections, Time time,
-                        std::vector<DetectArmorInfo> &unmatched_detections,
-                        std::map<int, DetectArmorInfo> &matched_track2det) {
+void Tracker::associate(const std::vector<ArmorInfo> &armor_detections, Time time,
+                        std::vector<ArmorInfo> &unmatched_detections,
+                        std::map<int, ArmorInfo> &matched_track2det) {
 
     size_t n_detection = armor_detections.size(), n_tracks = armor_tracks_.size();
 

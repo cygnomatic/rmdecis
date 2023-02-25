@@ -31,14 +31,13 @@ public:
 
     explicit Tracker(Config &cfg);
 
-    void update(const ArmorFrameInput &reconstruct_armor_result);
+    void update(const std::vector<ArmorInfo> &armor_detections, Time time);
 
     void associate(const std::vector<ArmorInfo> &armor_detections, Time time,
                    std::vector<ArmorInfo> &unmatched_detections,
                    std::map<int, ArmorInfo> &matched_track2det);
 
     std::map<int, ArmorTrack> getTracks(bool include_probationary = false);
-
 };
 
 

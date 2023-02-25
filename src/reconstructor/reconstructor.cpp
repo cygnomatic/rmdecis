@@ -7,9 +7,9 @@
 
 using namespace cv;
 
-void Reconstructor::reconstructArmor(ArmorFrameInput &frame_input) {
-    transformer.update(frame_input.robot_state);
-    for (auto &armor: frame_input.armor_info) {
+void Reconstructor::reconstructArmors(std::vector<ArmorInfo>& armors, const RobotState& robot_state) {
+    transformer.update(robot_state);
+    for (auto &armor: armors) {
         armor.trans_model2cam = cam_calib.armorSolvePnP(armor.corners_model, armor.corners_img);
         armor.target_cam = opencvToRep(cvMat2Point3f(armor.trans_model2cam.tvec));
         armor.target_gimbal = eigenVecToCvPt3f(transformer.camToGimbal(cvPtToEigenVec3f(armor.target_cam)));

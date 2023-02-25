@@ -9,8 +9,13 @@ using namespace cv;
 
 EulerAngles BasicAiming::BasicAimingImpl::update(ArmorFrameInput detection) {
 
-    reconstructor.reconstructArmor(detection);
-    tracker.update(detection);
+    std::vector<ArmorInfo> armor_infos;
+    for (const auto& armor: detection.armor_info) {
+        armor_infos.emplace_back(armor);
+    }
+
+    reconstructor.reconstructArmors(armor_infos, detection.robot_state);
+    tracker.update(armor_infos, detection.time);
 
     auto tracks_map = tracker.getTracks();
 

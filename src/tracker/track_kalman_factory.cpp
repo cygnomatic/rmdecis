@@ -2,10 +2,9 @@
 // Created by catslashbin on 23-1-30.
 //
 
-#include "rmdecis_impl/config_impl.h"
+#include "rmdecis/core.h"
 #include "track_kalman_factory.h"
 #include "armor_track.h"
-#include "typing_internal.h"
 
 cv::Mat TrackKalmanFactory::getInitError() {
     return (cv::Mat_<float>(14, 14)
@@ -26,7 +25,7 @@ cv::Mat TrackKalmanFactory::getInitError() {
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 10000);
 }
 
-cv::Mat TrackKalmanFactory::getInitState(const DetectArmorInfo &detection) {
+cv::Mat TrackKalmanFactory::getInitState(const ArmorInfo &detection) {
     cv::Rect2f bounding_box = detection.corners_img.getBoundingBox();
     cv::Point3f center = detection.target_world;
 
