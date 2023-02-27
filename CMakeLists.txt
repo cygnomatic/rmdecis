@@ -73,6 +73,8 @@ add_executable(test_reconstructor ${rmdecis_UTILS} ${rmdecis_LIBS} tests/test_re
 
 add_executable(test_tracker ${rmdecis_LIBS} ${rmdecis_UTILS} tests/test_tracker.cpp)
 
+add_executable(test_tracker_association ${rmdecis_LIBS} ${rmdecis_UTILS} tests/test_tracker_association.cpp)
+
 #add_executable(test_detection ${rmdecis_LIBS} ${rmdecis_UTILS} tests/test_detection.cpp)
 
 add_executable(test_basic_aiming ${rmdecis_LIBS} ${rmdecis_UTILS} tests/test_basic_aiming.cpp)
