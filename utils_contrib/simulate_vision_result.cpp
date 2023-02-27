@@ -15,7 +15,7 @@ SimulateVisionOutput::SimulateVisionOutput(const std::string &data_path) {
     int seq_idx = 0;
     for (YAML::Node y: ys) {
         try {
-            seq_idx = y["header"]["seq"].as<int>();
+            seq_idx = std::stoi(y["header"]["frame_id"].as<std::string>());
 
             YAML::Node stamp = y["header"]["stamp"];
             Time time = {stamp["secs"].as<int>(), stamp["nsecs"].as<int>() / (int) 1e3};
@@ -23,7 +23,7 @@ SimulateVisionOutput::SimulateVisionOutput(const std::string &data_path) {
             std::vector<DetectArmorInfo> armor_info;
 
             for (YAML::Node d: y["data"]) {
-                FacilityID armor_type = (FacilityID) d["armor_type"].as<int>();
+                FacilityID armor_type = (FacilityID) d["facility_id"].as<int>();
                 float confidence = d["confidence"].as<float>();
 
                 Point2f rt{d["rt_x"].as<float>(), d["rt_y"].as<float>()};
