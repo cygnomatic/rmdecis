@@ -40,24 +40,22 @@ int main() {
 
         for (auto &t: armor_infos) {
             // Original input
-            rectangle(frame, t.corners_img.getBoundingBox(), {255, 255, 0}, 5);
+            drawPolygons(frame, cv::minAreaRect(std::vector<cv::Point2f>(t.corners_img)), {255, 255, 0}, 5);
         }
 
         for (auto &p: tracker.getTracks(true)) {
             // Last probationary tracker
-            track_info = p.second.predict(detect_result.time);
-            rectangle(frame, track_info.bbox, {0, 100, 100}, 5);
+            drawPolygons(frame, p.second.last_bbox_, {255, 255, 0}, 5);
             if (!armor_infos.empty()) {
                 auto similarity = fmt::format("{:.2f}", p.second.calcSimilarity(armor_infos.at(0), detect_result.time));
-                cv::putText(frame, similarity, {(int) track_info.bbox.x, (int) track_info.bbox.y},
-                            cv::FONT_HERSHEY_SIMPLEX, 1, {0, 100, 100}, 2);
+                cv::putText(frame, similarity, {(int) p.second.last_bbox_.center.x, (int) p.second.last_bbox_.center.y},
+                            cv::FONT_HERSHEY_SIMPLEX, 1, {0, 200, 200}, 2);
             }
         }
 
         for (auto &p: tracker.getTracks()) {
             // Last tracker
-            track_info = p.second.predict(detect_result.time);
-            rectangle(frame, track_info.bbox, {0, 255, 255}, 5);
+            drawPolygons(frame, p.second.last_bbox_, {0, 255, 255}, 5);
         }
 
         // Update trackers
