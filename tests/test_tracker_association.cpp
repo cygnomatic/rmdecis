@@ -21,7 +21,7 @@ int main() {
     Config cfg("../config/config.yml");
     Reconstructor reconstructor(cfg);
 
-    player.setPlaybackSpeed(1);
+    player.setPlaybackSpeed(0.2);
 
     Tracker tracker(cfg);
     TrackArmorInfo track_info;
@@ -38,19 +38,31 @@ int main() {
             armor_infos.emplace_back(a);
         }
 
-        reconstructor.reconstructArmors(armor_infos, detect_result.robot_state);
+        for (auto &t: armor_infos) {
+            // Original input
+            rectangle(frame, t.corners_img.getBoundingBox(), {255, 255, 0}, 5);
+        }
+
+        for (auto &p: tracker.getTracks(true)) {
+            // Last probationary tracker
+            track_info = p.second.predict(detect_result.time);
+            rectangle(frame, track_info.bbox, {0, 100, 100}, 5);
+            if (!armor_infos.empty()) {
+                auto similarity = fmt::format("{:.2f}", p.second.calcSimilarity(armor_infos.at(0), detect_result.time));
+                cv::putText(frame, similarity, {(int) track_info.bbox.x, (int) track_info.bbox.y},
+                            cv::FONT_HERSHEY_SIMPLEX, 1, {0, 100, 100}, 2);
+            }
+        }
 
         for (auto &p: tracker.getTracks()) {
+            // Last tracker
             track_info = p.second.predict(detect_result.time);
-            // drawPoint(frame, reconstructor.cam2img(track_info.center_gimbal), {0, 150, 150}, 10);
             rectangle(frame, track_info.bbox, {0, 255, 255}, 5);
         }
 
+        // Update trackers
+        reconstructor.reconstructArmors(armor_infos, detect_result.robot_state);
         tracker.update(armor_infos, detect_result.time);
-
-        for (auto &t: detect_result.armor_info) {
-            rectangle(frame, t.corners_img.getBoundingBox(), {255, 255, 0}, 5);
-        }
 
         // for (auto &p: tracker.getTracks()) {
         //
