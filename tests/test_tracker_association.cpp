@@ -15,8 +15,8 @@ int main() {
 
     spdlog::set_level(spdlog::level::debug);
 
-    SimulateVisionOutput vision_output("../data/vision_out/vision_result_1.yaml");
-    SimpleVideoPlayer player("../data/vision_out/video_input_1.avi");
+    SimulateVisionOutput vision_output("../data/vision_out/vision_result_.yaml");
+    SimpleVideoPlayer player("../data/vision_out/video_input.avi");
 
     Config cfg("../config/config.yml");
     Reconstructor reconstructor(cfg);
@@ -49,7 +49,7 @@ int main() {
         tracker.update(armor_infos, detect_result.time);
 
         for (auto &t: detect_result.armor_info) {
-            rectangle(frame, t.corners_img.getBoundingBox(), {255, 255, 0}, 2);
+            rectangle(frame, t.corners_img.getBoundingBox(), {255, 255, 0}, 5);
         }
 
         // for (auto &p: tracker.getTracks()) {

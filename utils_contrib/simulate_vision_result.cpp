@@ -56,7 +56,7 @@ ArmorFrameInput SimulateVisionOutput::getNextData() {
 ArmorFrameInput SimulateVisionOutput::getData(int seq_idx) {
     auto i = data.find(seq_idx);
     if (i == data.end()) {
-        warn("Invalid seq_idx. Failed to find corresponding data.");
+        // warn("Invalid seq_idx. Failed to find corresponding data.");
         return ArmorFrameInput(seq_idx, Time(), RobotState(0, 0, 15000), {});
     }
     return data.at(seq_idx);
