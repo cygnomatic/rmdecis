@@ -25,6 +25,13 @@ inline void drawPolygons(cv::Mat &image, std::vector<cv::Point2f> &pts,
     cv::line(image, pts[pts.size() - 1], pts[0], color, thickness);
 }
 
+inline void drawPolygons(cv::Mat &image, cv::RotatedRect rect,
+                             const cv::Scalar &color = cv::Scalar(255, 0, 0), int thickness = 2) {
+    std::vector<cv::Point2f> pts(4);
+    rect.points(pts.data());
+    drawPolygons(image, pts, color, thickness);
+}
+
 inline float calculateIoU(const cv::Rect2f &rect1, const cv::Rect2f &rect2) {
     cv::Rect2f intersect = rect1 & rect2;
     float intersectArea = intersect.area();
@@ -32,6 +39,18 @@ inline float calculateIoU(const cv::Rect2f &rect1, const cv::Rect2f &rect2) {
     float iou = intersectArea / unionArea;
     return std::isnan(iou) ? 0.f : iou;
 }
+
+inline float calculateIoU(const cv::RotatedRect &rect1, const cv::RotatedRect &rect2) {
+    std::vector<cv::Point2f> intersection_contour;
+    cv::rotatedRectangleIntersection(rect1, rect2, intersection_contour);
+    if (intersection_contour.empty())
+        return 0;
+    float intersectArea = float(cv::contourArea(intersection_contour));
+    float unionArea = rect1.size.area() + rect2.size.area() - intersectArea;
+    float iou = intersectArea / unionArea;
+    return std::isnan(iou) ? 0.f : iou;
+}
+
 
 inline cv::Point3f cvMat2Point3f(const cv::Mat &mat) {
     assert(mat.rows == 3 && mat.cols == 1);

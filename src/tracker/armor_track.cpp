@@ -24,6 +24,8 @@ void ArmorTrack::init(const ArmorInfo &detection) {
     // Init mats
     kf.measurementMatrix = factory.getMeasurementMat();
     updateKalmanFilterMats(0.1);
+
+    last_bbox_ = cv::minAreaRect((std::vector<Point2f>)detection.corners_img);
 }
 
 void ArmorTrack::updateKalmanFilterMats(float dt) {
@@ -41,6 +43,7 @@ void ArmorTrack::correct(const ArmorInfo &detection, Time time) {
     kf.correct(cvtDetection2MeasurementMat(detection)); // pre(t-1, t) -> post(t, t)
 
     id_cnt[detection.facility_id]++;
+    last_bbox_ = cv::minAreaRect((std::vector<Point2f>)detection.corners_img);
 }
 
 TrackArmorInfo ArmorTrack::predict(Time time) {
@@ -68,10 +71,8 @@ TrackArmorInfo ArmorTrack::predict(Time time) {
 }
 
 float ArmorTrack::calcSimilarity(const ArmorInfo &detection, Time time) {
-    auto new_bounding_box = detection.corners_img.getBoundingBox();
-    auto pred_bounding_box = predict(time).bbox;
 
-    float iou = calculateIoU(pred_bounding_box, new_bounding_box);
+    float iou = calculateIoU(last_bbox_, minAreaRect(std::vector<Point2f>(detection.corners_img)));
     float id_similarity = calcIdSimilarity(detection.facility_id);
 
     float ret = iou * 1.0 + id_similarity * 0.0;

@@ -35,6 +35,7 @@ class ArmorTrack {
 public:
     int tracking_id = -1;
     int missing_cnt = 0, hit_cnt = 0;
+    cv::RotatedRect last_bbox_;
 
     explicit ArmorTrack(int tracking_id, const ArmorInfo &detection, const TrackKalmanFactory &factory);
 
