@@ -28,7 +28,7 @@ include_directories(PRIVATE ${OpenCV_INCLUDE_DIRS} ${CERES_INCLUDE_DIRS})
 
 ### Set directories & Get targets
 
-include_directories(PRIVATE ${PROJECT_SOURCE_DIR}/contrib)
+include_directories(PRIVATE ${PROJECT_SOURCE_DIR}/3rdparty)
 include_directories(PRIVATE ${PROJECT_SOURCE_DIR}/src)
 include_directories(PUBLIC ${PROJECT_SOURCE_DIR}/include)
 
