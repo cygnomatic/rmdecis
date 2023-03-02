@@ -30,6 +30,8 @@ int main() {
     Tracker tracker(cfg);
     TrackArmorInfo track_info;
 
+    int width = cfg.get<int>("camera.width"), height = cfg.get<int>("camera.length");
+
     while (true) {
         Mat frame = player.getFrame();
         if (frame.empty())
@@ -39,32 +41,33 @@ int main() {
 
         std::vector<ArmorInfo> armor_infos;
         for (auto &a: detect_result.armor_info) {
+            cv::Rect2f bbox = a.corners_img.getBoundingBox();
+            if (bbox.x <= 0 || bbox.x + bbox.width >= width || bbox.y <= 0 || bbox.y + bbox.height >= height)
+                continue;
             armor_infos.emplace_back(a);
         }
 
         reconstructor.reconstructArmors(armor_infos, detect_result.robot_state);
+        for (auto &a: armor_infos) {
+            ::info("x: {}, y: {}, z: {}", a.target_world.x, a.target_world.y, a.target_world.z);
+        }
         tracker.update(armor_infos, detect_result.time);
 
         for (auto &t: detect_result.armor_info) {
-            rectangle(frame, t.corners_img.getBoundingBox(), {255, 255, 0}, 2);
+            drawArmorCorners(frame, t.corners_img, {255, 255, 0}, 2);
         }
 
         for (auto &p: tracker.getTracks()) {
 
-            track_info = p.second.predict(detect_result.time + 10);
+            track_info = p.second.predict(detect_result.time + .1);
             drawPoint(frame, reconstructor.cam2img(track_info.center_gimbal), {0, 50, 50}, 10);
-            rectangle(frame, track_info.bbox, {0, 50, 50}, 5);
 
-            track_info = p.second.predict(detect_result.time + 5);
+            track_info = p.second.predict(detect_result.time + .05);
             drawPoint(frame, reconstructor.cam2img(track_info.center_gimbal), {0, 150, 150}, 10);
-            rectangle(frame, track_info.bbox, {0, 150, 150}, 5);
 
             track_info = p.second.predict(detect_result.time);
             drawPoint(frame, reconstructor.cam2img(track_info.center_gimbal), {0, 150, 150}, 10);
-            rectangle(frame, track_info.bbox, {0, 150, 150}, 5);
 
-
-            // debug("i={}, bbox.x={}, bbox.y={}", i, track_info.x, track_info.y);
         }
 
         player.update(frame);

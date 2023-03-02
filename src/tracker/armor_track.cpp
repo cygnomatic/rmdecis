@@ -25,7 +25,7 @@ void ArmorTrack::init(const ArmorInfo &detection) {
     kf.measurementMatrix = factory.getMeasurementMat();
     updateKalmanFilterMats(0.1);
 
-    last_bbox_ = cv::minAreaRect((std::vector<Point2f>)detection.corners_img);
+    last_bbox_ = cv::minAreaRect((std::vector<Point2f>) detection.corners_img);
 }
 
 void ArmorTrack::updateKalmanFilterMats(float dt) {
@@ -43,7 +43,7 @@ void ArmorTrack::correct(const ArmorInfo &detection, Time time) {
     kf.correct(cvtDetection2MeasurementMat(detection)); // pre(t-1, t) -> post(t, t)
 
     id_cnt[detection.facility_id]++;
-    last_bbox_ = cv::minAreaRect((std::vector<Point2f>)detection.corners_img);
+    last_bbox_ = cv::minAreaRect((std::vector<Point2f>) detection.corners_img);
 }
 
 TrackArmorInfo ArmorTrack::predict(Time time) {
@@ -71,11 +71,11 @@ TrackArmorInfo ArmorTrack::predict(Time time) {
 }
 
 float ArmorTrack::calcSimilarity(const ArmorInfo &detection, Time time) {
-
     float iou = calculateIoU(last_bbox_, minAreaRect(std::vector<Point2f>(detection.corners_img)));
     float id_similarity = calcIdSimilarity(detection.facility_id);
+    float center_dist_similarity = calcCenterDistSimilarity(detection.target_world);
 
-    float ret = iou * 1.0 + id_similarity * 0.0;
+    float ret = iou * 0.75 + id_similarity * 0.0 + center_dist_similarity * 0.25;
     assert(!isnanf(ret));
 
     return ret;
@@ -85,6 +85,14 @@ float ArmorTrack::calcIdSimilarity(FacilityID id) {
     int sum = std::accumulate(id_cnt.begin(), id_cnt.end(), 2);
     return (float) (id_cnt[id] + 1) /
            (float) sum; // Here we artificially add one positive and one negative. To smoothen the result.
+}
+
+float ArmorTrack::calcCenterDistSimilarity(const Point3f& center) {
+    Point3f center_pred = {kf.statePost.at<float>(STATE_X),
+                           kf.statePost.at<float>(STATE_Y),
+                           kf.statePost.at<float>(STATE_Z)};
+    float dist = float(norm((center_pred - center)));
+    return max((200.f - dist) * 0.005f, 0.f);
 }
 
 TrackArmorInfo ArmorTrack::cvtStateMat2Result(const Mat &state) {

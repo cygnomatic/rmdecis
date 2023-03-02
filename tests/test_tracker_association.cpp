@@ -26,6 +26,8 @@ int main() {
     Tracker tracker(cfg);
     TrackArmorInfo track_info;
 
+    int width = cfg.get<int>("camera.width"), height = cfg.get<int>("camera.length");
+
     for (int i = 0;; i++) {
         Mat frame = player.getFrame();
         if (frame.empty())
@@ -35,6 +37,9 @@ int main() {
 
         std::vector<ArmorInfo> armor_infos;
         for (auto &a: detect_result.armor_info) {
+            cv::Rect2f bbox = a.corners_img.getBoundingBox();
+            if (bbox.x <= 0 || bbox.x + bbox.width >= width || bbox.y <= 0 || bbox.y + bbox.height >= height)
+                continue;
             armor_infos.emplace_back(a);
         }
 

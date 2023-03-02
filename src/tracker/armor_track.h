@@ -64,6 +64,8 @@ private:
     static cv::Mat cvtDetection2MeasurementMat(const ArmorInfo &detection);
 
     static TrackArmorInfo cvtStateMat2Result(const cv::Mat &state);
+
+    float calcCenterDistSimilarity(const cv::Point3f &center);
 };
 
 
