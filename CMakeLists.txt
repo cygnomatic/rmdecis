@@ -28,7 +28,7 @@ include_directories(PRIVATE ${OpenCV_INCLUDE_DIRS} ${CERES_INCLUDE_DIRS})
 
 ### Set directories & Get targets
 
-include_directories(PRIVATE ${PROJECT_SOURCE_DIR}/contrib)
+include_directories(PRIVATE ${PROJECT_SOURCE_DIR}/3rdparty)
 include_directories(PRIVATE ${PROJECT_SOURCE_DIR}/src)
 include_directories(PUBLIC ${PROJECT_SOURCE_DIR}/include)
 
@@ -67,11 +67,13 @@ install(FILES ${CMAKE_BINARY_DIR}/rmdecis.pc
 
 add_executable(test_video_playback ${rmdecis_UTILS} ${rmdecis_LIBS} tests/test_video_playback.cpp)
 
-#add_executable(test_reconstructor ${rmdecis_UTILS} ${rmdecis_LIBS} tests/test_reconstructor.cpp)
+add_executable(test_reconstructor ${rmdecis_UTILS} ${rmdecis_LIBS} tests/test_reconstructor.cpp)
 
 #add_executable(test_armor_track ${rmdecis_LIBS} ${rmdecis_UTILS} tests/test_armor_track.cpp)
 
 add_executable(test_tracker ${rmdecis_LIBS} ${rmdecis_UTILS} tests/test_tracker.cpp)
+
+add_executable(test_tracker_association ${rmdecis_LIBS} ${rmdecis_UTILS} tests/test_tracker_association.cpp)
 
 #add_executable(test_detection ${rmdecis_LIBS} ${rmdecis_UTILS} tests/test_detection.cpp)
 
@@ -82,3 +84,7 @@ add_executable(test_config ${rmdecis_LIBS} ${rmdecis_UTILS} tests/test_config.cp
 add_executable(test_kissfft ${rmdecis_LIBS} ${rmdecis_UTILS} tests/test_kissfft.cpp)
 
 add_executable(test_trig_fitting ${rmdecis_LIBS} ${rmdecis_UTILS} tests/test_trig_fitting.cpp)
+
+add_executable(test_rotated_rect ${rmdecis_LIBS} ${rmdecis_UTILS} tests/test_rotated_rect.cpp)
+
+add_executable(test_large_rune_aiming ${rmdecis_LIBS} ${rmdecis_UTILS} tests/test_large_rune_aiming.cpp)

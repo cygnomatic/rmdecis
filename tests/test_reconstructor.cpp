@@ -4,17 +4,18 @@
 
 #include "../utils_contrib/simple_video_player.h"
 #include "../utils_contrib/simulate_vision_result.h"
-#include "../src/reconstructor/camera_calib.h"
-#include "../src/utils/cv_utils.h"
+#include "../src/reconstructor/reconstructor.h"
 
 #include <fmt/format.h>
 
 using namespace cv;
 
 int main() {
-    SimulateVisionOutput vision_output("../../data/vision_out/vision_result.yaml");
-    SimpleVideoPlayer player("../../data/vision_out/video_input.avi");
-    CameraCalib camera_calib("../../config/camera_coeffs.yml");
+    SimulateVisionOutput vision_output("../data/vision_out/vision_result_1.yaml");
+    SimpleVideoPlayer player("../data/vision_out/video_input_1.avi");
+
+    Config cfg("../config/config.yml");
+    Reconstructor reconstructor(cfg);
 
     player.setPlaybackSpeed(0.5);
 
@@ -23,26 +24,27 @@ int main() {
         if (frame.empty())
             break;
 
+        auto frame_inp = vision_output.getData(player.frame_position);
+        reconstructor.reconstructArmor(frame_inp);
 
-        for (auto pred_result: vision_output.getData(player.frame_position).armor_info) {
-            drawArmorCorners(frame, pred_result.corners_img, {0, 0, 255});
-            auto trans_model2cam = camera_calib.armorSolvePnP(ArmorCorners3d(SMALL_ARMOR), pred_result.corners_img);
+        for (auto &armor: frame_inp.armor_info) {
+            // String result_display = fmt::format("x: {:.2f}, y: {:.2f}, z: {:.2f}", armor.target_world.x,
+            //                                     armor.target_world.y, armor.target_world.z);
+            // putText(frame, result_display, {50, 200}, FONT_HERSHEY_SIMPLEX, 2, {255, 255, 255}, 3);
 
-            // String dist = "Distance: " + std::to_string(norm(trans_model2cam.tvec) / 1000);
-            // putText(frame, dist, {50, 200}, FONT_HERSHEY_SIMPLEX, 2, {255, 255, 255}, 3);
+            drawArmorCorners(frame, armor.corners_img, {255, 255, 255});
 
-            double x_ = trans_model2cam.tvec.at<double>(0), y_ = trans_model2cam.tvec.at<double>(1), z_ = trans_model2cam.tvec.at<double>(2);
-            String rot = fmt::format("tvec [x: {:.2f}, y: {:.2f}, z: {:.2f}]", z_ / 1e3, -x_ / 1e3, -y_ / 1e3);
-            putText(frame, rot, {50, 200}, FONT_HERSHEY_SIMPLEX, 2, {255, 255, 255}, 3);
+            Point3f arrow_top_cam = Transformer::modelToCam({Point3f(0, 0, 100)}, armor.trans_model2cam);
+            Point3f arrow_bot_cam = armor.target_cam;
 
-            // info("Rvec [x: {:.2f}, y: {:.2f}, z: {:.2f}]", trans_model2cam.rvec.at<double>(0), trans_model2cam.rvec.at<double>(1), trans_model2cam.rvec.at<double>(2));
+            if ((arrow_top_cam - arrow_bot_cam).z > 0) {
+                arrow_top_cam = 2 * arrow_bot_cam - arrow_top_cam;
+            }
 
-            auto reprojected_corners = (ArmorCorners2d) camera_calib.projectToImage(
-                    std::vector<Point3f>(ArmorCorners3d(SMALL_ARMOR)), trans_model2cam);
-            drawArmorCorners(frame, reprojected_corners, {255, 255, 0});
+            auto arrow = reconstructor.cam_calib.projectToImage({arrow_bot_cam, arrow_top_cam});
+            arrowedLine(frame, arrow.at(0), arrow.at(1), {255, 0, 255}, 3);
 
-            camera_calib.drawAxes(frame, trans_model2cam);
-            break;
+            // break;
         }
 
         player.update(frame);

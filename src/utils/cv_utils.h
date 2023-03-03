@@ -9,12 +9,27 @@
 #include <Eigen/Dense>
 #include <opencv2/core/eigen.hpp>
 
-inline void drawArmorCorners(cv::Mat &image, ArmorCorners2d &corners,
+inline void drawArmorCorners(cv::Mat &image, Corners2f &corners,
                              const cv::Scalar &color = cv::Scalar(255, 0, 0), int thickness = 2) {
-    cv::line(image, corners[0], corners[1], color, thickness);
-    cv::line(image, corners[1], corners[2], color, thickness);
-    cv::line(image, corners[2], corners[3], color, thickness);
-    cv::line(image, corners[3], corners[0], color, thickness);
+    for (int i = 0; i < corners.size() - 1; i++) {
+        cv::line(image, corners[i], corners[i + 1], color, thickness);
+    }
+    cv::line(image, corners[corners.size() - 1], corners[0], color, thickness);
+}
+
+inline void drawPolygons(cv::Mat &image, std::vector<cv::Point2f> &pts,
+                             const cv::Scalar &color = cv::Scalar(255, 0, 0), int thickness = 2) {
+    for (int i = 0; i < pts.size() - 1; i++) {
+        cv::line(image, pts[i], pts[i + 1], color, thickness);
+    }
+    cv::line(image, pts[pts.size() - 1], pts[0], color, thickness);
+}
+
+inline void drawPolygons(cv::Mat &image, cv::RotatedRect rect,
+                             const cv::Scalar &color = cv::Scalar(255, 0, 0), int thickness = 2) {
+    std::vector<cv::Point2f> pts(4);
+    rect.points(pts.data());
+    drawPolygons(image, pts, color, thickness);
 }
 
 inline float calculateIoU(const cv::Rect2f &rect1, const cv::Rect2f &rect2) {
@@ -24,6 +39,18 @@ inline float calculateIoU(const cv::Rect2f &rect1, const cv::Rect2f &rect2) {
     float iou = intersectArea / unionArea;
     return std::isnan(iou) ? 0.f : iou;
 }
+
+inline float calculateIoU(const cv::RotatedRect &rect1, const cv::RotatedRect &rect2) {
+    std::vector<cv::Point2f> intersection_contour;
+    cv::rotatedRectangleIntersection(rect1, rect2, intersection_contour);
+    if (intersection_contour.empty())
+        return 0;
+    float intersectArea = float(cv::contourArea(intersection_contour));
+    float unionArea = rect1.size.area() + rect2.size.area() - intersectArea;
+    float iou = intersectArea / unionArea;
+    return std::isnan(iou) ? 0.f : iou;
+}
+
 
 inline cv::Point3f cvMat2Point3f(const cv::Mat &mat) {
     assert(mat.rows == 3 && mat.cols == 1);
@@ -52,6 +79,15 @@ inline void drawPoint(cv::Mat &image, const cv::Point2f &point,
  */
 inline cv::Point3f opencvToRep(const cv::Point3f &pt) {
     return {pt.z, -pt.x, -pt.y};
+}
+
+/**
+ * Convert REP 103 to OpenCV coord represent.
+ * @param pt REP 103
+ * @return OpenCV point
+ */
+inline cv::Point3f repToOpencv(const cv::Point3f &pt) {
+    return {-pt.y, -pt.z, pt.x};
 }
 
 #endif //CYGNOIDES_DECISION_CV_UTILS_H

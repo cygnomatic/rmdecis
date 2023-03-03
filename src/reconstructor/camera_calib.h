@@ -31,11 +31,18 @@ public:
 
     CvTransform3f solvePnP(const std::vector<cv::Point3f> &obj_pts, const std::vector<cv::Point2f> &img_pts);
 
-    CvTransform3f armorSolvePnP(const ArmorCorners3d &corners_model, const ArmorCorners2d &corners_img);
+    CvTransform3f armorSolvePnP(const Corners3f& corners_model, const Corners2f& corners_img);
 
     void drawAxes(cv::Mat &img, const CvTransform3f &trans);
 
-    std::vector<cv::Point2f> projectToImage(const std::vector<cv::Point3f> &space_pts, const CvTransform3f &trans = {});
+    /**
+     * Project points to image frame.
+     * @param pts_cam_rep Pts in camera frame, in REP standard.
+     * @return
+     */
+    std::vector<cv::Point2f> projectToImage(std::vector<cv::Point3f> pts_cam_rep);
+
+    cv::Point2f projectToImage(cv::Point3f pt_cam_rep);
 };
 
 

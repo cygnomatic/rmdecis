@@ -13,7 +13,7 @@ int main() {
     spdlog::set_level(spdlog::level::debug);
 
     // Camera & detection part output simulation
-    SimulateVisionOutput vision_output("../data/vision_out/vision_result_.yaml");
+    SimulateVisionOutput vision_output("../data/vision_out/vision_result.yaml");
     SimpleVideoPlayer player("../data/vision_out/video_input.avi");
 
     // Initialize BasicAimingImpl with path to camera calibration coeffs file & config loader.
@@ -41,13 +41,6 @@ int main() {
         for (auto &t: detection.armor_info) {
             rectangle(frame, t.corners_img.getBoundingBox(), {255, 255, 0}, 2);
         }
-
-        // for (auto &p: basic_aiming.tracker.getTracks()) {
-        //     auto track_info = p.second.predict(detection.time + compensate_t);
-        //     auto center = basic_aiming.transformer.cam2img(track_info.target_world);
-        //     drawPoint(frame, center, {0, 255, 255}, 10);
-        //     rectangle(frame, track_info.bbox, {0, 255, 255}, 5);
-        // }
 
         player.update(frame);
     }

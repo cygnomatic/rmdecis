@@ -3,6 +3,7 @@
 //
 
 #include "rmdecis/core.h"
+#include "utils/cv_utils.h"
 #include "typing.h"
 
 
@@ -41,20 +42,20 @@ CvTransform3f::CvTransform3f(cv::Mat rvec, cv::Mat tvec) {
     this->tvec = std::move(tvec);
 }
 
-std::vector<cv::Point3f> CvTransform3f::applyTo(const std::vector<cv::Point3f> &pts) const {
-    cv::Mat rot_mat;
+std::vector<cv::Point3f> CvTransform3f::applyTo(std::vector<cv::Point3f> pts) const {
     std::vector<cv::Point3f> ret;
+
+    cv::Mat rot_mat;
     Rodrigues(rvec, rot_mat);
 
     cv::transform(pts, ret, rot_mat);
-
-    for (auto &pt: pts) {
-        ret.push_back((cv::Point3f) tvec + pt);
+    for (auto &pt: ret) {
+        pt = cvMat2Point3f(tvec) + pt;
     }
 
     return ret;
 }
 
-cv::Point3f CvTransform3f::applyTo(const cv::Point3f &pt) const {
+cv::Point3f CvTransform3f::applyTo(cv::Point3f pt) const {
     return applyTo(std::vector<cv::Point3f>{pt}).at(0);
 }

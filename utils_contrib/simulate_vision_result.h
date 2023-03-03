@@ -9,19 +9,18 @@
 #include <yaml-cpp/yaml.h>
 
 #include "rmdecis/core.h"
-#include "../include/typing.h"
 
 class SimulateVisionOutput {
     int next_idx = 0;
-    std::map<int, FrameInput> data;
+    std::map<int, ArmorFrameInput> data;
 
 public:
 
     explicit SimulateVisionOutput(const std::string &data_path);
 
-    FrameInput getData(int index);
+    ArmorFrameInput getData(int index);
 
-    FrameInput getNextData();
+    ArmorFrameInput getNextData();
 };
 
 #endif //CYGNOIDES_DECISION_SIMULATE_VISION_RESULT_H

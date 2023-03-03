@@ -13,20 +13,19 @@
 #include "reconstructor/transformer.h"
 
 class Reconstructor {
+public:
 
     Transformer transformer;
     CameraCalib cam_calib;
 
-public:
-
     explicit Reconstructor(Config& cfg);
 
-    void reconstructArmor(FrameInput& frame_input);
+    void reconstructArmors(std::vector<ArmorInfo> &armors, const RobotState &robot_state);
 
     cv::Point2f cam2img(const cv::Point3f &pt);
 
-    static void solveDistAndYaw(const cv::Point3f &center_gimbal, float &yaw_in_deg,
-                                float &horizontal_dist, float &vertical_dist);
+    void solveAngle(const cv::Point3f &target_world, float *yaw_in_deg,
+                           float *horizontal_dist, float *vertical_dist);
 };
 
 

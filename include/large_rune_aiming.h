@@ -1,22 +1,22 @@
 //
-// Created by catslashbin on 23-2-2.
+// Created by catslashbin on 23-2-18.
 //
 
-#ifndef CYGNOIDES_DECISION_BASIC_AIMING_H
-#define CYGNOIDES_DECISION_BASIC_AIMING_H
+#ifndef CYGNOIDES_DECISION_LARGE_RUNE_H
+#define CYGNOIDES_DECISION_LARGE_RUNE_H
 
 #include "typing.h"
 #include "config.h"
 
-class BasicAiming {
+class LargeRuneAiming {
 public:
     /**
      * Initialize BasicAiming decision-maker.
      * @param cfg Config loader.
      */
-    explicit BasicAiming(Config &cfg);
+    explicit LargeRuneAiming(Config &cfg);
 
-    ~BasicAiming();
+    ~LargeRuneAiming();
 
     /**
      * Update BasicAiming decision-maker with frame and get where to aim.
@@ -27,8 +27,8 @@ public:
     EulerAngles update(ArmorFrameInput detection);
 
 private:
-    class BasicAimingImpl;
-    std::unique_ptr<BasicAimingImpl> impl;
+    class LargeRuneAimingImpl;
+    std::unique_ptr<LargeRuneAimingImpl> impl;
 };
 
-#endif //CYGNOIDES_DECISION_BASIC_AIMING_H
+#endif //CYGNOIDES_DECISION_LARGE_RUNE_H
