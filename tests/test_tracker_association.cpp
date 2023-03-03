@@ -52,7 +52,7 @@ int main() {
             // Last probationary tracker
             drawPolygons(frame, p.second.last_bbox_, {255, 255, 0}, 5);
             if (!armor_infos.empty()) {
-                auto similarity = fmt::format("{:.2f}", p.second.calcSimilarity(armor_infos.at(0), detect_result.time));
+                auto similarity = fmt::format("{:.2f}", p.second.calcSimilarity(armor_infos.at(0), detect_result.seq_idx));
                 cv::putText(frame, similarity, {(int) p.second.last_bbox_.center.x, (int) p.second.last_bbox_.center.y},
                             cv::FONT_HERSHEY_SIMPLEX, 1, {0, 200, 200}, 2);
             }
@@ -65,7 +65,7 @@ int main() {
 
         // Update trackers
         reconstructor.reconstructArmors(armor_infos, detect_result.robot_state);
-        tracker.update(armor_infos, detect_result.time);
+        tracker.update(armor_infos, detect_result.seq_idx);
 
         // for (auto &p: tracker.getTracks()) {
         //

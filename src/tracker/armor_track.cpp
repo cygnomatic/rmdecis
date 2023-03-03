@@ -3,74 +3,32 @@
 //
 
 #include "armor_track.h"
-#include "track_kalman_factory.h"
+#include "track_kalman.h"
 #include "rmdecis/core.h"
 
 using namespace cv;
 
-ArmorTrack::ArmorTrack(int tracking_id, const ArmorInfo &detection, const TrackKalmanFactory &factory)
-        : factory(factory), tracking_id(tracking_id) {
+ArmorTrack::ArmorTrack(int tracking_id, const ArmorInfo &detection, int frame_seq, Config &cfg)
+        : track_kalman(TrackKalman(cfg, detection, frame_seq)), tracking_id(tracking_id) {
     init(detection);
 }
 
 void ArmorTrack::init(const ArmorInfo &detection) {
-
-    kf = KalmanFilter(14, 7);
-
-    // Init state
-    kf.statePost = factory.getInitState(detection);
-    kf.errorCovPost = factory.getInitError();
-
-    // Init mats
-    kf.measurementMatrix = factory.getMeasurementMat();
-    updateKalmanFilterMats(0.1);
-
     last_bbox_ = cv::minAreaRect((std::vector<Point2f>) detection.corners_img);
 }
 
-void ArmorTrack::updateKalmanFilterMats(float dt) {
-    kf.transitionMatrix = factory.getTransitionMatrix(dt);
-    kf.processNoiseCov = factory.getProcessNoiseCov(dt);
-    kf.measurementNoiseCov = factory.getMeasurementNoiseCov(dt);
-}
 
-
-void ArmorTrack::correct(const ArmorInfo &detection, Time time) {
-    updateKalmanFilterMats(time - last_correct_time_);
-    last_correct_time_ = time;
-
-    kf.predict(); // post(t-1, t-1) -> pre (t-1, t)
-    kf.correct(cvtDetection2MeasurementMat(detection)); // pre(t-1, t) -> post(t, t)
-
+void ArmorTrack::correct(const ArmorInfo &detection, int frame_seq) {
+    track_kalman.correct(detection, frame_seq); // pre(t-1, t) -> post(t, t)
     id_cnt[detection.facility_id]++;
     last_bbox_ = cv::minAreaRect((std::vector<Point2f>) detection.corners_img);
 }
 
-TrackArmorInfo ArmorTrack::predict(Time time) {
-
-    // updateKalmanFilterMats(time - last_correct_time_);
-    //
-    // // We need to call predict several times, so we
-    // // preserve original state to prevent them being updated multiple times.
-    // Mat oriStatePost = kf.statePost.clone();
-    // Mat oriErrorCovPost = kf.errorCovPost.clone();
-    //
-    // auto ret = cvtStateMat2Result(kf.predict());
-    //
-    // kf.statePost = oriStatePost.clone();
-    // kf.errorCovPost = oriErrorCovPost.clone();
-
-    // We use const velocity model, so pred_state = state + t * velocity.
-
-    Mat state = kf.statePost.clone();
-    for (int i = 0; i < NUM_STATE; ++i) {
-        state.at<float>(i) += state.at<float>(i + NUM_STATE) * (time - last_correct_time_);
-    }
-
-    return cvtStateMat2Result(state);
+TrackArmorInfo ArmorTrack::predict(int frame_seq) {
+    return track_kalman.predict(frame_seq);
 }
 
-float ArmorTrack::calcSimilarity(const ArmorInfo &detection, Time time) {
+float ArmorTrack::calcSimilarity(const ArmorInfo &detection, int frame_seq) {
     float iou = calculateIoU(last_bbox_, minAreaRect(std::vector<Point2f>(detection.corners_img)));
     float id_similarity = calcIdSimilarity(detection.facility_id);
     float center_dist_similarity = calcCenterDistSimilarity(detection.target_world);
@@ -87,37 +45,10 @@ float ArmorTrack::calcIdSimilarity(FacilityID id) {
            (float) sum; // Here we artificially add one positive and one negative. To smoothen the result.
 }
 
-float ArmorTrack::calcCenterDistSimilarity(const Point3f& center) {
-    Point3f center_pred = {kf.statePost.at<float>(STATE_X),
-                           kf.statePost.at<float>(STATE_Y),
-                           kf.statePost.at<float>(STATE_Z)};
+float ArmorTrack::calcCenterDistSimilarity(const Point3f &center) {
+    Point3f center_pred = {track_kalman.kf.statePost.at<float>(STATE_X),
+                           track_kalman.kf.statePost.at<float>(STATE_Y),
+                           track_kalman.kf.statePost.at<float>(STATE_Z)};
     float dist = float(norm((center_pred - center)));
     return max((200.f - dist) * 0.005f, 0.f);
-}
-
-TrackArmorInfo ArmorTrack::cvtStateMat2Result(const Mat &state) {
-    auto pred_uv = Point2f{state.at<float>(STATE_U), state.at<float>(STATE_V)};
-
-    // width^2 = (width * height) * (width / height) = area * ratio
-    float width = std::sqrt(state.at<float>(STATE_AREA) * state.at<float>(STATE_RATIO));
-    float height = width / state.at<float>(STATE_RATIO);
-
-    float x = state.at<float>(STATE_X);
-    float y = state.at<float>(STATE_Y);
-    float z = state.at<float>(STATE_Z);
-
-    return {Point3f{x, y, z}, Rect2f{pred_uv, Size2f{width, height}}};
-}
-
-Mat ArmorTrack::cvtDetection2MeasurementMat(const ArmorInfo &detection) {
-    Rect2f bounding_box = detection.corners_img.getBoundingBox();
-    Point3f center = detection.target_world;
-
-    float u = bounding_box.x, v = bounding_box.y;
-    float ratio = bounding_box.width / bounding_box.height;
-    float area = bounding_box.area();
-
-    // debug("Observation: u={}, v={}, r={}, a={}", u, v, ratio, area);
-
-    return (Mat_<float>(7, 1) << u, v, ratio, area, center.x, center.y, center.z);
 }

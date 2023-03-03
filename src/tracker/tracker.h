@@ -16,7 +16,7 @@
 class Tracker {
 private:
 
-    TrackKalmanFactory kf_factory;
+    Config& cfg;
 
     std::map<int, ArmorTrack> armor_tracks_;
     int curr_id_ = 0;
@@ -30,9 +30,9 @@ public:
 
     explicit Tracker(Config &cfg);
 
-    void update(const std::vector<ArmorInfo> &armor_detections, Time time);
+    void update(const std::vector<ArmorInfo> &armor_detections, int frame_seq);
 
-    void associate(const std::vector<ArmorInfo> &armor_detections, Time time,
+    void associate(const std::vector<ArmorInfo> &armor_detections, int frame_seq,
                    std::vector<ArmorInfo> &unmatched_detections,
                    std::map<int, ArmorInfo> &matched_track2det);
 

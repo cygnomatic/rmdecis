@@ -15,7 +15,7 @@ EulerAngles BasicAiming::BasicAimingImpl::update(ArmorFrameInput detection) {
     }
 
     reconstructor.reconstructArmors(armor_infos, detection.robot_state);
-    tracker.update(armor_infos, detection.time);
+    tracker.update(armor_infos, detection.seq_idx);
 
     auto tracks_map = tracker.getTracks();
 
@@ -47,7 +47,7 @@ EulerAngles BasicAiming::BasicAimingImpl::predictFromTrack(ArmorTrack &track, Ti
 
     float horizontal_dist, vertical_dist, yaw, pitch;
 
-    TrackArmorInfo target_info = track.predict(predTime);
+    TrackArmorInfo target_info = track.predict(0);
     Point3f center = target_info.center_gimbal;
     Reconstructor::solveDistAndYaw(center, &yaw, &horizontal_dist, &vertical_dist);
 

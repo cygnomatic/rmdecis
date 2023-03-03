@@ -16,7 +16,7 @@ munkres::Matrix<float> hungarianMatching(munkres::Matrix<float> mat) {
     return mat;
 }
 
-void Tracker::update(const std::vector<ArmorInfo> &armor_detections, Time time) {
+void Tracker::update(const std::vector<ArmorInfo> &armor_detections, int frame_seq) {
     std::vector<ArmorInfo> unmatched_detections;
     std::map<int, ArmorInfo> matched_track2det;
 
@@ -27,14 +27,14 @@ void Tracker::update(const std::vector<ArmorInfo> &armor_detections, Time time) 
             debug("No tracking armors.");
             unmatched_detections = {armor_detections[0]};
         } else {
-            associate(armor_detections, time, unmatched_detections, matched_track2det);
+            associate(armor_detections, frame_seq, unmatched_detections, matched_track2det);
         }
     }
 
     // Update tracks with associated detections
     for (const auto &p: matched_track2det) {
         ArmorTrack &trk = armor_tracks_.at(p.first);
-        trk.correct(p.second, time);
+        trk.correct(p.second, frame_seq);
         trk.hit_cnt++;
 
         // Set to minus one to cancel out the extra addition of `missing_cnt` in `Update tracks lifecycle`.
@@ -43,7 +43,7 @@ void Tracker::update(const std::vector<ArmorInfo> &armor_detections, Time time) 
 
     // Create new tracks for unmatched detections
     for (const auto &det: unmatched_detections) {
-        ArmorTrack track(curr_id_, det, kf_factory);
+        ArmorTrack track(curr_id_, det, frame_seq, cfg);
         armor_tracks_.emplace(curr_id_++, track);
     }
 
@@ -64,7 +64,7 @@ void Tracker::update(const std::vector<ArmorInfo> &armor_detections, Time time) 
     }
 }
 
-void Tracker::associate(const std::vector<ArmorInfo> &armor_detections, Time time,
+void Tracker::associate(const std::vector<ArmorInfo> &armor_detections, int frame_seq,
                         std::vector<ArmorInfo> &unmatched_detections,
                         std::map<int, ArmorInfo> &matched_track2det) {
 
@@ -76,7 +76,7 @@ void Tracker::associate(const std::vector<ArmorInfo> &armor_detections, Time tim
         size_t j = 0;
         for (auto &track: armor_tracks_) {
             // Munkres originally aims to find the min cost. Multiply similarity by -1 to find max cost.
-            negative_similarity_mat(i, j) = -1.0f * track.second.calcSimilarity(armor_detections[i], time);
+            negative_similarity_mat(i, j) = -1.0f * track.second.calcSimilarity(armor_detections[i], frame_seq);
             ++j;
         }
     }
@@ -116,7 +116,7 @@ std::map<int, ArmorTrack> Tracker::getTracks(bool include_probationary) {
     return tracks;
 }
 
-Tracker::Tracker(Config &cfg) : kf_factory(cfg) {
+Tracker::Tracker(Config &cfg) : cfg(cfg) {
     k_similarity_threshold = cfg.get<float>("tracker.similarityThreshold", 0.7);
     k_max_missing_cnt = cfg.get<int>("tracker.maxMissingCount", 2);
     k_min_hit_cnt = cfg.get<int>("tracker.minHitCount", 4);
