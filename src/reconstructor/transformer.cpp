@@ -95,7 +95,7 @@ cv::Point3f Transformer::camToWorld(const Point3f &pt) {
 }
 
 cv::Point3f Transformer::worldToGimbal(const Point3f &pt) {
-    throw std::logic_error("Method not implement yet!");
+    return eigenVecToCvPt3f(worldToGimbal(cvPtToEigenVec3f(pt)));
 }
 
 cv::Point3f Transformer::modelToCam(const Point3f &pt, const CvTransform3f &trans_model2cam) {

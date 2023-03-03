@@ -22,14 +22,15 @@ private:
     BallisticCompensator compensator;
 
     float ballet_init_speed = 15.0 * 1e3;
-    float compensate_time = 0.0;
+    int compensate_frame = 0;
 
     int last_aiming_id_ = -1;
+    int frame_width_, frame_height_;
     EulerAngles last_aiming_angle_{};
 
-    int chooseNextTarget(std::map<int, ArmorTrack> &tracks_map, Time &predTime);
+    int chooseNextTarget(std::map<int, ArmorTrack> &tracks_map, int frame_seq);
 
-    EulerAngles predictFromTrack(ArmorTrack &track, Time predTime);
+    EulerAngles predictFromTrack(ArmorTrack &track, int frame_seq);
 
 public:
 

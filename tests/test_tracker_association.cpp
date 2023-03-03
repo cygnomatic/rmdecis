@@ -70,15 +70,15 @@ int main() {
         // for (auto &p: tracker.getTracks()) {
         //
         //     // track_info = p.second.predict(detect_result.time + 10);
-        //     // drawPoint(frame, reconstructor.cam2img(track_info.center_gimbal), {0, 50, 50}, 10);
+        //     // drawPoint(frame, reconstructor.cam2img(track_info.target_world), {0, 50, 50}, 10);
         //     // rectangle(frame, track_info.bbox, {0, 50, 50}, 5);
         //     //
         //     // track_info = p.second.predict(detect_result.time + 5);
-        //     // drawPoint(frame, reconstructor.cam2img(track_info.center_gimbal), {0, 150, 150}, 10);
+        //     // drawPoint(frame, reconstructor.cam2img(track_info.target_world), {0, 150, 150}, 10);
         //     // rectangle(frame, track_info.bbox, {0, 150, 150}, 5);
         //
         //     track_info = p.second.predict(detect_result.time);
-        //     drawPoint(frame, reconstructor.cam2img(track_info.center_gimbal), {0, 150, 150}, 10);
+        //     drawPoint(frame, reconstructor.cam2img(track_info.target_world), {0, 150, 150}, 10);
         //     rectangle(frame, track_info.bbox, {0, 150, 150}, 5);
         // }
 

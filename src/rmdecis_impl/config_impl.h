@@ -46,7 +46,7 @@ public:
                 throw std::domain_error(fmt::format("No such field: {}", s));
         }
 
-        debug("Loaded config param: {} = {}", field, n.as<T>());
+        // debug("Loaded config param: {} = {}", field, n.as<T>());
         return n.as<T>();
     }
 
