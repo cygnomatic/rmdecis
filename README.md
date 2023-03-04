@@ -40,7 +40,7 @@
 
 3. （可选）安装库
    ```bash
-   sh install.sh
+   sudo sh install.sh
    ```
 
 ## File Structure
