@@ -21,13 +21,15 @@ public:
     /**
      * Update BasicAiming decision-maker with frame and get where to aim.
      * @param detection Result from the detection part.
+     * @param debug_img Draw the debug info on this image. Pass in nullptr to disable debugging.
      * @return Euler angles, representing the aiming target.
      * @note The DetectArmorsFrame object is passed in by `move`. Do not reuse the detection.
      */
-    EulerAngles update(ArmorFrameInput detection);
+    EulerAngles update(ArmorFrameInput detection, cv::Mat *debug_img = nullptr);
 
 private:
     class BasicAimingImpl;
+
     std::unique_ptr<BasicAimingImpl> impl;
 };
 
