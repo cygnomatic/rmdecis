@@ -7,18 +7,40 @@
 1. 配置 C++ 环境
 
     ```bash
+   ### Only tested on ubuntu 2004
    ### Build requirements:
-   sudo apt install gcc build-essential make cmake libspdlog-dev libceres-dev libyaml-cpp-dev libeigen3-dev libkissfft-dev libopencv-dev
+   sudo apt install gcc build-essential make cmake libspdlog-dev libceres-dev libyaml-cpp-dev libeigen3-dev libopencv-dev
+   ```
+
+2. 安装 kissfft
+   ```
+   mkdir -p ~/Projects
+   cd ~/Projects
+   git clone https://github.com/mborgerding/kissfft.git
+   cd kissfft
+   mkdir build && cd build
+   cmake -DKISSFFT_TEST=OFF ..
+   make all
+   sudo make install
+   ```
+
+3. 克隆此仓库
+   ```
+   mkdir -p ~/Projects
+   cd ~/Projects
+   git clone https://github.com/CygnoidesV/Cygnoides-Decision.git
+   git checkout [在这里填入版本]
+   cd Cygnoides-Decision
    ```
 
 2. 运行 `build.sh`
    ```bash
-   $ sh build.sh
+   sh build.sh
    ```
 
 3. （可选）安装库
    ```bash
-   $ sh install.sh
+   sh install.sh
    ```
 
 ## File Structure
