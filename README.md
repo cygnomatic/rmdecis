@@ -9,7 +9,7 @@
     ```bash
    ### Only tested on ubuntu 2004
    ### Build requirements:
-   sudo apt install gcc build-essential make cmake libspdlog-dev libceres-dev libyaml-cpp-dev libeigen3-dev libopencv-dev
+   sudo apt install gcc build-essential make cmake libspdlog-dev libceres-dev libyaml-cpp-dev libeigen3-dev libopencv-dev libfmt-dev
    ```
 
 2. 安装 kissfft
@@ -29,8 +29,8 @@
    mkdir -p ~/Projects
    cd ~/Projects
    git clone https://github.com/CygnoidesV/Cygnoides-Decision.git
-   git checkout [在这里填入版本]
    cd Cygnoides-Decision
+   git checkout [在这里填入版本]
    ```
 
 2. 运行 `build.sh`
