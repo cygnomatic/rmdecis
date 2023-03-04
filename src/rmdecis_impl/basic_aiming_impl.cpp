@@ -7,7 +7,7 @@
 
 using namespace cv;
 
-EulerAngles BasicAiming::BasicAimingImpl::update(ArmorFrameInput detection) {
+EulerAngles BasicAiming::BasicAimingImpl::update(ArmorFrameInput detection, cv::Mat *debug_img) {
 
     std::vector<ArmorInfo> armor_infos;
     for (const auto &armor: detection.armor_info) {
@@ -107,4 +107,8 @@ BasicAiming::BasicAimingImpl::BasicAimingImpl(Config &cfg)
 
     // TODO: Time to compensate frame
     compensate_frame = cfg.get<int>("aiming.basic.compensateTime", 0);
+}
+
+void BasicAiming::BasicAimingImpl::drawDebugInfo(cv::Mat *debug_img) {
+
 }
