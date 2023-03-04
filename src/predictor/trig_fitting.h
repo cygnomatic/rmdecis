@@ -5,7 +5,7 @@
 #ifndef CYGNOIDES_DECISION_TRIG_FITTING_H
 #define CYGNOIDES_DECISION_TRIG_FITTING_H
 
-#include <kiss_fftr.h>
+#include <kissfft/kiss_fftr.h>
 #include <ceres/ceres.h>
 
 #include "rmdecis/core.h"
