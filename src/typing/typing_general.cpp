@@ -35,7 +35,7 @@ RectCorners2f::RectCorners2f(cv::Point2f tr, cv::Point2f tl, cv::Point2f dl, cv:
 
 RuneCorners2f::RuneCorners2f(cv::Point2f center, cv::Point2f dr, cv::Point2f tr,
                              cv::Point2f top, cv::Point2f tl, cv::Point2f dl) :
-        RuneCorners2f({std::move(center), std::move(dr), std::move(tr),
+        RuneCorners2f(std::vector<cv::Point2f>{std::move(center), std::move(dr), std::move(tr),
                        std::move(top), std::move(tl), std::move(dl)}) {}
 
 cv::Rect2f RuneCorners2f::getBoundingBox() const {
