@@ -20,10 +20,10 @@ set(CMAKE_CXX_STANDARD 17)
 find_package(OpenCV REQUIRED)
 find_package(Ceres REQUIRED)
 find_package(Eigen3 REQUIRED)
-find_package(kissfft REQUIRED)
 find_package(fmt REQUIRED)
 find_package(yaml-cpp REQUIRED)
-link_libraries(${OpenCV_LIBS} ${CERES_LIBRARIES} ${KISSFFT_LIBRARY} Eigen3::Eigen fmt::fmt yaml-cpp)
+find_package(kissfft CONFIG REQUIRED COMPONENTS STATIC)
+link_libraries(${OpenCV_LIBS} ${CERES_LIBRARIES} Eigen3::Eigen fmt::fmt yaml-cpp kissfft::kissfft-float)
 include_directories(PRIVATE ${OpenCV_INCLUDE_DIRS} ${CERES_INCLUDE_DIRS})
 
 ### Set directories & Get targets
