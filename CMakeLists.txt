@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.9)
-project(Cygnoides_Decision VERSION 2023.5 DESCRIPTION "CygnoidesRM Decision lib")
+project(Cygnoides_Decision VERSION 2023.6 DESCRIPTION "CygnoidesRM Decision lib")
 
 set(CMAKE_CXX_STANDARD 17)
 
