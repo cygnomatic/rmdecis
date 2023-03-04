@@ -26,7 +26,7 @@ int main() {
     Tracker tracker(cfg);
     TrackArmorInfo track_info;
 
-    int width = cfg.get<int>("camera.width"), height = cfg.get<int>("camera.length");
+    int width = cfg.get<int>("camera.width"), height = cfg.get<int>("camera.height");
 
     for (int i = 0;; i++) {
         Mat frame = player.getFrame();
