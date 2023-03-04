@@ -19,7 +19,7 @@
    git clone https://github.com/mborgerding/kissfft.git
    cd kissfft
    mkdir build && cd build
-   cmake -DKISSFFT_TEST=OFF ..
+   cmake -DKISSFFT_STATIC=1 -DKISSFFT_TEST=OFF ..
    make all
    sudo make install
    ```
