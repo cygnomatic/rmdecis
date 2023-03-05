@@ -104,7 +104,7 @@ void TrackKalman::correct(const ArmorInfo &detection, int frame_seq) {
 TrackArmorInfo TrackKalman::predict(int frame_seq) {
     Mat state = kf.statePost.clone();
     for (int i = 0; i < NUM_STATE; ++i) {
-        state.at<float>(i) += state.at<float>(i + NUM_STATE) * float(frame_seq - last_frame_seq_);
+        state.at<float>(i) += state.at<float>(i + NUM_STATE) * float(frame_seq - last_frame_seq_) * dt;
     }
     return cvtStateMat2Result(state);
 }
