@@ -54,17 +54,23 @@ EulerAngles BasicAiming::BasicAimingImpl::update(ArmorFrameInput detection, cv::
 
     /* DEBUG */
     if (is_debug) {
-        // Draw tracker preds
+        // Draw tracker predictions
         for (auto &p: tracker.getTracks()) {
-            // TODO: World to cam
             TrackArmorInfo track_info = p.second.predict(detection.seq_idx);
-            drawPoint(*debug_img, reconstructor.cam2img((track_info.target_world)), {0, 250, 250}, 10);
+            auto d = reconstructor.transformer.worldToCam(track_info.target_world);
+            drawPoint(*debug_img,
+                      reconstructor.cam2img(reconstructor.transformer.worldToCam(track_info.target_world)),
+                      {0, 250, 250}, 10);
 
             track_info = p.second.predict(detection.seq_idx + 5);
-            drawPoint(*debug_img, reconstructor.cam2img(track_info.target_world), {0, 150, 150}, 10);
+            drawPoint(*debug_img,
+                      reconstructor.cam2img(reconstructor.transformer.worldToCam(track_info.target_world)),
+                      {0, 150, 150}, 10);
 
             track_info = p.second.predict(detection.seq_idx + 10);
-            drawPoint(*debug_img, reconstructor.cam2img(track_info.target_world), {0, 100, 100}, 10);
+            drawPoint(*debug_img,
+                      reconstructor.cam2img(reconstructor.transformer.worldToCam(track_info.target_world)),
+                      {0, 100, 100}, 10);
         }
     }
     /* !DEBUG */
@@ -90,7 +96,8 @@ EulerAngles BasicAiming::BasicAimingImpl::update(ArmorFrameInput detection, cv::
 
     /* DEBUG */
     if (is_debug) {
-        String result_display = fmt::format("Yaw: {:.2f}, Pitch: {:.2f}", last_aiming_angle_.yaw, last_aiming_angle_.pitch);
+        String result_display = fmt::format("Yaw: {:.2f}, Pitch: {:.2f}", last_aiming_angle_.yaw,
+                                            last_aiming_angle_.pitch);
         putText(*debug_img, result_display, {50, 200}, FONT_HERSHEY_SIMPLEX, 2, {255, 255, 255}, 3);
     }
     /* !DEBUG */

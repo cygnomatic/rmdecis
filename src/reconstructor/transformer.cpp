@@ -64,7 +64,6 @@ void Transformer::update(const RobotState &robot_state) {
 }
 
 Eigen::Vector3f Transformer::camToGimbal(const Eigen::Vector3f &pt) {
-    // OpenCV Point3f to Eigen Vector3f
     return trans_gt2gimbal_.applyTo(trans_cam2gt_.applyTo(pt));
 }
 
@@ -106,4 +105,12 @@ cv::Point3f Transformer::modelToCam(const Point3f &pt, const CvTransform3f &tran
 Eigen::Vector3f Transformer::modelToCam(const Eigen::Vector3f &pt, const CvTransform3f &trans_model2cam) {
     // OpenCV has use different camera frame standard from REP. Convert it to REP103 standard.
     return cvPtToEigenVec3f(modelToCam(eigenVecToCvPt3f(pt), trans_model2cam));
+}
+
+Eigen::Vector3f Transformer::worldToCam(const Eigen::Vector3f &pt) {
+    return trans_gimbal2world_.applyInverseTo(trans_gt2gimbal_.applyInverseTo(trans_cam2gt_.applyInverseTo(pt)));
+}
+
+cv::Point3f Transformer::worldToCam(const cv::Point3f &pt) {
+    return eigenVecToCvPt3f(worldToCam(cvPtToEigenVec3f(pt)));
 }
