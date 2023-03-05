@@ -1,5 +1,7 @@
 camera:
   coeffsPath: "/home/catslashbin/Projects/Cygnoides-Decision/config/camera_coeffs.yml"
+  width: 1080
+  height: 1024
 aiming:
   basic:
     compensateTime: 5.0
