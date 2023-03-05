@@ -35,7 +35,7 @@ SimulateVisionOutput::SimulateVisionOutput(const std::string &data_path) {
                 armor_info.emplace_back(armor_type, corners, confidence);
             }
 
-            data.emplace(seq_idx, ArmorFrameInput(seq_idx, time, RobotState{0, 0, 15000}, armor_info));
+            data.emplace(seq_idx, ArmorFrameInput(seq_idx, time, RobotState{0.1, -0.2, 15000}, armor_info));
 
             // debug("Loaded {}th data", seq_idx);
         }

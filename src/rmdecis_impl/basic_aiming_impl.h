@@ -32,8 +32,6 @@ private:
 
     EulerAngles predictFromTrack(ArmorTrack &track, int frame_seq);
 
-    void drawDebugInfo(cv::Mat *debug_img);
-
 public:
 
     // Should be private. Set to public for debug use.

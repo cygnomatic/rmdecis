@@ -9,6 +9,12 @@ using namespace cv;
 
 EulerAngles BasicAiming::BasicAimingImpl::update(ArmorFrameInput detection, cv::Mat *debug_img) {
 
+    /* DEBUG */
+    bool is_debug = (debug_img != nullptr);
+    if (is_debug)
+        assert(!debug_img->empty());
+    /* !DEBUG */
+
     std::vector<ArmorInfo> armor_infos;
     for (const auto &armor: detection.armor_info) {
         cv::Rect2i bbox = armor.corners_img.getBoundingBox();
@@ -18,11 +24,58 @@ EulerAngles BasicAiming::BasicAimingImpl::update(ArmorFrameInput detection, cv::
         armor_infos.emplace_back(armor);
     }
 
+    /* DEBUG */
+    if (is_debug) {
+        // Draw detection input
+        for (auto &t: armor_infos) {
+            drawPolygons(*debug_img, cv::minAreaRect(std::vector<cv::Point2f>(t.corners_img)), {255, 255, 0}, 5);
+        }
+
+        // Original probationary tracker
+        for (auto &p: tracker.getTracks(true)) {
+            drawPolygons(*debug_img, p.second.last_bbox_, {255, 255, 0}, 5);
+            if (!armor_infos.empty()) {
+                auto similarity = fmt::format("{:.2f}", p.second.calcSimilarity(armor_infos.at(0), detection.seq_idx));
+                cv::putText(*debug_img, similarity,
+                            {(int) p.second.last_bbox_.center.x, (int) p.second.last_bbox_.center.y},
+                            cv::FONT_HERSHEY_SIMPLEX, 1, {0, 200, 200}, 2);
+            }
+        }
+
+        // Original tracker
+        for (auto &p: tracker.getTracks()) {
+            drawPolygons(*debug_img, p.second.last_bbox_, {0, 255, 255}, 5);
+        }
+    }
+    /* !DEBUG */
+
     reconstructor.reconstructArmors(armor_infos, detection.robot_state);
     tracker.update(armor_infos, detection.seq_idx);
 
-    auto tracks_map = tracker.getTracks();
+    /* DEBUG */
+    if (is_debug) {
+        // Draw tracker predictions
+        for (auto &p: tracker.getTracks()) {
+            TrackArmorInfo track_info = p.second.predict(detection.seq_idx);
+            auto d = reconstructor.transformer.worldToCam(track_info.target_world);
+            drawPoint(*debug_img,
+                      reconstructor.cam2img(reconstructor.transformer.worldToCam(track_info.target_world)),
+                      {0, 250, 250}, 10);
 
+            track_info = p.second.predict(detection.seq_idx + 5);
+            drawPoint(*debug_img,
+                      reconstructor.cam2img(reconstructor.transformer.worldToCam(track_info.target_world)),
+                      {0, 150, 150}, 10);
+
+            track_info = p.second.predict(detection.seq_idx + 10);
+            drawPoint(*debug_img,
+                      reconstructor.cam2img(reconstructor.transformer.worldToCam(track_info.target_world)),
+                      {0, 100, 100}, 10);
+        }
+    }
+    /* !DEBUG */
+
+    auto tracks_map = tracker.getTracks();
     if (tracks_map.find(last_aiming_id_) == tracks_map.end()) {
         // Last track lost, update target track
         last_aiming_id_ = chooseNextTarget(tracks_map, detection.seq_idx);
@@ -40,6 +93,14 @@ EulerAngles BasicAiming::BasicAimingImpl::update(ArmorFrameInput detection, cv::
             warn("Got nan from predictFromTrack!");
         }
     }
+
+    /* DEBUG */
+    if (is_debug) {
+        String result_display = fmt::format("Yaw: {:.2f}, Pitch: {:.2f}", last_aiming_angle_.yaw,
+                                            last_aiming_angle_.pitch);
+        putText(*debug_img, result_display, {50, 200}, FONT_HERSHEY_SIMPLEX, 2, {255, 255, 255}, 3);
+    }
+    /* !DEBUG */
 
     return last_aiming_angle_;
 
@@ -107,8 +168,4 @@ BasicAiming::BasicAimingImpl::BasicAimingImpl(Config &cfg)
 
     // TODO: Time to compensate frame
     compensate_frame = cfg.get<int>("aiming.basic.compensateTime", 0);
-}
-
-void BasicAiming::BasicAimingImpl::drawDebugInfo(cv::Mat *debug_img) {
-
 }

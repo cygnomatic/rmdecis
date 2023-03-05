@@ -32,22 +32,7 @@ int main() {
         ArmorFrameInput detection = vision_output.getData(player.frame_position);
 
         // Call `basic_aiming.update()` to get the angle to aim.
-        EulerAngles result = basic_aiming.update(detection);
-
-        // Simply ignore the following parts. They are just for displaying the result.
-        String result_display = fmt::format("Yaw: {:.2f}, Pitch: {:.2f}", result.yaw, result.pitch);
-        putText(frame, result_display, {50, 200}, FONT_HERSHEY_SIMPLEX, 2, {255, 255, 255}, 3);
-
-        for (auto &t: detection.armor_info) {
-            rectangle(frame, t.corners_img.getBoundingBox(), {255, 255, 0}, 2);
-        }
-
-        // for (auto &p: basic_aiming.tracker.getTracks()) {
-        //     auto track_info = p.second.predict(detection.time + compensate_t);
-        //     auto center = basic_aiming.transformer.cam2img(track_info.target_world);
-        //     drawPoint(frame, center, {0, 255, 255}, 10);
-        //     rectangle(frame, track_info.bbox, {0, 255, 255}, 5);
-        // }
+        EulerAngles result = basic_aiming.update(detection, &frame);
 
         player.update(frame);
     }
