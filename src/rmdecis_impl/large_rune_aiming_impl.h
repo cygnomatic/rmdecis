@@ -16,6 +16,7 @@
 #include "config.h"
 
 #include "large_rune_aiming.h"
+#include "reconstructor/rune_reconstructor.h"
 
 class LargeRuneAiming::LargeRuneAimingImpl {
 private:
@@ -34,8 +35,7 @@ public:
 
     // Should be private. Set to public for debug use.
     Tracker tracker;
-    Transformer transformer;
-    CameraCalib camera_calib;
+    RuneReconstructor rune_reconstructor;
 
     /**
      * Initialize BasicAimingImpl decision-maker.
@@ -48,7 +48,7 @@ public:
      * @param detection Result from the detection part.
      * @return Euler angles, representing the aiming target.
      */
-    EulerAngles update(ArmorFrameInput detection);
+    EulerAngles update(RuneFrameInput detection);
 
 };
 

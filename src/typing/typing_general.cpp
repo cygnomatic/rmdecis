@@ -130,5 +130,9 @@ DetectVaneInfo::DetectVaneInfo(bool is_target, Corners2f corners_img,
 ArmorFrameInput::ArmorFrameInput(int seq_idx, Time time, RobotState robot_state, std::vector<DetectArmorInfo> armor_info) :
         armor_info(std::move(armor_info)), seq_idx(seq_idx), time(time), robot_state(robot_state) {}
 
+
+RuneFrameInput::RuneFrameInput(int seq_idx, Time time, RobotState robot_state, std::vector<DetectVaneInfo> vane_info) :
+        vane_info(std::move(vane_info)), seq_idx(seq_idx), time(time), robot_state(robot_state) {}
+
 RobotState::RobotState(float gimbal_yaw, float gimbal_pitch, float ballet_init_speed) :
         gimbal_pitch(gimbal_pitch), gimbal_yaw(gimbal_yaw), ballet_init_speed(ballet_init_speed) {}
