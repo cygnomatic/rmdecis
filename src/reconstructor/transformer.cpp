@@ -73,7 +73,9 @@ Eigen::Vector3f Transformer::gimbalToWorld(const Eigen::Vector3f &pt) {
 
 Eigen::Vector3f Transformer::camToWorld(const Eigen::Vector3f &pt) {
     return trans_gimbal2world_.applyTo(
-            trans_gt2gimbal_.applyTo(trans_cam2gt_.applyTo(pt))
+            trans_gt2gimbal_.applyTo(
+                    trans_cam2gt_.applyTo(pt)
+            )
     );
 }
 
@@ -108,7 +110,11 @@ Eigen::Vector3f Transformer::modelToCam(const Eigen::Vector3f &pt, const CvTrans
 }
 
 Eigen::Vector3f Transformer::worldToCam(const Eigen::Vector3f &pt) {
-    return trans_gimbal2world_.applyInverseTo(trans_gt2gimbal_.applyInverseTo(trans_cam2gt_.applyInverseTo(pt)));
+    return trans_cam2gt_.applyInverseTo(
+            trans_gt2gimbal_.applyInverseTo(
+                    trans_gimbal2world_.applyInverseTo(pt)
+            )
+    );
 }
 
 cv::Point3f Transformer::worldToCam(const cv::Point3f &pt) {
@@ -116,9 +122,9 @@ cv::Point3f Transformer::worldToCam(const cv::Point3f &pt) {
 }
 
 Eigen::Vector3f Transformer::gimbalToCam(const Eigen::Vector3f &pt) {
-    return trans_gt2gimbal_.applyInverseTo(trans_cam2gt_.applyInverseTo(pt));
+    return trans_cam2gt_.applyInverseTo(trans_gt2gimbal_.applyInverseTo(pt));
 }
 
 cv::Point3f Transformer::gimbalToCam(const Point3f &pt) {
-    return cv::Point3f();
+    return eigenVecToCvPt3f(gimbalToCam(cvPtToEigenVec3f(pt)));
 }
