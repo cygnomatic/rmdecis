@@ -65,10 +65,9 @@ public:
     static cv::Point3f modelToCam(const cv::Point3f &pt, const CvTransform3f &trans_model2cam);
 
     explicit Transformer(Config &cfg);
-private:
+
     Transform trans_cam2gt_;
     Transform trans_gt2gimbal_;
-
     Transform trans_gimbal2world_;
 };
 
