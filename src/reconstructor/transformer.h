@@ -56,6 +56,10 @@ public:
 
     cv::Point3f worldToCam(const cv::Point3f &pt);
 
+    Eigen::Vector3f gimbalToCam(const Eigen::Vector3f &pt);
+
+    cv::Point3f gimbalToCam(const cv::Point3f &pt);
+
     static Eigen::Vector3f modelToCam(const Eigen::Vector3f &pt, const CvTransform3f &trans_model2cam);
 
     static cv::Point3f modelToCam(const cv::Point3f &pt, const CvTransform3f &trans_model2cam);

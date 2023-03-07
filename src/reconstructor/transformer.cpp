@@ -114,3 +114,11 @@ Eigen::Vector3f Transformer::worldToCam(const Eigen::Vector3f &pt) {
 cv::Point3f Transformer::worldToCam(const cv::Point3f &pt) {
     return eigenVecToCvPt3f(worldToCam(cvPtToEigenVec3f(pt)));
 }
+
+Eigen::Vector3f Transformer::gimbalToCam(const Eigen::Vector3f &pt) {
+    return trans_gt2gimbal_.applyInverseTo(trans_cam2gt_.applyInverseTo(pt));
+}
+
+cv::Point3f Transformer::gimbalToCam(const Point3f &pt) {
+    return cv::Point3f();
+}
