@@ -59,8 +59,8 @@ Transformer::Transformer(Config &cfg) {
 }
 
 void Transformer::update(const RobotState &robot_state) {
-    trans_gt2gimbal_ = Transform(EulerAngles(0, robot_state.gimbal_pitch, 0), Eigen::Vector3f(0, 0, 0));
-    trans_gimbal2world_ = Transform(EulerAngles(-robot_state.gimbal_yaw, 0, 0), Eigen::Vector3f(0, 0, 0));
+    trans_gt2gimbal_ = Transform(EulerAngles(0, -robot_state.gimbal_pitch, 0), Eigen::Vector3f(0, 0, 0));
+    trans_gimbal2world_ = Transform(EulerAngles(robot_state.gimbal_yaw, 0, 0), Eigen::Vector3f(0, 0, 0));
 }
 
 Eigen::Vector3f Transformer::camToGimbal(const Eigen::Vector3f &pt) {
