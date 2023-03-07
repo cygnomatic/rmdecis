@@ -6,6 +6,8 @@
 
 using namespace cv;
 
+RobotState robot_state(0.5, 0.3, 15000);
+
 SimulateVisionOutput::SimulateVisionOutput(const std::string &data_path) {
 
     info("Start to get data from {} ...", data_path);
@@ -35,7 +37,7 @@ SimulateVisionOutput::SimulateVisionOutput(const std::string &data_path) {
                 armor_info.emplace_back(armor_type, corners, confidence);
             }
 
-            data.emplace(seq_idx, ArmorFrameInput(seq_idx, time, RobotState{0.1, -0.2, 15000}, armor_info));
+            data.emplace(seq_idx, ArmorFrameInput(seq_idx, time, robot_state, armor_info));
 
             // debug("Loaded {}th data", seq_idx);
         }
@@ -57,7 +59,7 @@ ArmorFrameInput SimulateVisionOutput::getData(int seq_idx) {
     auto i = data.find(seq_idx);
     if (i == data.end()) {
         // warn("Invalid seq_idx. Failed to find corresponding data.");
-        return ArmorFrameInput(seq_idx, Time(), RobotState(0, 0, 15000), {});
+        return ArmorFrameInput(seq_idx, Time(), robot_state, {});
     }
     return data.at(seq_idx);
 }
