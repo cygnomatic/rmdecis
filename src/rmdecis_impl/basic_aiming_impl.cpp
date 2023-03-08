@@ -40,7 +40,6 @@ EulerAngles BasicAiming::BasicAimingImpl::update(ArmorFrameInput detection, cv::
     if (enable_debug && enable_show_tracker) {
         // Original probationary tracker
         for (auto &p: tracker.getTracks(true)) {
-            drawPolygons(*debug_img, p.second.last_bbox_, {255, 255, 0}, 5);
             if (!armor_infos.empty()) {
 
                 auto &t = p.second;
@@ -51,12 +50,12 @@ EulerAngles BasicAiming::BasicAimingImpl::update(ArmorFrameInput detection, cv::
                 auto pred_bbox = cv::RotatedRect(((t.last_bbox_.center - t.last_center_proj_) + pred_center_proj),
                                                  t.last_bbox_.size, t.last_bbox_.angle);
 
-                drawPolygons(*debug_img, pred_bbox, {255, 255, 0}, 5);
+                drawPolygons(*debug_img, pred_bbox, {150, 150, 150}, 2);
 
                 auto similarity = fmt::format("{:.2f}", p.second.calcSimilarity(armor_infos.at(0), detection.seq_idx));
                 cv::putText(*debug_img, similarity,
                             {(int) p.second.last_bbox_.center.x, (int) p.second.last_bbox_.center.y},
-                            cv::FONT_HERSHEY_SIMPLEX, 1, {0, 200, 200}, 2);
+                            cv::FONT_HERSHEY_SIMPLEX, 1, {150, 150, 150}, 2);
             }
         }
     }
@@ -69,17 +68,16 @@ EulerAngles BasicAiming::BasicAimingImpl::update(ArmorFrameInput detection, cv::
         // Draw tracker predictions
         for (auto &p: tracker.getTracks()) {
             TrackArmorInfo track_info = p.second.predict(detection.seq_idx);
-            auto d = reconstructor.transformer.worldToCam(track_info.target_world);
             drawPoint(*debug_img,
                       reconstructor.cam2img(reconstructor.transformer.worldToCam(track_info.target_world)),
                       {0, 250, 250}, 10);
 
-            track_info = p.second.predict(detection.seq_idx + 5);
+            track_info = p.second.predict(detection.seq_idx + 10);
             drawPoint(*debug_img,
                       reconstructor.cam2img(reconstructor.transformer.worldToCam(track_info.target_world)),
                       {0, 150, 150}, 10);
 
-            track_info = p.second.predict(detection.seq_idx + 10);
+            track_info = p.second.predict(detection.seq_idx + 20);
             drawPoint(*debug_img,
                       reconstructor.cam2img(reconstructor.transformer.worldToCam(track_info.target_world)),
                       {0, 100, 100}, 10);
