@@ -24,6 +24,9 @@ EulerAngles BasicAiming::BasicAimingImpl::update(ArmorFrameInput detection, cv::
         armor_infos.emplace_back(armor);
     }
 
+    // Reconstruct armors
+    reconstructor.reconstructArmors(armor_infos, detection.robot_state);
+
     /* DEBUG */
     if (is_debug) {
         // Draw detection input
@@ -49,7 +52,6 @@ EulerAngles BasicAiming::BasicAimingImpl::update(ArmorFrameInput detection, cv::
     }
     /* !DEBUG */
 
-    reconstructor.reconstructArmors(armor_infos, detection.robot_state);
     tracker.update(armor_infos, detection.seq_idx);
 
     /* DEBUG */

@@ -9,6 +9,8 @@
 #include "typing.h"
 #include "Eigen/Dense"
 
+class Reconstructor;
+
 struct ArmorInfo {
 
     // Info from vision detection part
@@ -23,6 +25,8 @@ struct ArmorInfo {
     cv::Point3f target_cam;
     cv::Point3f target_gimbal;
     cv::Point3f target_world;
+    // WARNING: DO NOT DEL THE RECONSTRUCTOR! IT IS MAINTAINED IN THE BASIC_AIMING_IMPL!
+    Reconstructor* reconstructor = nullptr;
 
     explicit ArmorInfo() = default;
 

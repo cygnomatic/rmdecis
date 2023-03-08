@@ -14,6 +14,7 @@ void Reconstructor::reconstructArmors(std::vector<ArmorInfo>& armors, const Robo
         armor.target_cam = opencvToRep(cvMat2Point3f(armor.trans_model2cam.tvec));
         armor.target_gimbal = eigenVecToCvPt3f(transformer.camToGimbal(cvPtToEigenVec3f(armor.target_cam)));
         armor.target_world = eigenVecToCvPt3f(transformer.gimbalToWorld(cvPtToEigenVec3f(armor.target_gimbal)));
+        armor.reconstructor = this;
     }
 }
 

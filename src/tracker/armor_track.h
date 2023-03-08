@@ -19,6 +19,7 @@ public:
     int missing_cnt = 0, hit_cnt = 0;
 
     cv::RotatedRect last_bbox_;
+    cv::Point2f last_center_proj_;
     TrackKalman track_kalman;
 
     explicit ArmorTrack(int tracking_id, const ArmorInfo &detection, int frame_seq, Config &cfg);
