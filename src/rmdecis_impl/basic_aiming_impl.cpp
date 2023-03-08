@@ -10,8 +10,8 @@ using namespace cv;
 EulerAngles BasicAiming::BasicAimingImpl::update(ArmorFrameInput detection, cv::Mat *debug_img) {
 
     /* DEBUG */
-    bool is_debug = (debug_img != nullptr);
-    if (is_debug)
+    enable_debug = (debug_img != nullptr);
+    if (enable_debug)
         assert(!debug_img->empty());
     /* !DEBUG */
 
@@ -28,26 +28,36 @@ EulerAngles BasicAiming::BasicAimingImpl::update(ArmorFrameInput detection, cv::
     reconstructor.reconstructArmors(armor_infos, detection.robot_state);
 
     /* DEBUG */
-    if (is_debug) {
+    if (enable_debug && enable_show_vision_input) {
         // Draw detection input
         for (auto &t: armor_infos) {
-            drawPolygons(*debug_img, cv::minAreaRect(std::vector<cv::Point2f>(t.corners_img)), {255, 255, 0}, 5);
+            drawArmorCorners(*debug_img, t.corners_img, {255, 255, 0}, 5);
+            cv::putText(*debug_img, fmt::format("{:.2f}", t.detection_confidence),
+                            (t.corners_img[0] + t.corners_img[2]) / 2, cv::FONT_HERSHEY_SIMPLEX, 1, {255, 255, 0}, 2);
         }
+    }
 
+    if (enable_debug && enable_show_tracker) {
         // Original probationary tracker
         for (auto &p: tracker.getTracks(true)) {
             drawPolygons(*debug_img, p.second.last_bbox_, {255, 255, 0}, 5);
             if (!armor_infos.empty()) {
+
+                auto &t = p.second;
+                ArmorInfo &a = armor_infos.at(0);
+
+                auto pred_center_proj = a.reconstructor->cam2img(
+                        a.reconstructor->transformer.worldToCam(t.predict(detection.seq_idx).target_world));
+                auto pred_bbox = cv::RotatedRect(((t.last_bbox_.center - t.last_center_proj_) + pred_center_proj),
+                                                 t.last_bbox_.size, t.last_bbox_.angle);
+
+                drawPolygons(*debug_img, pred_bbox, {255, 255, 0}, 5);
+
                 auto similarity = fmt::format("{:.2f}", p.second.calcSimilarity(armor_infos.at(0), detection.seq_idx));
                 cv::putText(*debug_img, similarity,
                             {(int) p.second.last_bbox_.center.x, (int) p.second.last_bbox_.center.y},
                             cv::FONT_HERSHEY_SIMPLEX, 1, {0, 200, 200}, 2);
             }
-        }
-
-        // Original tracker
-        for (auto &p: tracker.getTracks()) {
-            drawPolygons(*debug_img, p.second.last_bbox_, {0, 255, 255}, 5);
         }
     }
     /* !DEBUG */
@@ -55,7 +65,7 @@ EulerAngles BasicAiming::BasicAimingImpl::update(ArmorFrameInput detection, cv::
     tracker.update(armor_infos, detection.seq_idx);
 
     /* DEBUG */
-    if (is_debug) {
+    if (enable_debug && enable_show_tracker) {
         // Draw tracker predictions
         for (auto &p: tracker.getTracks()) {
             TrackArmorInfo track_info = p.second.predict(detection.seq_idx);
@@ -73,6 +83,11 @@ EulerAngles BasicAiming::BasicAimingImpl::update(ArmorFrameInput detection, cv::
             drawPoint(*debug_img,
                       reconstructor.cam2img(reconstructor.transformer.worldToCam(track_info.target_world)),
                       {0, 100, 100}, 10);
+        }
+
+        // Draw trackers
+        for (auto &p: tracker.getTracks()) {
+            drawPolygons(*debug_img, p.second.last_bbox_, {0, 255, 255}, 5);
         }
     }
     /* !DEBUG */
@@ -97,11 +112,11 @@ EulerAngles BasicAiming::BasicAimingImpl::update(ArmorFrameInput detection, cv::
     }
 
     /* DEBUG */
-    if (is_debug) {
-        String result_display = fmt::format("Yaw: {:.2f}, Pitch: {:.2f}", last_aiming_angle_.yaw,
-                                            last_aiming_angle_.pitch);
-        putText(*debug_img, result_display, {50, 200}, FONT_HERSHEY_SIMPLEX, 2, {255, 255, 255}, 3);
-    }
+    // if (enable_debug) {
+    //     String result_display = fmt::format("Yaw: {:.2f}, Pitch: {:.2f}", last_aiming_angle_.yaw,
+    //                                         last_aiming_angle_.pitch);
+    //     putText(*debug_img, result_display, {50, 200}, FONT_HERSHEY_SIMPLEX, 2, {255, 255, 255}, 3);
+    // }
     /* !DEBUG */
 
     return last_aiming_angle_;
@@ -166,7 +181,9 @@ BasicAiming::BasicAimingImpl::BasicAimingImpl(Config &cfg)
         : reconstructor(cfg), tracker(cfg),
           compensator(cfg.get<float>("aiming.basic.airResistanceConst", 0.1)),
           frame_width_(cfg.get<int>("camera.width")),
-          frame_height_(cfg.get<int>("camera.height")) {
+          frame_height_(cfg.get<int>("camera.height")),
+          enable_show_vision_input(cfg.get<bool>("aiming.basic.debugShowVisionInput", true)),
+          enable_show_tracker(cfg.get<bool>("aiming.basic.debugShowTracker", true)) {
 
     // TODO: Time to compensate frame
     compensate_frame = cfg.get<int>("aiming.basic.compensateTime", 0);

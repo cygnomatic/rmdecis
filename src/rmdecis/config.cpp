@@ -23,8 +23,10 @@ template std::string Config::get(std::string field, std::string default_value);
 template int Config::get(std::string field, int default_value);
 template float Config::get(std::string field, float default_value);
 template double Config::get(std::string field, double default_value);
+template bool Config::get(std::string field, bool default_value);
 
 template std::string Config::get(std::string field);
 template int Config::get(std::string field);
 template float Config::get(std::string field);
 template double Config::get(std::string field);
+template bool Config::get(std::string field);

@@ -28,6 +28,8 @@ private:
     int frame_width_, frame_height_;
     EulerAngles last_aiming_angle_{};
 
+    bool enable_debug, enable_show_vision_input, enable_show_tracker;
+
     int chooseNextTarget(std::map<int, ArmorTrack> &tracks_map, int frame_seq);
 
     EulerAngles predictFromTrack(ArmorTrack &track, int frame_seq);
