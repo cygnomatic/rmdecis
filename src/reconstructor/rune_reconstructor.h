@@ -18,6 +18,10 @@ public:
     explicit RuneReconstructor(Config &cfg);
 
     void reconstructVanes(std::vector<VaneInfo> vanes, const RobotState &robot_state);
+
+    float getRuneAngle(const VaneInfo &vane,
+                       const Eigen::Vector3f &normal_vec_world, const Eigen::Vector3f &center_pt_world);
+
 };
 
 

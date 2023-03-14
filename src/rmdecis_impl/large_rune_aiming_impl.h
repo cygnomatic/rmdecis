@@ -16,6 +16,7 @@
 #include "config.h"
 
 #include "large_rune_aiming.h"
+#include "reconstructor/rune_reconstructor.h"
 
 class LargeRuneAiming::LargeRuneAimingImpl {
 private:
@@ -28,14 +29,14 @@ private:
 
     Eigen::Vector3f normal_vec_world_;
     Eigen::Vector3f center_pt_world_;
+    float vane_length_;
 
 
 public:
 
     // Should be private. Set to public for debug use.
     Tracker tracker;
-    Transformer transformer;
-    CameraCalib camera_calib;
+    RuneReconstructor rune_reconstructor;
 
     /**
      * Initialize BasicAimingImpl decision-maker.
@@ -44,11 +45,13 @@ public:
     explicit LargeRuneAimingImpl(Config &cfg);
 
     /**
-     * Update BasicAimingImpl decision-maker with frame and get where to aim.
+     * Update BasicAiming decision-maker with frame and get where to aim.
      * @param detection Result from the detection part.
+     * @param debug_img Draw the debug info on this image. Pass in nullptr to disable debugging.
      * @return Euler angles, representing the aiming target.
+     * @note The DetectArmorsFrame object is passed in by `move`. Do not reuse the detection.
      */
-    EulerAngles update(ArmorFrameInput detection);
+    EulerAngles update(RuneFrameInput detection, cv::Mat *debug_frame);
 
 };
 

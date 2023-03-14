@@ -3,60 +3,51 @@
 //
 
 #include "large_rune_aiming_impl.h"
+#include "utils/cv_utils.h"
+
+#define DEBUG if (debug_frame != nullptr && !debug_frame->empty())
 
 using namespace cv;
 using namespace Eigen;
 
-EulerAngles LargeRuneAiming::LargeRuneAimingImpl::update(ArmorFrameInput frame_input) {
+Point2f world2img(const Vector3f &pt, RuneReconstructor &reconstructor) {
+    return reconstructor.cam_calib.projectToImage(eigenVecToCvPt3f(reconstructor.transformer.worldToCam(pt)));
+}
 
-    if (frame_input.armor_info.empty())
+EulerAngles LargeRuneAiming::LargeRuneAimingImpl::update(RuneFrameInput frame_input, cv::Mat *debug_frame) {
+
+    if (frame_input.vane_info.empty())
         return last_aiming_angle_;
 
-    assert(frame_input.armor_info.size() == 1);
-    ArmorInfo armor = ArmorInfo(frame_input.armor_info[0]);
+    assert(frame_input.vane_info.size() == 1);
+    VaneInfo armor = VaneInfo(frame_input.vane_info[0]);
 
     // Reconstruct
-    transformer.update(frame_input.robot_state);
-    CvTransform3f trans_model2cam = camera_calib.solvePnP(armor.corners_model, armor.corners_img);
-
-    // Transform
-    Vector3f center_pt_cam = Transformer::modelToCam(cvPtToEigenVec3f(armor.corners_model[0]), armor.trans_model2cam);
-    Vector3f center_pt_world = transformer.camToWorld(center_pt_cam);
-    Vector3f target_pt_cam = Transformer::modelToCam(Vector3f(0.0, 0.0, 0.0), armor.trans_model2cam);
-    Vector3f target_pt_world = transformer.camToWorld(target_pt_cam);
-
-    Vector3f normal_pt_cam = Transformer::modelToCam(Vector3f(0.0, 0.0, 1.0), armor.trans_model2cam);
-    normal_pt_cam = ((normal_pt_cam - center_pt_cam).x() > 0) ?
-                    normal_pt_cam :
-                    Vector3f(2 * center_pt_cam - normal_pt_cam); // Ensure normal-vector points towards the cam
-    Vector3f normal_pt_world = transformer.camToWorld(normal_pt_cam);
-
-    Vector3f normal_vec_world = (normal_pt_world - center_pt_world).normalized();
+    rune_reconstructor.reconstructVanes({armor}, frame_input.robot_state);
 
     // Update rune info
+    Vector3f normal_vec_world = armor.normal_pt_world - armor.center_pt_world.normalized();
     normal_vec_world_ = (center_pt_world_ * n_updates + normal_vec_world).normalized();
-    center_pt_world_ = (center_pt_world_ * n_updates + center_pt_world) / (n_updates + 1);
+    center_pt_world_ = (center_pt_world_ * n_updates + armor.center_pt_world) / (n_updates + 1);
+    vane_length_ = (vane_length_ * n_updates + (armor.target_pt_world - center_pt_world_).norm()) / (n_updates + 1);
+    n_updates++;
 
-    // Project "up" vector into the rune plane
-    Vector3f up_vec_world = Vector3f(0, 0, 1.0);
-    Vector3f up_error_vec_world = normal_vec_world_ * (normal_vec_world_.dot(up_vec_world));
-    Vector3f up_vec_plane_world = (up_vec_world - up_error_vec_world).normalized();
+    // Get angle
+    float curr_angle = rune_reconstructor.getRuneAngle(armor, normal_vec_world_, center_pt_world_);
+    debug("Target vane angle: {}", curr_angle);
 
-    // Project target vector into the rune plane
-    Vector3f target_vec_world = target_pt_world - center_pt_world_;
-    Vector3f target_error_vec_world = normal_vec_world_ * (normal_vec_world_.dot(target_vec_world));
-    Vector3f target_vec_plane_world = (target_vec_world - target_error_vec_world).normalized();
+    DEBUG {
+        arrowedLine(*debug_frame,
+                    world2img(armor.center_pt_world, rune_reconstructor),
+                    world2img(armor.target_pt_world, rune_reconstructor),
+                    {255, 255, 255}, 3);
+    }
 
-    // Calculate angle in range(0, 360) between vector "up" & "target"
-    // Ref: https://math.stackexchange.com/questions/878785/how-to-find-an-angle-in-range0-360-between-2-vectors
-    float dot = up_vec_plane_world.dot(target_vec_plane_world);
-    float det = normal_vec_world_.dot(up_vec_plane_world.cross(target_vec_plane_world)); // Triple product
-    float angle = atan2(det, dot);
+    return last_aiming_angle_;
 }
 
 
-
 LargeRuneAiming::LargeRuneAimingImpl::LargeRuneAimingImpl(Config &cfg)
-        : transformer(cfg), camera_calib(cfg), tracker(cfg),
+        : rune_reconstructor(cfg), tracker(cfg),
           compensator(cfg.get<float>("aiming.basic.airResistanceConst", 0.1)) {
 }

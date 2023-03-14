@@ -30,7 +30,7 @@ void RuneReconstructor::reconstructVanes(std::vector<VaneInfo> vanes, const Robo
     }
 }
 
-float getRuneAngle(const VaneInfo& vane, const Vector3f& normal_vec_world, const Vector3f& center_pt_world) {
+float RuneReconstructor::getRuneAngle(const VaneInfo& vane, const Vector3f& normal_vec_world, const Vector3f& center_pt_world) {
 
     // Project "up" vector into the rune plane
     Vector3f up_vec_world = Vector3f(0, 0, 1.0);

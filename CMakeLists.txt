@@ -90,3 +90,5 @@ add_executable(test_rotated_rect ${rmdecis_LIBS} ${rmdecis_UTILS} tests/test_rot
 add_executable(test_large_rune_aiming ${rmdecis_LIBS} ${rmdecis_UTILS} tests/test_large_rune_aiming.cpp)
 
 add_executable(test_transformer ${rmdecis_LIBS} ${rmdecis_UTILS} tests/test_transformer.cpp)
+
+add_executable(test_avg_queue ${rmdecis_LIBS} ${rmdecis_UTILS} tests/test_avg_queue.cpp)

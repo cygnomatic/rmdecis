@@ -256,7 +256,7 @@ struct DetectArmorInfo {
      * @param detection_confidence Detection confidence
      */
     explicit DetectArmorInfo(FacilityID facility_id, Corners2f corners_img,
-                       float detection_confidence);
+                             float detection_confidence);
 };
 
 struct DetectVaneInfo {
@@ -297,6 +297,24 @@ struct ArmorFrameInput {
      * @note armor_info is moved into the struct. Do not reuse it.
      */
     ArmorFrameInput(int seq_idx, Time time, RobotState robot_state, std::vector<DetectArmorInfo> armor_info);
+};
+
+struct RuneFrameInput {
+    int seq_idx = -1;
+
+    Time time;
+    RobotState robot_state;
+    std::vector<DetectVaneInfo> vane_info;
+
+    /**
+     * The output of the Vision Armor detection.
+     * @param seq_idx For test only. Index of the corresponding frame.
+     * @param time The time **the frame is shot**. NOT THE TIME FINISH THE VISION PROCESS.
+     * @param robot_state State info of the robot.
+     * @param armor_info Detected armor info.
+     * @note armor_info is moved into the struct. Do not reuse it.
+     */
+    RuneFrameInput(int seq_idx, Time time, RobotState robot_state, std::vector<DetectVaneInfo> vane_info);
 };
 
 
