@@ -9,6 +9,6 @@ LargeRuneAiming::LargeRuneAiming(Config &config) : impl(new LargeRuneAimingImpl(
 
 LargeRuneAiming::~LargeRuneAiming() = default;
 
-EulerAngles LargeRuneAiming::update(ArmorFrameInput detection) {
-    return impl->update(std::move(detection));
+EulerAngles LargeRuneAiming::update(RuneFrameInput detection, cv::Mat *debug_frame) {
+    return impl->update(std::move(detection), debug_frame);
 }
