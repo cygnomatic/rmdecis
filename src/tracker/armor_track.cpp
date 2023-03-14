@@ -46,7 +46,10 @@ float ArmorTrack::calcSimilarity(const ArmorInfo &detection, int frame_seq) {
     float id_similarity = calcIdSimilarity(detection.facility_id);
     float center_dist_similarity = calcCenterDistSimilarity(detection.target_world);
 
-    float ret = iou * 0.75 + id_similarity * 0.0 + center_dist_similarity * 0.25;
+    float const MAX_DIST = 100.f;
+    float img_center_similarity = std::max(MAX_DIST - float(norm((last_bbox_.center - pred_bbox.center))), 0.f) / MAX_DIST;
+
+    float ret = img_center_similarity * 0.75f + id_similarity * 0.0f + center_dist_similarity * 0.25f;
     assert(!isnanf(ret));
 
     return ret;
