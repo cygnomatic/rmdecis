@@ -1048,3 +1048,4 @@ dkms.conf
 /data/
 /config/
 /example/.idea/
+/.clangd/
