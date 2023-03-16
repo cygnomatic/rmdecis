@@ -9,7 +9,7 @@
     ```bash
    ### Only tested on ubuntu 2004
    ### Build requirements:
-   sudo apt install gcc build-essential make cmake libspdlog-dev libceres-dev libyaml-cpp-dev libeigen3-dev libopencv-dev libfmt-dev
+   sudo apt install gcc build-essential make cmake libspdlog-dev libceres-dev libyaml-cpp-dev libeigen3-dev libopencv-dev libfmt-dev ninja-build
    ```
 
 2. 安装 kissfft
