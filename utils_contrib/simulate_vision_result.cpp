@@ -6,7 +6,7 @@
 
 using namespace cv;
 
-RobotState robot_state(0.5, 0.3, 15000);
+RobotState robot_state(0.0, 0.0, 15000);
 
 SimulateVisionOutput::SimulateVisionOutput(const std::string &data_path) {
 

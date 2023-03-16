@@ -31,15 +31,25 @@ int main() {
         }
         reconstructor.reconstructArmors(armor_infos, frame_inp.robot_state);
 
+        Transformer &transformer = reconstructor.transformer;
+        CameraCalib &camera_calib = reconstructor.cam_calib;
+
+        auto center = Point3f(10, 0, 0);
+        auto p_c = camera_calib.projectToImage(transformer.worldToCam(Point3f(0, 0, 0) + center));
+        auto p_x = camera_calib.projectToImage(transformer.worldToCam(Point3f(1, 0, 0) + center));
+        auto p_y = camera_calib.projectToImage(transformer.worldToCam(Point3f(0, 1, 0) + center));
+        auto p_z = camera_calib.projectToImage(transformer.worldToCam(Point3f(0, 0, 1) + center));
+
+        line(frame, p_c, p_x, {255, 0, 0}, 3);
+        line(frame, p_c, p_y, {0, 255, 0}, 3);
+        line(frame, p_c, p_z, {0, 0, 255}, 3);
+
         for (auto &armor: armor_infos) {
             // String result_display = fmt::format("x: {:.2f}, y: {:.2f}, z: {:.2f}", armor.target_world.x,
             //                                     armor.target_world.y, armor.target_world.z);
             // putText(frame, result_display, {50, 200}, FONT_HERSHEY_SIMPLEX, 2, {255, 255, 255}, 3);
 
             drawArmorCorners(frame, armor.corners_img, {255, 255, 255});
-
-            Transformer &transformer = reconstructor.transformer;
-            CameraCalib &camera_calib = reconstructor.cam_calib;
 
             auto p_world = camera_calib.projectToImage(transformer.worldToCam(armor.target_world));
             drawPoint(frame, p_world, {255, 255, 0}, 10);
@@ -49,36 +59,6 @@ int main() {
 
             auto p_cam = camera_calib.projectToImage(armor.target_cam);
             drawPoint(frame, p_cam, {0, 255, 255}, 10);
-
-
-            // auto pp_world = camera_calib.projectToImage(
-            //         eigenVecToCvPt3f(
-            //                 cvPtToEigenVec3f(eigenVecToCvPt3f(
-            //                         transformer.trans_cam2gt_.applyInverseTo(
-            //                                 cvPtToEigenVec3f(eigenVecToCvPt3f(
-            //                                         transformer.trans_gt2gimbal_.applyInverseTo(
-            //                                                 cvPtToEigenVec3f(eigenVecToCvPt3f(
-            //                                                         transformer.trans_gimbal2world_.applyInverseTo(
-            //                                                                 cvPtToEigenVec3f(eigenVecToCvPt3f(
-            //                                                                         transformer.trans_gimbal2world_.applyTo(
-            //                                                                                 cvPtToEigenVec3f(
-            //                                                                                         eigenVecToCvPt3f(
-            //                                                                                                 transformer.trans_gt2gimbal_.applyTo(
-            //                                                                                                         cvPtToEigenVec3f(
-            //                                                                                                                 eigenVecToCvPt3f(
-            //                                                                                                                         transformer.trans_cam2gt_.applyTo(
-            //                                                                                                                                 cvPtToEigenVec3f(
-            //                                                                                                                                         armor.target_cam)
-            //                                                                                                                         )))
-            //                                                                                                 )))
-            //                                                                         )))
-            //                                                         )))
-            //                                         )))
-            //                         )))
-            //         )
-            // );
-            // info("x{}, y{}", pp_world.x, pp_world.y);
-            // drawPoint(frame, pp_world, {255, 255, 255}, 10);
 
 
             // Point3f arrow_top_cam = Transformer::modelToCam({Point3f(0, 0, 100)}, armor.trans_model2cam);
