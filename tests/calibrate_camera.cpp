@@ -19,9 +19,9 @@
 
 using namespace cv;
 
-#define BOARD_ROW 10
-#define BOARD_COLUMN 7
-#define GRID_LEN 28.5
+#define BOARD_ROW 8
+#define BOARD_COLUMN 10
+#define GRID_LEN 28.44
 
 
 class CameraCalibrator {
@@ -49,17 +49,20 @@ public:
 
             if (corners.empty()) {
                 std::cerr << "No corner found." << std::endl;
+                // imshow("Img", img);
+                // waitKey(0);
                 continue;
+            } else {
+                std::cout << "Succeed." << std::endl;
             }
 
             cornerSubPix(img, corners, Size(11, 11), Size(-1, -1), criteria);
             img_pts_arr.push_back(corners);
             obj_pts_arr.push_back(obj_pts);
 
-            // drawChessboardCorners(img, pattern_size, corners, true);
-            // imshow("Corners", img);
-            // waitKey(30);
-
+            drawChessboardCorners(img, pattern_size, corners, true);
+            imshow("Img", img);
+            waitKey(10);
         }
 
         calibrateCamera(obj_pts_arr, img_pts_arr, img_size,
@@ -70,8 +73,6 @@ public:
 
         std::cout << "CameraMatrix: \n" << cam_mat << std::endl;
         std::cout << "DistortCoeffs: \n" << dist_coeffs << std::endl;
-        std::cout << "CailCamMatrix: \n" << cali_cam_mat << std::endl;
-        std::cout << "VaildROIsize: \n" << cail_img_size << std::endl;
     }
 
     void saveCoeffs(const String &path, const String &info) const {
@@ -102,16 +103,18 @@ int main() {
     std::vector<Mat> imgs;
     Mat img;
 
-    glob("../../data/calib/*.jpg", img_paths, false);
+    glob("../data/calib/*.bmp", img_paths, false);
 
     for (const String &img_path: img_paths) {
-        resize(imread(img_path, IMREAD_GRAYSCALE), img, Size(1200, 900));
+        img = imread(img_path, IMREAD_GRAYSCALE);
+        std::cout << img_path << std::endl;
+        assert(!img.empty());
         imgs.push_back(img);
     }
 
-    CameraCalibrator camera_calibrator(Size(1200, 900));
+    CameraCalibrator camera_calibrator(Size(1280, 1024));
     camera_calibrator.calculateCaliCoeffs(imgs, Size(BOARD_ROW, BOARD_COLUMN), GRID_LEN);
-    camera_calibrator.saveCoeffs("../../config/camera_coeffs.yml", "Test calib");
+    camera_calibrator.saveCoeffs("../config/camera_coeffs.yml", "CAM1");
 
     return 0;
 }

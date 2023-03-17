@@ -63,7 +63,7 @@ install(FILES ${CMAKE_BINARY_DIR}/rmdecis.pc
 
 ### Tests
 
-#add_executable(tool_calibrate_camera tests/calibrate_camera.cpp)
+add_executable(util_calibrate_camera tests/calibrate_camera.cpp)
 
 add_executable(test_video_playback ${rmdecis_UTILS} ${rmdecis_LIBS} tests/test_video_playback.cpp)
 
