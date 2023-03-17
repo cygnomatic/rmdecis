@@ -3,7 +3,11 @@
 //
 
 #include "basic_aiming_impl.h"
+#include "reconstructor/transformer.h"
 #include "rmdecis/core.h"
+#include <opencv2/core/types.hpp>
+#include <opencv2/imgproc.hpp>
+#include <spdlog/fmt/bundled/core.h>
 
 using namespace cv;
 
@@ -20,6 +24,8 @@ EulerAngles BasicAiming::BasicAimingImpl::update(ArmorFrameInput detection, cv::
         cv::Rect2i bbox = armor.corners_img.getBoundingBox();
         if (bbox.x <= 0 || bbox.x + bbox.width >= frame_width_
             || bbox.y <= 0 || bbox.y + bbox.height >= frame_height_)
+            continue;
+        if (armor.detection_confidence < 0.5)
             continue;
         armor_infos.emplace_back(armor);
     }
@@ -38,6 +44,36 @@ EulerAngles BasicAiming::BasicAimingImpl::update(ArmorFrameInput detection, cv::
     }
 
     if (enable_debug && enable_show_tracker) {
+
+        // Robot state input
+        cv::putText(*debug_img, fmt::format("yaw: {:.2f}, pitch: {:.2f}", detection.robot_state.gimbal_yaw, detection.robot_state.gimbal_pitch), 
+                            Point(100, 200), cv::FONT_HERSHEY_SIMPLEX, 1, {100, 255, 255}, 2);
+
+        // Reconstructor result
+        if (!armor_infos.empty()) {
+            auto t = armor_infos[0];
+            cv::putText(*debug_img, fmt::format("x: {:.2f}, y: {:.2f}, z: {:.2f}", t.target_world.x, t.target_world.y, t.target_world.z), 
+                            Point(100, 300), cv::FONT_HERSHEY_SIMPLEX, 1, {255, 255, 255}, 2);
+        }
+
+
+        Transformer &transformer = reconstructor.transformer;
+        CameraCalib &camera_calib = reconstructor.cam_calib;
+
+        // auto cam_center_in_world = transformer.camToWorld(Point3f(10000, 0, 0));
+        // cv::putText(*debug_img, fmt::format("x: {:.2f}, y: {:.2f}, z: {:.2f}", cam_center_in_world.x, cam_center_in_world.y, cam_center_in_world.z), 
+        //                     Point(100, 300), cv::FONT_HERSHEY_SIMPLEX, 1, {255, 255, 255}, 2);
+
+        auto center = Point3f(10000, 0, 0);
+        auto p_c = camera_calib.projectToImage(transformer.worldToCam(Point3f(0, 0, 0) + center));
+        auto p_x = camera_calib.projectToImage(transformer.worldToCam(Point3f(1000, 0, 0) + center));
+        auto p_y = camera_calib.projectToImage(transformer.worldToCam(Point3f(0, 1000, 0) + center));
+        auto p_z = camera_calib.projectToImage(transformer.worldToCam(Point3f(0, 0, 1000) + center));
+
+        line(*debug_img, p_c, p_x, {255, 0, 0}, 3);
+        line(*debug_img, p_c, p_y, {0, 255, 0}, 3);
+        line(*debug_img, p_c, p_z, {0, 0, 255}, 3);
+
         // Original probationary tracker
         for (auto &p: tracker.getTracks(true)) {
             if (!armor_infos.empty()) {

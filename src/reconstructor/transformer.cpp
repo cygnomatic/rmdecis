@@ -3,6 +3,7 @@
 //
 
 #include "transformer.h"
+#include "utils/cv_utils.h"
 
 using cv::Point3f;
 using Eigen::Matrix3f;
@@ -92,7 +93,7 @@ cv::Point3f Transformer::gimbalToWorld(const Point3f &pt) {
 }
 
 cv::Point3f Transformer::camToWorld(const Point3f &pt) {
-    throw std::logic_error("Method not implement yet!");
+    return eigenVecToCvPt3f(camToWorld(cvPtToEigenVec3f(pt)));
 }
 
 cv::Point3f Transformer::worldToGimbal(const Point3f &pt) {
