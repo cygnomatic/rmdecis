@@ -47,22 +47,18 @@ EulerAngles BasicAiming::BasicAimingImpl::update(ArmorFrameInput detection, cv::
 
         // Robot state input
         cv::putText(*debug_img, fmt::format("yaw: {:.2f}, pitch: {:.2f}", detection.robot_state.gimbal_yaw, detection.robot_state.gimbal_pitch), 
-                            Point(100, 200), cv::FONT_HERSHEY_SIMPLEX, 1, {100, 255, 255}, 2);
+                            Point(50, 100), cv::FONT_HERSHEY_SIMPLEX, 1, {100, 255, 255}, 1);
 
         // Reconstructor result
         if (!armor_infos.empty()) {
             auto t = armor_infos[0];
             cv::putText(*debug_img, fmt::format("x: {:.2f}, y: {:.2f}, z: {:.2f}", t.target_world.x, t.target_world.y, t.target_world.z), 
-                            Point(100, 300), cv::FONT_HERSHEY_SIMPLEX, 1, {255, 255, 255}, 2);
+                            Point(50, 150), cv::FONT_HERSHEY_SIMPLEX, 1, {255, 255, 255}, 1);
         }
 
 
         Transformer &transformer = reconstructor.transformer;
         CameraCalib &camera_calib = reconstructor.cam_calib;
-
-        // auto cam_center_in_world = transformer.camToWorld(Point3f(10000, 0, 0));
-        // cv::putText(*debug_img, fmt::format("x: {:.2f}, y: {:.2f}, z: {:.2f}", cam_center_in_world.x, cam_center_in_world.y, cam_center_in_world.z), 
-        //                     Point(100, 300), cv::FONT_HERSHEY_SIMPLEX, 1, {255, 255, 255}, 2);
 
         auto center = Point3f(10000, 0, 0);
         auto p_c = camera_calib.projectToImage(transformer.worldToCam(Point3f(0, 0, 0) + center));
@@ -70,9 +66,9 @@ EulerAngles BasicAiming::BasicAimingImpl::update(ArmorFrameInput detection, cv::
         auto p_y = camera_calib.projectToImage(transformer.worldToCam(Point3f(0, 1000, 0) + center));
         auto p_z = camera_calib.projectToImage(transformer.worldToCam(Point3f(0, 0, 1000) + center));
 
-        line(*debug_img, p_c, p_x, {255, 0, 0}, 3);
-        line(*debug_img, p_c, p_y, {0, 255, 0}, 3);
-        line(*debug_img, p_c, p_z, {0, 0, 255}, 3);
+        line(*debug_img, p_c, p_x, {255, 0, 0}, 2);
+        line(*debug_img, p_c, p_y, {0, 255, 0}, 2);
+        line(*debug_img, p_c, p_z, {0, 0, 255}, 2);
 
         // Original probationary tracker
         for (auto &p: tracker.getTracks(true)) {
@@ -86,12 +82,12 @@ EulerAngles BasicAiming::BasicAimingImpl::update(ArmorFrameInput detection, cv::
                 auto pred_bbox = cv::RotatedRect(((t.last_bbox_.center - t.last_center_proj_) + pred_center_proj),
                                                  t.last_bbox_.size, t.last_bbox_.angle);
 
-                drawPolygons(*debug_img, pred_bbox, {150, 150, 150}, 2);
+                drawPolygons(*debug_img, pred_bbox, {150, 150, 150}, 1);
 
                 auto similarity = fmt::format("{:.2f}", p.second.calcSimilarity(armor_infos.at(0), detection.seq_idx));
                 cv::putText(*debug_img, similarity,
                             {(int) p.second.last_bbox_.center.x, (int) p.second.last_bbox_.center.y},
-                            cv::FONT_HERSHEY_SIMPLEX, 1, {150, 150, 150}, 2);
+                            cv::FONT_HERSHEY_SIMPLEX, 1, {150, 150, 150}, 1);
             }
         }
     }
@@ -106,22 +102,22 @@ EulerAngles BasicAiming::BasicAimingImpl::update(ArmorFrameInput detection, cv::
             TrackArmorInfo track_info = p.second.predict(detection.seq_idx);
             drawPoint(*debug_img,
                       reconstructor.cam2img(reconstructor.transformer.worldToCam(track_info.target_world)),
-                      {0, 250, 250}, 10);
+                      {0, 250, 250}, 2);
 
             track_info = p.second.predict(detection.seq_idx + 5);
             drawPoint(*debug_img,
                       reconstructor.cam2img(reconstructor.transformer.worldToCam(track_info.target_world)),
-                      {0, 150, 150}, 10);
+                      {0, 150, 150}, 2);
 
             track_info = p.second.predict(detection.seq_idx + 10);
             drawPoint(*debug_img,
                       reconstructor.cam2img(reconstructor.transformer.worldToCam(track_info.target_world)),
-                      {0, 100, 100}, 10);
+                      {0, 100, 100}, 2);
         }
 
         // Draw trackers
         for (auto &p: tracker.getTracks()) {
-            drawPolygons(*debug_img, p.second.last_bbox_, {0, 255, 255}, 5);
+            drawPolygons(*debug_img, p.second.last_bbox_, {0, 255, 255}, 2);
         }
     }
     /* !DEBUG */
