@@ -75,8 +75,8 @@ void Tracker::associate(const std::vector<ArmorInfo> &armor_detections, int fram
     for (size_t i = 0; i < n_detection; ++i) {
         size_t j = 0;
         for (auto &track: armor_tracks_) {
-            // Munkres originally aims to find the min cost. Multiply similarity by -1 to find max cost.
-            negative_similarity_mat(i, j) = -1.0f * track.second.calcSimilarity(armor_detections[i], frame_seq);
+            // Munkres originally aims to find the min cost. Subtract similarity by 1 to find max cost.
+            negative_similarity_mat(i, j) = 1.0f - track.second.calcSimilarity(armor_detections[i], frame_seq);
             ++j;
         }
     }
@@ -88,7 +88,7 @@ void Tracker::associate(const std::vector<ArmorInfo> &armor_detections, int fram
         size_t j = 0;
         for (auto &int2track: armor_tracks_) {
             if (association(i, j) == 0) {
-                if (-negative_similarity_mat(i, j) >= k_similarity_threshold) {
+                if (1.0f - negative_similarity_mat(i, j) >= k_similarity_threshold) {
                     matched_track2det[int2track.first] = armor_detections[i];
                     matched_flag = true;
                 }
