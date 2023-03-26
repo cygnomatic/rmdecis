@@ -13,8 +13,8 @@ int main() {
     spdlog::set_level(spdlog::level::debug);
 
     // Camera & detection part output simulation
-    SimulateVisionOutput vision_output("../data/vision_out/vision_result_.yaml");
-    SimpleVideoPlayer player("../data/vision_out/video_input.avi");
+    SimulateVisionOutput vision_output("../data/vision_out/vision_result.yaml");
+    SimpleVideoPlayer player("../data/vision_out/video_input.mp4");
 
     // Initialize BasicAimingImpl with path to camera calibration coeffs file & config loader.
     Config cfg("../config/config.yml");
