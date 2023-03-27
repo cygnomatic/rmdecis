@@ -72,12 +72,12 @@ EulerAngles BasicAiming::BasicAimingImpl::update(ArmorFrameInput detection, cv::
                       reconstructor.cam2img(reconstructor.transformer.worldToCam(track_info.target_world)),
                       {0, 250, 250}, 10);
 
-            track_info = p.second.predict(detection.seq_idx + 10);
+            track_info = p.second.predict(detection.seq_idx + 5);
             drawPoint(*debug_img,
                       reconstructor.cam2img(reconstructor.transformer.worldToCam(track_info.target_world)),
                       {0, 150, 150}, 10);
 
-            track_info = p.second.predict(detection.seq_idx + 20);
+            track_info = p.second.predict(detection.seq_idx + 10);
             drawPoint(*debug_img,
                       reconstructor.cam2img(reconstructor.transformer.worldToCam(track_info.target_world)),
                       {0, 100, 100}, 10);
