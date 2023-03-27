@@ -5,9 +5,6 @@
 #include "basic_aiming_impl.h"
 #include "reconstructor/transformer.h"
 #include "rmdecis/core.h"
-#include <opencv2/core/types.hpp>
-#include <opencv2/imgproc.hpp>
-#include <spdlog/fmt/bundled/core.h>
 
 using namespace cv;
 
