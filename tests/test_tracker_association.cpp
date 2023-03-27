@@ -22,13 +22,12 @@ int main() {
     Reconstructor reconstructor(cfg);
 
     player.setPlaybackSpeed(0.2);
-
     Tracker tracker(cfg);
-    TrackArmorInfo track_info;
 
     int width = cfg.get<int>("camera.width"), height = cfg.get<int>("camera.height");
 
     for (int i = 0;; i++) {
+
         Mat frame = player.getFrame();
         if (frame.empty())
             break;
@@ -40,63 +39,59 @@ int main() {
             cv::Rect2f bbox = a.corners_img.getBoundingBox();
             if (bbox.x <= 0 || bbox.x + bbox.width >= width || bbox.y <= 0 || bbox.y + bbox.height >= height)
                 continue;
+            if (a.detection_confidence < 0.55f)
+                continue;
             armor_infos.emplace_back(a);
         }
         reconstructor.reconstructArmors(armor_infos, detect_result.robot_state);
 
-        for (auto &t: armor_infos) {
-            // Original input
-            drawArmorCorners(frame, t.corners_img, {255, 255, 255}, 2);
-        }
-
-        for (auto &p: tracker.getTracks(true)) {
-            // Last probationary tracker
-            // drawPolygons(frame, p.second.last_bbox_, {255, 255, 0}, 5);
-
-            if (!armor_infos.empty()) {
-                auto &t = p.second;
-                ArmorInfo &a = armor_infos.at(0);
-
-                auto pred_center_proj = a.reconstructor->cam2img(
-                        a.reconstructor->transformer.worldToCam(t.predict(detect_result.seq_idx).target_world));
-
-                drawPoint(frame, pred_center_proj, {105, 105, 0}, 5);
-
-                auto pred_bbox = cv::RotatedRect(((t.last_bbox_.center - t.last_center_proj_) + pred_center_proj),
-                                                 t.last_bbox_.size, t.last_bbox_.angle);
-
-                drawPolygons(frame, pred_bbox, {255, 255, 0}, 5);
-
-                auto similarity = fmt::format("{:.2f}",
-                                              p.second.calcSimilarity(armor_infos.at(0), detect_result.seq_idx));
-                cv::putText(frame, similarity, {(int) p.second.last_bbox_.center.x, (int) p.second.last_bbox_.center.y},
-                            cv::FONT_HERSHEY_SIMPLEX, 1, {0, 200, 200}, 2);
-                break;
-            }
-        }
-
-        // for (auto &p: tracker.getTracks()) {
-        //     // Last tracker
+        // for (auto &p: tracker.getTracks(true)) {
+        //     // Last probationary tracker
         //     drawPolygons(frame, p.second.last_bbox_, {0, 255, 255}, 5);
+        //
+        //     for (auto &a : armor_infos) {
+        //         auto &t = p.second;
+        //
+        //         auto pred_bbox = minAreaRect(std::vector<cv::Point2f>(a.corners_img));
+        //         drawPolygons(frame, pred_bbox, {255, 255, 0}, 5);
+        //
+        //         auto similarity = fmt::format("{:.2f}",
+        //                                       p.second.calcSimilarity(armor_infos.at(0), detect_result.seq_idx));
+        //
+        //         cv::putText(frame, similarity, {(int) p.second.last_bbox_.center.x, (int) p.second.last_bbox_.center.y},
+        //                     cv::FONT_HERSHEY_SIMPLEX, 1, {0, 200, 200}, 2);
+        //     }
         // }
+
+        int cnt = 0;
+        for (auto &t: tracker.getTracks(true)) {
+            float max_sim = 0.0;
+            for (auto &a: armor_infos) {
+                max_sim = std::max(t.second.calcSimilarity(a, detect_result.seq_idx), max_sim);
+            }
+
+            // Draw last (prob) tracks
+            drawPolygons(frame, t.second.last_bbox_, {200, 0, 200});
+            cv::putText(frame, fmt::format("{:.2f}", max_sim),
+                        {(int) t.second.last_bbox_.center.x, (int) t.second.last_bbox_.center.y},
+                        cv::FONT_HERSHEY_SIMPLEX, 1, {200, 0, 200});
+
+            if (cnt > 5) break;
+            else ++cnt;
+        }
+
+        // Draw detection result
+        for (auto &a : armor_infos) {
+            drawPolygons(frame, cv::minAreaRect(std::vector<cv::Point2f>(a.corners_img)), {200, 200, 200});
+        }
 
         // Update trackers
         tracker.update(armor_infos, detect_result.seq_idx);
 
-        // for (auto &p: tracker.getTracks()) {
-        //
-        //     // track_info = p.second.predict(detect_result.time + 10);
-        //     // drawPoint(frame, reconstructor.cam2img(track_info.target_world), {0, 50, 50}, 10);
-        //     // rectangle(frame, track_info.bbox, {0, 50, 50}, 5);
-        //     //
-        //     // track_info = p.second.predict(detect_result.time + 5);
-        //     // drawPoint(frame, reconstructor.cam2img(track_info.target_world), {0, 150, 150}, 10);
-        //     // rectangle(frame, track_info.bbox, {0, 150, 150}, 5);
-        //
-        //     track_info = p.second.predict(detect_result.time);
-        //     drawPoint(frame, reconstructor.cam2img(track_info.target_world), {0, 150, 150}, 10);
-        //     rectangle(frame, track_info.bbox, {0, 150, 150}, 5);
-        // }
+        // Draw new tracker
+        for (auto &t: tracker.getTracks()) {
+            drawPolygons(frame, t.second.last_bbox_, {0, 200, 200});
+        }
 
         player.update(frame);
     }

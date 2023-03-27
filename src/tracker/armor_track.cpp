@@ -35,21 +35,11 @@ TrackArmorInfo ArmorTrack::predict(int frame_seq) {
 
 float ArmorTrack::calcSimilarity(const ArmorInfo &detection, int frame_seq) {
 
-    assert(detection.reconstructor != nullptr);
-    Point2f pred_center_proj = detection.reconstructor->cam2img(
-            detection.reconstructor->transformer.worldToCam(predict(frame_seq).target_world));
-
-    auto pred_bbox = RotatedRect(((last_bbox_.center - last_center_proj_) + pred_center_proj),
-                                 last_bbox_.size, last_bbox_.angle);
-
-    float iou = calculateIoU(last_bbox_, pred_bbox); // minAreaRect(std::vector<Point2f>(detection.corners_img)));
+    float iou = calculateIoU(last_bbox_, minAreaRect(std::vector<Point2f>(detection.corners_img)));
     float id_similarity = calcIdSimilarity(detection.facility_id);
     float center_dist_similarity = calcCenterDistSimilarity(detection.target_world);
 
-    float const MAX_DIST = 100.f;
-    float img_center_similarity = std::max(MAX_DIST - float(norm((last_bbox_.center - pred_bbox.center))), 0.f) / MAX_DIST;
-
-    float ret = img_center_similarity * 0.75f + id_similarity * 0.0f + center_dist_similarity * 0.25f;
+    float ret = iou; //+ id_similarity * 0.0f + center_dist_similarity * 0.0f;
     assert(!isnanf(ret));
 
     return ret;
