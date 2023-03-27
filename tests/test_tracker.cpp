@@ -40,6 +40,8 @@ int main() {
             cv::Rect2f bbox = a.corners_img.getBoundingBox();
             if (bbox.x <= 0 || bbox.x + bbox.width >= width || bbox.y <= 0 || bbox.y + bbox.height >= height)
                 continue;
+            if (a.detection_confidence < 0.55)
+                continue;
             armor_infos.emplace_back(a);
         }
 

@@ -35,7 +35,7 @@ TrackArmorInfo ArmorTrack::predict(int frame_seq) {
 
 float ArmorTrack::calcSimilarity(const ArmorInfo &detection, int frame_seq) {
 
-    float iou = calculateIoU(last_bbox_, minAreaRect(std::vector<Point2f>(detection.corners_img)));
+    float iou = calculateIoU(last_bbox_, minAreaRect(std::vector<Point2f>(detection.corners_img)), 2.0f);
     float id_similarity = calcIdSimilarity(detection.facility_id);
     float center_dist_similarity = calcCenterDistSimilarity(detection.target_world);
 

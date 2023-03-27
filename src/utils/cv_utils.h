@@ -18,7 +18,7 @@ inline void drawArmorCorners(cv::Mat &image, Corners2f &corners,
 }
 
 inline void drawPolygons(cv::Mat &image, std::vector<cv::Point2f> &pts,
-                             const cv::Scalar &color = cv::Scalar(255, 0, 0), int thickness = 2) {
+                         const cv::Scalar &color = cv::Scalar(255, 0, 0), int thickness = 2) {
     for (int i = 0; i < pts.size() - 1; i++) {
         cv::line(image, pts[i], pts[i + 1], color, thickness);
     }
@@ -26,7 +26,7 @@ inline void drawPolygons(cv::Mat &image, std::vector<cv::Point2f> &pts,
 }
 
 inline void drawPolygons(cv::Mat &image, cv::RotatedRect rect,
-                             const cv::Scalar &color = cv::Scalar(255, 0, 0), int thickness = 2) {
+                         const cv::Scalar &color = cv::Scalar(255, 0, 0), int thickness = 2) {
     std::vector<cv::Point2f> pts(4);
     rect.points(pts.data());
     drawPolygons(image, pts, color, thickness);
@@ -40,9 +40,15 @@ inline float calculateIoU(const cv::Rect2f &rect1, const cv::Rect2f &rect2) {
     return std::isnan(iou) ? 0.f : iou;
 }
 
-inline float calculateIoU(const cv::RotatedRect &rect1, const cv::RotatedRect &rect2) {
+inline float calculateIoU(cv::RotatedRect rect1, cv::RotatedRect rect2, float dilate = 1.0f) {
     std::vector<cv::Point2f> intersection_contour;
+
+    // Dilate the rects
+    rect1.size *= dilate;
+    rect2.size *= dilate;
+
     cv::rotatedRectangleIntersection(rect1, rect2, intersection_contour);
+
     if (intersection_contour.empty())
         return 0;
     float intersectArea = float(cv::contourArea(intersection_contour));
