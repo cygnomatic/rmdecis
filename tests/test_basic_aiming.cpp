@@ -15,6 +15,7 @@ int main() {
     // Camera & detection part output simulation
     SimulateVisionOutput vision_output("../data/vision_out/vision_result.yaml");
     SimpleVideoPlayer player("../data/vision_out/video_input.mp4");
+    player.setRecordSpeed(2);
 
     // Initialize BasicAimingImpl with path to camera calibration coeffs file & config loader.
     Config cfg("../config/config.yml");

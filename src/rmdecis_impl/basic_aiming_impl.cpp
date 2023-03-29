@@ -49,8 +49,9 @@ EulerAngles BasicAiming::BasicAimingImpl::update(ArmorFrameInput detection, cv::
         // Reconstructor result
         if (!armor_infos.empty()) {
             auto t = armor_infos[0];
-            cv::putText(*debug_img, fmt::format("x: {:.2f}, y: {:.2f}, z: {:.2f}", t.target_world.x, t.target_world.y, t.target_world.z), 
+            cv::putText(*debug_img, fmt::format("x: {:.2f}, y: {:.2f}, z: {:.2f}", t.target_cam.x, t.target_cam.y, t.target_cam.z),
                             Point(50, 150), cv::FONT_HERSHEY_SIMPLEX, 1, {255, 255, 255}, 1);
+            drawArmorCorners(*debug_img, t.corners_img, {255, 0, 0}, 5);
         }
 
 
@@ -67,26 +68,26 @@ EulerAngles BasicAiming::BasicAimingImpl::update(ArmorFrameInput detection, cv::
         line(*debug_img, p_c, p_y, {0, 255, 0}, 2);
         line(*debug_img, p_c, p_z, {0, 0, 255}, 2);
 
-        // Original probationary tracker
-        for (auto &p: tracker.getTracks(true)) {
-            if (!armor_infos.empty()) {
-
-                auto &t = p.second;
-                ArmorInfo &a = armor_infos.at(0);
-
-                auto pred_center_proj = a.reconstructor->cam2img(
-                        a.reconstructor->transformer.worldToCam(t.predict(detection.seq_idx).target_world));
-                auto pred_bbox = cv::RotatedRect(((t.last_bbox_.center - t.last_center_proj_) + pred_center_proj),
-                                                 t.last_bbox_.size, t.last_bbox_.angle);
-
-                drawPolygons(*debug_img, pred_bbox, {150, 150, 150}, 1);
-
-                auto similarity = fmt::format("{:.2f}", p.second.calcSimilarity(armor_infos.at(0), detection.seq_idx));
-                cv::putText(*debug_img, similarity,
-                            {(int) p.second.last_bbox_.center.x, (int) p.second.last_bbox_.center.y},
-                            cv::FONT_HERSHEY_SIMPLEX, 1, {150, 150, 150}, 1);
-            }
-        }
+        // // Original probationary tracker
+        // for (auto &p: tracker.getTracks(true)) {
+        //     if (!armor_infos.empty()) {
+        //
+        //         auto &t = p.second;
+        //         ArmorInfo &a = armor_infos.at(0);
+        //
+        //         auto pred_center_proj = a.reconstructor->cam2img(
+        //                 a.reconstructor->transformer.worldToCam(t.predict(detection.seq_idx).target_world));
+        //         auto pred_bbox = cv::RotatedRect(((t.last_bbox_.center - t.last_center_proj_) + pred_center_proj),
+        //                                          t.last_bbox_.size, t.last_bbox_.angle);
+        //
+        //         drawPolygons(*debug_img, pred_bbox, {150, 150, 150}, 1);
+        //
+        //         auto similarity = fmt::format("{:.2f}", p.second.calcSimilarity(armor_infos.at(0), detection.seq_idx));
+        //         cv::putText(*debug_img, similarity,
+        //                     {(int) p.second.last_bbox_.center.x, (int) p.second.last_bbox_.center.y},
+        //                     cv::FONT_HERSHEY_SIMPLEX, 1, {150, 150, 150}, 1);
+        //     }
+        // }
     }
     /* !DEBUG */
 
