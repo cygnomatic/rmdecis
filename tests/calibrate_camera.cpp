@@ -3,25 +3,20 @@
 //
 
 #include <iostream>
-#include <sstream>
 #include <string>
-#include <ctime>
-#include <cstdio>
 
 #include <opencv2/core.hpp>
 #include <opencv2/core/utility.hpp>
 #include <opencv2/imgproc.hpp>
 #include <opencv2/calib3d.hpp>
 #include <opencv2/imgcodecs.hpp>
-#include <opencv2/videoio.hpp>
 #include <opencv2/highgui.hpp>
-#include <utility>
 
 using namespace cv;
 
-#define BOARD_ROW 8
+#define BOARD_ROW 7
 #define BOARD_COLUMN 10
-#define GRID_LEN 28.44
+#define GRID_LEN 29.14
 
 
 class CameraCalibrator {
@@ -42,7 +37,7 @@ public:
         std::vector<Point2f> corners;
         std::vector<Point3f> obj_pts = calculateBoardCornerPos(pattern_size, side_len);
 
-        TermCriteria criteria{TermCriteria::EPS | TermCriteria::COUNT, 30, 0.001};
+        TermCriteria criteria{TermCriteria::EPS | TermCriteria::COUNT, 100, 0.0001};
 
         for (const Mat &img: imgs) {
             findChessboardCorners(img, pattern_size, corners);
@@ -62,7 +57,7 @@ public:
 
             drawChessboardCorners(img, pattern_size, corners, true);
             imshow("Img", img);
-            waitKey(10);
+            waitKey(100);
         }
 
         calibrateCamera(obj_pts_arr, img_pts_arr, img_size,
@@ -103,7 +98,7 @@ int main() {
     std::vector<Mat> imgs;
     Mat img;
 
-    glob("../data/calib/*.bmp", img_paths, false);
+    glob("../data/calib/*.jpeg", img_paths, false);
 
     for (const String &img_path: img_paths) {
         img = imread(img_path, IMREAD_GRAYSCALE);
@@ -112,7 +107,7 @@ int main() {
         imgs.push_back(img);
     }
 
-    CameraCalibrator camera_calibrator(Size(1280, 1024));
+    CameraCalibrator camera_calibrator(Size(640, 480));
     camera_calibrator.calculateCaliCoeffs(imgs, Size(BOARD_ROW, BOARD_COLUMN), GRID_LEN);
     camera_calibrator.saveCoeffs("../config/camera_coeffs.yml", "CAM1");
 
