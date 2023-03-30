@@ -12,6 +12,21 @@
 #include "utils/cv_utils.h"
 
 class Transform {
+
+    //
+    // Frame transform tool.
+    //
+    // Available frames
+    // - Cam: Camera frame in REP standard.
+    // - Gimbal: Stabilized gimbal frame, shooter center as origin, but x-axis point towards base's front, and z axis towards world up.
+    // - World: The world frame.
+    //
+    // Internal frames
+    // - GT (GimbalTmp): Un-stabilized gimbal frame, has the same direction with cam frame
+    // - (CV_cam): Camera frame in OpenCV standard.
+    //
+
+
 private:
 
     Eigen::Affine3f transform_;
