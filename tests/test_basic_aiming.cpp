@@ -5,6 +5,8 @@
 #include "rmdecis_impl/basic_aiming_impl.h"
 #include "../utils_contrib/simple_video_player.h"
 #include "../utils_contrib/simulate_vision_result.h"
+#include <fmt/core.h>
+#include <opencv2/imgproc.hpp>
 
 using namespace cv;
 

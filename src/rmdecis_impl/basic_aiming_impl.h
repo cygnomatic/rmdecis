@@ -22,13 +22,13 @@ private:
     BallisticCompensator compensator;
 
     float ballet_init_speed = 15.0 * 1e3;
+    float curr_pitch_ = 0.f;
     int compensate_frame = 0;
 
     int last_aiming_id_ = -1;
     int frame_width_, frame_height_;
-    EulerAngles last_aiming_angle_{};
 
-    bool enable_debug, enable_show_vision_input, enable_show_tracker;
+    bool enable_show_vision_input, enable_show_tracker;
 
     int chooseNextTarget(std::map<int, ArmorTrack> &tracks_map, int frame_seq);
 

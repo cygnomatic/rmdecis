@@ -24,8 +24,8 @@ public:
 
     cv::Point2f cam2img(const cv::Point3f &pt);
 
-    void solveAngle(const cv::Point3f &target_world, float *yaw_in_deg,
-                           float *horizontal_dist, float *vertical_dist);
+    void solveAngle(const cv::Point3f &target_world, float *horizontal_dist, float *vertical_dist,
+                    float *yaw_in_deg, float *yaw_in_pitch = nullptr);
 };
 
 
