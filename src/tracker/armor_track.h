@@ -34,6 +34,8 @@ public:
 
 private:
 
+    float k_dilate_;
+
     std::array<int, MAX_FACILITY_ID> id_cnt{};
 
     float calcIdSimilarity(FacilityID id);

@@ -10,7 +10,8 @@
 using namespace cv;
 
 ArmorTrack::ArmorTrack(int tracking_id, const ArmorInfo &detection, int frame_seq, Config &cfg)
-        : track_kalman(TrackKalman(cfg, detection, frame_seq)), tracking_id(tracking_id) {
+        : track_kalman(TrackKalman(cfg, detection, frame_seq)), tracking_id(tracking_id),
+        k_dilate_(cfg.get<float>("bboxDilate", 3.0f)){
     init(detection);
 }
 
@@ -35,7 +36,7 @@ TrackArmorInfo ArmorTrack::predict(int frame_seq) {
 
 float ArmorTrack::calcSimilarity(const ArmorInfo &detection, int frame_seq) {
 
-    float iou = calculateIoU(last_bbox_, minAreaRect(std::vector<Point2f>(detection.corners_img)), 2.0f);
+    float iou = calculateIoU(last_bbox_, minAreaRect(std::vector<Point2f>(detection.corners_img)), k_dilate_);
     float id_similarity = calcIdSimilarity(detection.facility_id);
     float center_dist_similarity = calcCenterDistSimilarity(detection.target_world);
 
