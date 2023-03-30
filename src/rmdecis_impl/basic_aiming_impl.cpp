@@ -64,9 +64,12 @@ EulerAngles BasicAiming::BasicAimingImpl::update(ArmorFrameInput detection, cv::
         auto p_y = camera_calib.projectToImage(transformer.worldToCam(Point3f(0, 1000, 0) + center));
         auto p_z = camera_calib.projectToImage(transformer.worldToCam(Point3f(0, 0, 1000) + center));
 
-        line(*debug_img, p_c, p_x, {255, 0, 0}, 2);
-        line(*debug_img, p_c, p_y, {0, 255, 0}, 2);
-        line(*debug_img, p_c, p_z, {0, 0, 255}, 2);
+        // Avoid drawing bad projected point, or it will cause program freeze.
+        if (p_c.x > -100 && p_c.x < 740 && p_c.y > -100 && p_c.y < 580) {
+            line(*debug_img, p_c, p_x, {255, 0, 0}, 2);
+            line(*debug_img, p_c, p_y, {0, 255, 0}, 2);
+            line(*debug_img, p_c, p_z, {0, 0, 255}, 2);
+        }
 
         // // Original probationary tracker
         // for (auto &p: tracker.getTracks(true)) {
