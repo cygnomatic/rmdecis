@@ -59,10 +59,18 @@ ArmorFrameInput SimulateVisionOutput::getNextData() {
 }
 
 ArmorFrameInput SimulateVisionOutput::getData(int seq_idx) {
+
+    if (seq_idx < 0) {
+        warn("Requesting invalid data.");
+        return {seq_idx, Time(), robot_state, {}};
+    }
+
     auto i = data.find(seq_idx);
     if (i == data.end()) {
-        // warn("Invalid seq_idx. Failed to find corresponding data.");
-        return ArmorFrameInput(seq_idx, Time(), robot_state, {});
+        // Use last available data
+        auto last_data = getData(seq_idx - 1);
+        last_data.seq_idx = seq_idx;
+        return last_data;
     }
     return data.at(seq_idx);
 }
