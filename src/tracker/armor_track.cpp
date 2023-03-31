@@ -11,7 +11,7 @@ using namespace cv;
 
 ArmorTrack::ArmorTrack(int tracking_id, const ArmorInfo &detection, int frame_seq, Config &cfg)
         : track_kalman(TrackKalman(cfg, detection, frame_seq)), tracking_id(tracking_id),
-        k_dilate_(cfg.get<float>("bboxDilate", 3.0f)){
+        k_dilate_(cfg.get<float>("tracker.bboxDilate", 3.0f)){
     init(detection);
 }
 
