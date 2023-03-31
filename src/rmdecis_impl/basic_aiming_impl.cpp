@@ -117,11 +117,11 @@ EulerAngles BasicAiming::BasicAimingImpl::update(ArmorFrameInput detection, cv::
     if (last_aiming_id_ == -1)
         return EulerAngles(0, 0);
 
-    auto pred_angle = predictFromTrack(tracks_map.at(last_aiming_id_),
-                                       detection.seq_idx + compensate_frame);
+    auto pred_delta_angle = predictFromTrack(tracks_map.at(last_aiming_id_),
+                                             detection.seq_idx + compensate_frame);
 
     // Avoid nan from predictFromTrack
-    if (std::isnan(pred_angle.yaw) || std::isnan(pred_angle.pitch)) {
+    if (std::isnan(pred_delta_angle.yaw) || std::isnan(pred_delta_angle.pitch)) {
         warn("Got nan from predictFromTrack!");
         return EulerAngles(0, 0);
     }
@@ -129,12 +129,12 @@ EulerAngles BasicAiming::BasicAimingImpl::update(ArmorFrameInput detection, cv::
     /* DEBUG */
     DEBUG {
         String result_display = fmt::format("Yaw: {:.2f}, Pitch: {:.2f}",
-                                            pred_angle.yaw, pred_angle.pitch);
+                                            pred_delta_angle.yaw, pred_delta_angle.pitch);
         putText(*debug_img, result_display, {50, 200}, FONT_HERSHEY_SIMPLEX, 1, {255, 255, 255}, 2);
     }
     /* !DEBUG */
 
-    return pred_angle;
+    return pred_delta_angle;
 
 }
 
@@ -143,17 +143,19 @@ EulerAngles BasicAiming::BasicAimingImpl::update(ArmorFrameInput detection, cv::
  */
 EulerAngles BasicAiming::BasicAimingImpl::predictFromTrack(ArmorTrack &track, int frame_seq) {
 
-    float horizontal_dist, vertical_dist, d_yaw, d_pitch, pitch;
+    float horizontal_dist, vertical_dist, d_yaw, d_pitch, trig_pitch, pitch;
 
     TrackArmorInfo target_info = track.predict(frame_seq);
     Point3f center = target_info.target_world;
-    reconstructor.solveAngle(center, &horizontal_dist, &vertical_dist, &d_yaw, &pitch);
+    reconstructor.solveAngle(center, &horizontal_dist, &vertical_dist, &d_yaw, &trig_pitch);
 
-    // // TODO: calcShootAngle can return pitch with nan if there is no solution.
-    // pitch = compensator.calcShootAngle(ballet_init_speed, horizontal_dist, vertical_dist);
+    // TODO: calcShootAngle can return pitch with nan if there is no solution.
+    pitch = compensator.calcShootAngle(ballet_init_speed, horizontal_dist, vertical_dist);
     d_pitch = pitch - curr_pitch_;
 
-    // FIXME: Return pitch should multiply -1
+    // info("horizontal_dist {}, vertical_dist {}, currPitch {}, trigPitch {}, shootAngle {}",
+    //      horizontal_dist, vertical_dist, curr_pitch_, trig_pitch, pitch);
+
     return EulerAngles(d_yaw, d_pitch);
 
 }

@@ -26,6 +26,7 @@ float BallisticCompensator::ballistic(float v0, float x, float theta) const {
 }
 
 float BallisticCompensator::calcShootAngle(float v0, float x, float y) {
-    return EquationSolver::solveWithDer(getBallisticFunc(v0, x, y),
+    // Multiply -1 as REP105 standard says roll the gimbal down increase the pitch
+    return -1.0f * EquationSolver::solveWithDer(getBallisticFunc(v0, x, y),
                                         getBallisticDerFunc(v0, x));
 }
