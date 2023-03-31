@@ -33,13 +33,14 @@ EulerAngles BasicAiming::BasicAimingImpl::update(ArmorFrameInput detection, cv::
         if (enable_show_vision_input) {
             // Draw detection input
             for (auto &t: armor_infos) {
-                drawArmorCorners(*debug_img, t.corners_img, {255, 255, 0}, 5);
+                drawArmorCorners(*debug_img, t.corners_img, {255, 255, 0}, 2);
                 cv::putText(*debug_img, fmt::format("{:.2f}", t.detection_confidence),
-                            (t.corners_img[0] + t.corners_img[2]) / 2, cv::FONT_HERSHEY_SIMPLEX, 1, {255, 255, 0}, 2);
+                            (t.corners_img[0] + t.corners_img[2]) / 2, cv::FONT_HERSHEY_SIMPLEX, 1, {200, 100, 0}, 2);
+                cv::putText(*debug_img, fmt::format("{}", t.facility_id),
+                            (t.corners_img[0] + t.corners_img[2]) / 2 - Point2f(10, 10),
+                            cv::FONT_HERSHEY_DUPLEX, 3, {0, 255, 255}, 3);
             }
         }
-    }
-    DEBUG {
         if (enable_show_tracker) {
 
             // Robot state input
@@ -128,9 +129,11 @@ EulerAngles BasicAiming::BasicAimingImpl::update(ArmorFrameInput detection, cv::
 
     /* DEBUG */
     DEBUG {
-        String result_display = fmt::format("Yaw: {:.2f}, Pitch: {:.2f}",
-                                            pred_delta_angle.yaw, pred_delta_angle.pitch);
-        putText(*debug_img, result_display, {50, 200}, FONT_HERSHEY_SIMPLEX, 1, {255, 255, 255}, 2);
+        if (enable_show_tracker) {
+            String result_display = fmt::format("Yaw: {:.2f}, Pitch: {:.2f}",
+                                                pred_delta_angle.yaw, pred_delta_angle.pitch);
+            putText(*debug_img, result_display, {50, 200}, FONT_HERSHEY_SIMPLEX, 1, {255, 255, 255}, 2);
+        }
     }
     /* !DEBUG */
 
