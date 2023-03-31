@@ -5,6 +5,7 @@
 #include "basic_aiming_impl.h"
 #include "reconstructor/transformer.h"
 #include "rmdecis/core.h"
+#include "utils/preprocess.h"
 #include "typing.h"
 
 #define DEBUG if (debug_img != nullptr)
@@ -20,16 +21,8 @@ EulerAngles BasicAiming::BasicAimingImpl::update(ArmorFrameInput detection, cv::
     /* !DEBUG */
 
     // Pre-process data
-    std::vector<ArmorInfo> armor_infos;
-    for (const auto &armor: detection.armor_info) {
-        cv::Rect2i bbox = armor.corners_img.getBoundingBox();
-        if (bbox.x <= 0 || bbox.x + bbox.width >= frame_width_
-            || bbox.y <= 0 || bbox.y + bbox.height >= frame_height_)
-            continue;
-        if (armor.detection_confidence < 0.5)
-            continue;
-        armor_infos.emplace_back(armor);
-    }
+    std::vector<ArmorInfo> armor_infos = detectionToInfo(detection.armor_info,
+                                                         k_frame_width_, k_frame_height_, k_confidence_threshold_);
     curr_pitch_ = detection.robot_state.gimbal_pitch;
 
     // Reconstruct armors
@@ -202,8 +195,9 @@ int BasicAiming::BasicAimingImpl::chooseNextTarget(std::map<int, ArmorTrack> &tr
 BasicAiming::BasicAimingImpl::BasicAimingImpl(Config &cfg)
         : reconstructor(cfg), tracker(cfg),
           compensator(cfg.get<float>("aiming.basic.airResistanceConst", 0.1)),
-          frame_width_(cfg.get<int>("camera.width")),
-          frame_height_(cfg.get<int>("camera.height")),
+          k_frame_width_(cfg.get<int>("camera.width")),
+          k_frame_height_(cfg.get<int>("camera.height")),
+          k_confidence_threshold_(cfg.get<float>("aiming.basic.detConfidenceThreshold", 0.55)),
           enable_show_vision_input(cfg.get<bool>("aiming.basic.debugShowVisionInput", true)),
           enable_show_tracker(cfg.get<bool>("aiming.basic.debugShowTracker", true)) {
 

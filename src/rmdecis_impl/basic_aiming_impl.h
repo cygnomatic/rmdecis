@@ -26,7 +26,8 @@ private:
     int compensate_frame = 0;
 
     int last_aiming_id_ = -1;
-    int frame_width_, frame_height_;
+    int k_frame_width_, k_frame_height_;
+    float k_confidence_threshold_;
 
     bool enable_show_vision_input, enable_show_tracker;
 
