@@ -9,17 +9,14 @@
 
 #include <functional>
 #include <cmath>
+#include "rmdecis/core.h"
 
 #include "utils/equation_solver.h"
 
 class BallisticCompensator {
-    float k;
+
 private:
-    std::function<float(float)> getBallisticFunc(float v0, float x, float y);
-
-    std::function<float(float)> getBallisticDerFunc(float v0, float x);
-
-    float ballisticDer(float v0, float x, float theta) const;
+    int max_num_iterations;
 
 public:
 
@@ -27,16 +24,7 @@ public:
      * Ballistic compensate calculator.
      * @param k Wind resistance coefficient
      */
-    explicit BallisticCompensator(float k) : k(k) {};
-
-    /**
-     * Calculate ballistic.
-     * @param v0 Initial velocity of the bullet
-     * @param x Horizontal distance to barrel
-     * @param theta Pitch of gimbal, in rad
-     * @return Vertical distance to gimbal, in mm
-     */
-    float ballistic(float v0, float x, float theta) const;
+    explicit BallisticCompensator(Config &cfg);
 
     /**
      * Find shoot angle to the target.
@@ -45,7 +33,8 @@ public:
      * @param y Vertical distance to the target, in mm
      * @return Pitch of gimbal, in rad
      */
-    float calcShootAngle(float v0, float x, float y);
+    double calcShootAngle(double x, double y, double v0, double init_theta = 0.0) const;
+
 };
 
 

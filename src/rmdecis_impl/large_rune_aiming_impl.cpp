@@ -48,6 +48,5 @@ EulerAngles LargeRuneAiming::LargeRuneAimingImpl::update(RuneFrameInput frame_in
 
 
 LargeRuneAiming::LargeRuneAimingImpl::LargeRuneAimingImpl(Config &cfg)
-        : rune_reconstructor(cfg), tracker(cfg),
-          compensator(cfg.get<float>("aiming.basic.airResistanceConst", 0.1)) {
+        : rune_reconstructor(cfg), tracker(cfg), compensator(cfg) {
 }

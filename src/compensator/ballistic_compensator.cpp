@@ -3,30 +3,55 @@
 //
 
 #include "ballistic_compensator.h"
+#include "ceres/ceres.h"
 
-std::function<float(float)> BallisticCompensator::getBallisticFunc(float v0, float x, float y) {
-    return [v0, x, y, this](float theta) { return ballistic(v0, x, theta) - y; };
+struct ProjectileCostFunctor {
+    ProjectileCostFunctor(double x, double y, double v0) : x_(x), y_(y), v0_(v0) {}
+
+    template<typename T>
+    bool operator()(const T *const theta, T *residual) const {
+        const T tan_theta = ceres::tan(*theta);
+        const T v0 = T(v0_);
+        const T cos_theta = ceres::cos(*theta);
+        const T x = T(x_);
+        const T y = T(y_);
+        const T g = T(GRAVITY); // gravitational acceleration
+
+        residual[0] = tan_theta * x - g / (T(2.0) * v0 * v0 * cos_theta * cos_theta) * x * x - y;
+        return true;
+    }
+
+private:
+    const double x_;
+    const double y_;
+    const double v0_;
+};
+
+double BallisticCompensator::calcShootAngle(double x, double y, double v0, double init_theta) const {
+
+    double theta = init_theta;
+
+    ceres::Problem problem;
+    problem.AddResidualBlock(
+            new ceres::AutoDiffCostFunction<ProjectileCostFunctor, 1, 1>(new ProjectileCostFunctor(x, y, v0)),
+            nullptr, &theta
+    );
+
+    ceres::Solver::Options options;
+    options.max_num_iterations = max_num_iterations;
+    options.linear_solver_type = ceres::DENSE_QR;
+
+    ceres::Solver::Summary summary;
+    ceres::Solve(options, &problem, &summary);
+
+    if (summary.IsSolutionUsable()) {
+        // According to REP105, theta decrease as the gimbal roll up.
+        return -1.0 * theta;
+    } else {
+        return NAN;
+    }
+
 }
 
-std::function<float(float)> BallisticCompensator::getBallisticDerFunc(float v0, float x) {
-    return [v0, x, this](float theta) { return ballisticDer(v0, x, theta); };
-}
-
-float BallisticCompensator::ballisticDer(float v0, float x, float theta) const {
-    float Sec = 1 / cosf(theta);
-    float Tan = tanf(theta);
-    float ret = -(GRAVITY * x * Tan * Sec) / (k * v0 * (1 - (k * x * Sec) / v0)) +
-                x * (Sec * Sec + (GRAVITY * Sec * Tan) / (k * v0));
-    return ret;
-}
-
-float BallisticCompensator::ballistic(float v0, float x, float theta) const {
-    return GRAVITY / (k * k) * logf(1 - (k * x) / (v0 * cosf(theta))) +
-           x * (GRAVITY / (k * v0 * cosf(theta)) + tanf(theta));
-}
-
-float BallisticCompensator::calcShootAngle(float v0, float x, float y) {
-    // Multiply -1 as REP105 standard says roll the gimbal down increase the pitch
-    return -1.0f * EquationSolver::solveWithDer(getBallisticFunc(v0, x, y),
-                                        getBallisticDerFunc(v0, x));
-}
+BallisticCompensator::BallisticCompensator(Config &cfg) :
+        max_num_iterations(cfg.get<int>("aiming.compensator.maxNumIterations", 100)) {}

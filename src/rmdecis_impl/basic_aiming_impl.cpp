@@ -153,7 +153,7 @@ EulerAngles BasicAiming::BasicAimingImpl::predictFromTrack(ArmorTrack &track, in
     reconstructor.solveAngle(center, &horizontal_dist, &vertical_dist, &d_yaw, &trig_pitch);
 
     // TODO: calcShootAngle can return pitch with nan if there is no solution.
-    pitch = compensator.calcShootAngle(ballet_init_speed, horizontal_dist, vertical_dist);
+    pitch = float (compensator.calcShootAngle(horizontal_dist, vertical_dist, ballet_init_speed, curr_pitch_));
     d_pitch = pitch - curr_pitch_;
 
     // info("horizontal_dist {}, vertical_dist {}, currPitch {}, trigPitch {}, shootAngle {}",
@@ -198,8 +198,7 @@ int BasicAiming::BasicAimingImpl::chooseNextTarget(std::map<int, ArmorTrack> &tr
 }
 
 BasicAiming::BasicAimingImpl::BasicAimingImpl(Config &cfg)
-        : reconstructor(cfg), tracker(cfg),
-          compensator(cfg.get<float>("aiming.basic.airResistanceConst", 0.1)),
+        : reconstructor(cfg), tracker(cfg), compensator(cfg),
           k_frame_width_(cfg.get<int>("camera.width")),
           k_frame_height_(cfg.get<int>("camera.height")),
           k_confidence_threshold_(cfg.get<float>("aiming.basic.detConfidenceThreshold", 0.55)),
