@@ -22,7 +22,8 @@ EulerAngles BasicAiming::BasicAimingImpl::update(ArmorFrameInput detection, cv::
 
     // Pre-process data
     std::vector<ArmorInfo> armor_infos = detectionToInfo(detection.armor_info,
-                                                         k_frame_width_, k_frame_height_, k_confidence_threshold_);
+                                                         k_frame_width_, k_frame_height_, k_confidence_threshold_,
+                                                         competition_rule);
     curr_pitch_ = detection.robot_state.gimbal_pitch;
 
     // Reconstruct armors
@@ -153,7 +154,7 @@ EulerAngles BasicAiming::BasicAimingImpl::predictFromTrack(ArmorTrack &track, in
     reconstructor.solveAngle(center, &horizontal_dist, &vertical_dist, &d_yaw, &trig_pitch);
 
     // TODO: calcShootAngle can return pitch with nan if there is no solution.
-    pitch = float (compensator.calcShootAngle(horizontal_dist, vertical_dist, ballet_init_speed, curr_pitch_));
+    pitch = float(compensator.calcShootAngle(horizontal_dist, vertical_dist, ballet_init_speed, curr_pitch_));
     d_pitch = pitch - curr_pitch_;
 
     // info("horizontal_dist {}, vertical_dist {}, currPitch {}, trigPitch {}, shootAngle {}",
@@ -198,7 +199,7 @@ int BasicAiming::BasicAimingImpl::chooseNextTarget(std::map<int, ArmorTrack> &tr
 }
 
 BasicAiming::BasicAimingImpl::BasicAimingImpl(Config &cfg)
-        : reconstructor(cfg), tracker(cfg), compensator(cfg),
+        : reconstructor(cfg), tracker(cfg), compensator(cfg), competition_rule(cfg),
           k_frame_width_(cfg.get<int>("camera.width")),
           k_frame_height_(cfg.get<int>("camera.height")),
           k_confidence_threshold_(cfg.get<float>("aiming.basic.detConfidenceThreshold", 0.55)),

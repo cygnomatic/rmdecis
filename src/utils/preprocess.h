@@ -7,8 +7,9 @@
 
 #include "typing.h"
 
-inline std::vector<ArmorInfo> detectionToInfo(const std::vector<DetectArmorInfo>& detect_armor_infos,
-                                              int k_frame_width, int k_frame_height, float k_confidence_threshold) {
+inline std::vector<ArmorInfo> detectionToInfo(const std::vector<DetectArmorInfo> &detect_armor_infos,
+                                              int k_frame_width, int k_frame_height, float k_confidence_threshold,
+                                              CompetitionRule competition_rule) {
 
     auto armor_info = std::vector<ArmorInfo>();
     for (const auto &a: detect_armor_infos) {
@@ -23,7 +24,7 @@ inline std::vector<ArmorInfo> detectionToInfo(const std::vector<DetectArmorInfo>
         if (a.detection_confidence < k_confidence_threshold)
             continue;
 
-        armor_info.emplace_back(a);
+        armor_info.emplace_back(a, competition_rule);
     }
 
     return armor_info;

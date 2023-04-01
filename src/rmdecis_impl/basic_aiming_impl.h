@@ -20,6 +20,7 @@ class BasicAiming::BasicAimingImpl {
 private:
 
     BallisticCompensator compensator;
+    CompetitionRule competition_rule;
 
     float ballet_init_speed = 15.0 * 1e3;
     float curr_pitch_ = 0.f;

@@ -11,6 +11,16 @@
 
 class Reconstructor;
 
+struct CompetitionRule {
+
+    // If STANDARD_3, STANDARD_4, STANDARD_5 using large armor
+    bool is_standard_3_large;
+    bool is_standard_4_large;
+    bool is_standard_5_large;
+
+    explicit CompetitionRule(Config &cfg);
+};
+
 struct ArmorInfo {
 
     // Info from vision detection part
@@ -26,11 +36,11 @@ struct ArmorInfo {
     cv::Point3f target_gimbal;
     cv::Point3f target_world;
     // WARNING: DO NOT DEL THE RECONSTRUCTOR! IT IS MAINTAINED IN THE BASIC_AIMING_IMPL!
-    Reconstructor* reconstructor = nullptr;
+    Reconstructor *reconstructor = nullptr;
 
     explicit ArmorInfo() = default;
 
-    explicit ArmorInfo(DetectArmorInfo detect_armor_info);
+    explicit ArmorInfo(DetectArmorInfo detect_armor_info, CompetitionRule &competition_rule);
 };
 
 struct VaneInfo {
