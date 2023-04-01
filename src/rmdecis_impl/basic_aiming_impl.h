@@ -25,7 +25,7 @@ private:
     float curr_pitch_ = 0.f;
     int compensate_frame = 0;
 
-    int last_aiming_id_ = -1;
+    int target_id_ = -1;
     int k_frame_width_, k_frame_height_;
     float k_confidence_threshold_;
 

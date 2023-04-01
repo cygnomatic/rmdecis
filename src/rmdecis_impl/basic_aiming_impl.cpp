@@ -109,22 +109,22 @@ EulerAngles BasicAiming::BasicAimingImpl::update(ArmorFrameInput detection, cv::
     /* !DEBUG */
 
     auto tracks_map = tracker.getTracks();
-    if (tracks_map.find(last_aiming_id_) == tracks_map.end()) {
+    if (tracks_map.find(target_id_) == tracks_map.end()) {
         // Last track lost, update target track
-        last_aiming_id_ = chooseNextTarget(tracks_map, detection.seq_idx);
+        target_id_ = chooseNextTarget(tracks_map, detection.seq_idx);
     }
 
-    // Check if there is a target
-    if (last_aiming_id_ == -1)
-        return EulerAngles(0, 0);
+    // If there is no available target
+    if (target_id_ == -1)
+        return EulerAngles(NAN, NAN);
 
-    auto pred_delta_angle = predictFromTrack(tracks_map.at(last_aiming_id_),
+    auto pred_delta_angle = predictFromTrack(tracks_map.at(target_id_),
                                              detection.seq_idx + compensate_frame);
 
     // Avoid nan from predictFromTrack
     if (std::isnan(pred_delta_angle.yaw) || std::isnan(pred_delta_angle.pitch)) {
         warn("Got nan from predictFromTrack!");
-        return EulerAngles(0, 0);
+        return EulerAngles(NAN, NAN);
     }
 
     /* DEBUG */
