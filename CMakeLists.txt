@@ -92,3 +92,5 @@ add_executable(test_large_rune_aiming ${rmdecis_LIBS} ${rmdecis_UTILS} tests/tes
 add_executable(test_transformer ${rmdecis_LIBS} ${rmdecis_UTILS} tests/test_transformer.cpp)
 
 add_executable(test_avg_queue ${rmdecis_LIBS} ${rmdecis_UTILS} tests/test_avg_queue.cpp)
+
+add_executable(test_ballistic_compensator ${rmdecis_LIBS} ${rmdecis_UTILS} tests/test_ballistic_compensator.cpp)
