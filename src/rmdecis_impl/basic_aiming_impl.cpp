@@ -19,6 +19,7 @@ EulerAngles BasicAiming::BasicAimingImpl::update(ArmorFrameInput detection,
 
     debug_img_ = debug_img;
     debug_msg_ = debug_msg;
+    *debug_msg = "{}"; // Clear original msg
 
     // Pre-process data
     std::vector<ArmorInfo> armor_infos = detectionToInfo(detection.armor_info,
@@ -96,6 +97,7 @@ EulerAngles BasicAiming::BasicAimingImpl::update(ArmorFrameInput detection,
     auto tracks_map = tracker.getTracks();
     if (tracks_map.find(target_id_) == tracks_map.end()) {
         // Last track lost, update target track
+        target_id_ = -1; // Set target_id_ to -1 first, so the debug str in chooseNextTarget will not set.
         target_id_ = chooseNextTarget(tracks_map, detection.seq_idx);
     }
 
@@ -150,6 +152,13 @@ EulerAngles BasicAiming::BasicAimingImpl::predictFromTrack(ArmorTrack &track, in
 
     // info("horizontal_dist {}, vertical_dist {}, currPitch {}, trigPitch {}, shootAngle {}",
     //      horizontal_dist, vertical_dist, curr_pitch_, trig_pitch, pitch);
+
+    DEBUG_MSG {
+        if (target_id_ != -1) {
+            *debug_msg_ = fmt::format(R"({{"horizontal_dist": {}, "vertical_dist": {}, "curr_pitch": {}}})",
+                                      horizontal_dist, vertical_dist, curr_pitch_);
+        }
+    }
 
     return EulerAngles(d_yaw, d_pitch);
 
