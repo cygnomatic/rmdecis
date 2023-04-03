@@ -30,6 +30,9 @@ private:
     int k_frame_width_, k_frame_height_;
     float k_confidence_threshold_;
 
+    cv::Mat* debug_img_ = nullptr;
+    std::string* debug_msg_ = nullptr;
+
     bool enable_show_vision_input, enable_show_tracker;
 
     int chooseNextTarget(std::map<int, ArmorTrack> &tracks_map, int frame_seq);

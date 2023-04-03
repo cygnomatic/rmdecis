@@ -11,23 +11,31 @@ using namespace cv;
 
 ArmorTrack::ArmorTrack(int tracking_id, const ArmorInfo &detection, int frame_seq, Config &cfg)
         : track_kalman(TrackKalman(cfg, detection, frame_seq)), tracking_id(tracking_id),
-        k_dilate_(cfg.get<float>("tracker.bboxDilate", 3.0f)){
+          k_dilate_(cfg.get<float>("tracker.bboxDilate", 3.0f)) {
     init(detection);
 }
 
 void ArmorTrack::init(const ArmorInfo &detection) {
     id_cnt[detection.facility_id]++;
+
     last_bbox_ = cv::minAreaRect((std::vector<Point2f>) detection.corners_img);
     last_center_proj_ = detection.reconstructor->cam2img(detection.target_cam);
+    last_image_corners_ = detection.corners_img;
 }
 
 
 void ArmorTrack::correct(const ArmorInfo &detection, int frame_seq) {
+
+    // ***********************************************************************************************
+    // NOTE: ALWAYS REMEMBER TO CHANGE SIMULTANEOUSLY `ArmorTrack::init` WHEN YOU CHANGE THIS FUNCTION
+    // ***********************************************************************************************
+
     track_kalman.correct(detection, frame_seq); // pre(t-1, t) -> post(t, t)
     id_cnt[detection.facility_id]++;
 
     last_bbox_ = cv::minAreaRect((std::vector<Point2f>) detection.corners_img);
     last_center_proj_ = detection.reconstructor->cam2img(detection.target_cam);
+    last_image_corners_ = detection.corners_img;
 }
 
 TrackArmorInfo ArmorTrack::predict(int frame_seq) {

@@ -18,8 +18,6 @@ public:
     int tracking_id = -1;
     int missing_cnt = 0, hit_cnt = 0;
 
-    cv::RotatedRect last_bbox_;
-    cv::Point2f last_center_proj_;
     TrackKalman track_kalman;
 
     explicit ArmorTrack(int tracking_id, const ArmorInfo &detection, int frame_seq, Config &cfg);
@@ -31,6 +29,12 @@ public:
     TrackArmorInfo predict(int frame_seq);
 
     float calcSimilarity(const ArmorInfo &detection, int frame_seq);
+
+public:
+    // They should be private members, but for debug we make them public
+    cv::RotatedRect last_bbox_;
+    cv::Point2f last_center_proj_;
+    Corners2f last_image_corners_;
 
 private:
 
