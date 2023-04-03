@@ -118,7 +118,7 @@ void TrigFitting::fftPreEstimate()
     float freq = float(max_idx) / (float(sample_num_) * avg_update_interval_);
 
     amp_ = std::sqrt(stdev) * std::sqrt(2.f);
-    omega_ = 2.f * M_PIf * freq;
+    omega_ = 2.f * M_PI * freq;
     phase_ = 0.f;
     offset_ = mean;
 }

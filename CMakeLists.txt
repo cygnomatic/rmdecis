@@ -3,28 +3,30 @@ project(Cygnoides_Decision VERSION 2023.9 DESCRIPTION "CygnoidesRM Decision lib"
 
 set(CMAKE_CXX_STANDARD 17)
 
-
-#### Initialize Conan
-#
-#if (EXISTS ${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
-#    include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
-#    conan_basic_setup()
-#else ()
-#    message(WARNING "The file conanbuildinfo.cmake doesn't exist, you have to run conan install first")
-#endif ()
-#link_libraries(${CONAN_LIBS})
-
+option(RMDECIS_DEPLOYMENT "Build rmdecis for Jetson NX deployment" OFF)
 
 ### Link libraries
 
-find_package(OpenCV REQUIRED)
-find_package(Ceres REQUIRED)
-find_package(Eigen3 REQUIRED)
-find_package(KissFFT REQUIRED)
-find_package(fmt REQUIRED)
-find_package(yaml-cpp REQUIRED)
-link_libraries(${OpenCV_LIBS} ${CERES_LIBRARIES} Eigen3::Eigen fmt::fmt kissfft-float yaml-cpp)
-include_directories(PRIVATE ${OpenCV_INCLUDE_DIRS} ${CERES_INCLUDE_DIRS})
+if (RMDECIS_DEPLOYMENT)
+    message("-- RMDECIS_DEPLOYMENT: Building for Jetson NX deployment")
+    find_package(OpenCV REQUIRED)
+    find_package(Ceres REQUIRED)
+    find_package(Eigen3 REQUIRED)
+    find_package(fmt REQUIRED)
+    find_package(yaml-cpp REQUIRED)
+    find_package(kissfft CONFIG REQUIRED COMPONENTS STATIC)
+    link_libraries(${OpenCV_LIBS} ${CERES_LIBRARIES} Eigen3::Eigen fmt::fmt yaml-cpp kissfft::kissfft-float)
+    include_directories(PRIVATE ${OpenCV_INCLUDE_DIRS} ${CERES_INCLUDE_DIRS})
+else ()
+    find_package(OpenCV REQUIRED)
+    find_package(Ceres REQUIRED)
+    find_package(Eigen3 REQUIRED)
+    find_package(KissFFT REQUIRED)
+    find_package(fmt REQUIRED)
+    find_package(yaml-cpp REQUIRED)
+    link_libraries(${OpenCV_LIBS} ${CERES_LIBRARIES} Eigen3::Eigen fmt::fmt kissfft-float yaml-cpp)
+    include_directories(PRIVATE ${OpenCV_INCLUDE_DIRS} ${CERES_INCLUDE_DIRS})
+endif ()
 
 ### Set directories & Get targets
 
