@@ -8,17 +8,13 @@
 #include "utils/preprocess.h"
 #include "typing.h"
 
-#define DEBUG if (debug_img != nullptr)
+#define DEBUG_DETECTION if (debug_img != nullptr && !debug_img->empty() && enable_show_vision_input)
+#define DEBUG_TRACKER if (debug_img != nullptr && !debug_img->empty() && enable_show_tracker)
 
 using namespace cv;
 
-EulerAngles BasicAiming::BasicAimingImpl::update(ArmorFrameInput detection, cv::Mat *debug_img) {
-
-    /* DEBUG */
-    DEBUG {
-        assert(!debug_img->empty());
-    }
-    /* !DEBUG */
+EulerAngles
+BasicAiming::BasicAimingImpl::update(ArmorFrameInput detection, cv::Mat *debug_img, std::string *debug_msg) {
 
     // Pre-process data
     std::vector<ArmorInfo> armor_infos = detectionToInfo(detection.armor_info,
@@ -29,85 +25,79 @@ EulerAngles BasicAiming::BasicAimingImpl::update(ArmorFrameInput detection, cv::
     // Reconstruct armors
     reconstructor.reconstructArmors(armor_infos, detection.robot_state);
 
-    /* DEBUG */
-    DEBUG {
-        if (enable_show_vision_input) {
-            // Draw detection input
-            for (auto &t: armor_infos) {
-                drawArmorCorners(*debug_img, t.corners_img, {255, 255, 0}, 2);
-                cv::putText(*debug_img, fmt::format("{:.2f}", t.detection_confidence),
-                            (t.corners_img[0] + t.corners_img[2]) / 2, cv::FONT_HERSHEY_SIMPLEX, 1, {200, 100, 0}, 2);
-                cv::putText(*debug_img, fmt::format("{}", t.facility_id),
-                            (t.corners_img[0] + t.corners_img[2]) / 2 - Point2f(10, 10),
-                            cv::FONT_HERSHEY_DUPLEX, 3, {0, 255, 255}, 3);
-            }
-        }
-        if (enable_show_tracker) {
-
-            // Robot state input
-            cv::putText(*debug_img, fmt::format("yaw: {:.2f}, pitch: {:.2f}", detection.robot_state.gimbal_yaw,
-                                                detection.robot_state.gimbal_pitch),
-                        Point(50, 100), cv::FONT_HERSHEY_SIMPLEX, 1, {100, 255, 255}, 1);
-
-            // Reconstructor result
-            if (!armor_infos.empty()) {
-                auto t = armor_infos[0];
-                cv::putText(*debug_img, fmt::format("x: {:.2f}, y: {:.2f}, z: {:.2f}", t.target_cam.x, t.target_cam.y,
-                                                    t.target_cam.z),
-                            Point(50, 150), cv::FONT_HERSHEY_SIMPLEX, 1, {255, 255, 255}, 1);
-                drawArmorCorners(*debug_img, t.corners_img, {255, 0, 0}, 5);
-            }
-
-
-            Transformer &transformer = reconstructor.transformer;
-            CameraCalib &camera_calib = reconstructor.cam_calib;
-
-            auto center = Point3f(10000, 0, 0);
-            auto p_c = camera_calib.projectToImage(transformer.worldToCam(Point3f(0, 0, 0) + center));
-            auto p_x = camera_calib.projectToImage(transformer.worldToCam(Point3f(1000, 0, 0) + center));
-            auto p_y = camera_calib.projectToImage(transformer.worldToCam(Point3f(0, 1000, 0) + center));
-            auto p_z = camera_calib.projectToImage(transformer.worldToCam(Point3f(0, 0, 1000) + center));
-
-            // Avoid drawing bad projected point, or it will cause program freeze.
-            if (p_c.x > -100 && p_c.x < 740 && p_c.y > -100 && p_c.y < 580) {
-                line(*debug_img, p_c, p_x, {255, 0, 0}, 2);
-                line(*debug_img, p_c, p_y, {0, 255, 0}, 2);
-                line(*debug_img, p_c, p_z, {0, 0, 255}, 2);
-            }
+    DEBUG_DETECTION {
+        // Draw detection input
+        for (auto &t: armor_infos) {
+            drawArmorCorners(*debug_img, t.corners_img, {255, 255, 0}, 2);
+            cv::putText(*debug_img, fmt::format("{:.2f}", t.detection_confidence),
+                        (t.corners_img[0] + t.corners_img[2]) / 2, cv::FONT_HERSHEY_SIMPLEX, 1, {200, 100, 0}, 2);
+            cv::putText(*debug_img, fmt::format("{}", t.facility_id),
+                        (t.corners_img[0] + t.corners_img[2]) / 2 - Point2f(10, 10),
+                        cv::FONT_HERSHEY_DUPLEX, 3, {0, 255, 255}, 3);
         }
     }
-    /* !DEBUG */
+
+    DEBUG_TRACKER {
+
+        // Robot state input
+        cv::putText(*debug_img, fmt::format("yaw: {:.2f}, pitch: {:.2f}", detection.robot_state.gimbal_yaw,
+                                            detection.robot_state.gimbal_pitch),
+                    Point(50, 100), cv::FONT_HERSHEY_SIMPLEX, 1, {100, 255, 255}, 1);
+
+        // Reconstructor result
+        if (!armor_infos.empty()) {
+            auto t = armor_infos[0];
+            cv::putText(*debug_img, fmt::format("x: {:.2f}, y: {:.2f}, z: {:.2f}", t.target_cam.x, t.target_cam.y,
+                                                t.target_cam.z),
+                        Point(50, 150), cv::FONT_HERSHEY_SIMPLEX, 1, {255, 255, 255}, 1);
+            drawArmorCorners(*debug_img, t.corners_img, {255, 0, 0}, 5);
+        }
+
+
+        Transformer &transformer = reconstructor.transformer;
+        CameraCalib &camera_calib = reconstructor.cam_calib;
+
+        auto center = Point3f(10000, 0, 0);
+        auto p_c = camera_calib.projectToImage(transformer.worldToCam(Point3f(0, 0, 0) + center));
+        auto p_x = camera_calib.projectToImage(transformer.worldToCam(Point3f(1000, 0, 0) + center));
+        auto p_y = camera_calib.projectToImage(transformer.worldToCam(Point3f(0, 1000, 0) + center));
+        auto p_z = camera_calib.projectToImage(transformer.worldToCam(Point3f(0, 0, 1000) + center));
+
+        // Avoid drawing bad projected point, or it will cause program freeze.
+        if (p_c.x > -100 && p_c.x < 740 && p_c.y > -100 && p_c.y < 580) {
+            line(*debug_img, p_c, p_x, {255, 0, 0}, 2);
+            line(*debug_img, p_c, p_y, {0, 255, 0}, 2);
+            line(*debug_img, p_c, p_z, {0, 0, 255}, 2);
+        }
+    }
 
     tracker.update(armor_infos, detection.seq_idx);
 
-    /* DEBUG */
-    DEBUG {
-        if (enable_show_tracker) {
-            // Draw tracker predictions
-            for (auto &p: tracker.getTracks()) {
-                TrackArmorInfo track_info = p.second.predict(detection.seq_idx);
-                drawPoint(*debug_img,
-                          reconstructor.cam2img(reconstructor.transformer.worldToCam(track_info.target_world)),
-                          {0, 250, 250}, 2);
+    DEBUG_TRACKER {
+        // Draw tracker predictions
+        for (auto &p: tracker.getTracks()) {
+            TrackArmorInfo track_info = p.second.predict(detection.seq_idx);
+            drawPoint(*debug_img,
+                      reconstructor.cam2img(reconstructor.transformer.worldToCam(track_info.target_world)),
+                      {0, 250, 250}, 2);
 
-                track_info = p.second.predict(detection.seq_idx + 5);
-                drawPoint(*debug_img,
-                          reconstructor.cam2img(reconstructor.transformer.worldToCam(track_info.target_world)),
-                          {0, 150, 150}, 2);
+            track_info = p.second.predict(detection.seq_idx + 5);
+            drawPoint(*debug_img,
+                      reconstructor.cam2img(reconstructor.transformer.worldToCam(track_info.target_world)),
+                      {0, 150, 150}, 2);
 
-                track_info = p.second.predict(detection.seq_idx + 10);
-                drawPoint(*debug_img,
-                          reconstructor.cam2img(reconstructor.transformer.worldToCam(track_info.target_world)),
-                          {0, 100, 100}, 2);
-            }
-
-            // Draw trackers
-            for (auto &p: tracker.getTracks()) {
-                drawPolygons(*debug_img, p.second.last_bbox_, {0, 255, 255}, 2);
-            }
+            track_info = p.second.predict(detection.seq_idx + 10);
+            drawPoint(*debug_img,
+                      reconstructor.cam2img(reconstructor.transformer.worldToCam(track_info.target_world)),
+                      {0, 100, 100}, 2);
         }
+
+        // Draw trackers
+        for (auto &p: tracker.getTracks()) {
+            drawPolygons(*debug_img, p.second.last_bbox_, {0, 255, 255}, 2);
+        }
+
     }
-    /* !DEBUG */
 
     auto tracks_map = tracker.getTracks();
     if (tracks_map.find(target_id_) == tracks_map.end()) {
@@ -128,18 +118,13 @@ EulerAngles BasicAiming::BasicAimingImpl::update(ArmorFrameInput detection, cv::
         return EulerAngles(NAN, NAN);
     }
 
-    /* DEBUG */
-    DEBUG {
-        if (enable_show_tracker) {
-            String result_display = fmt::format("Yaw: {:.2f}, Pitch: {:.2f}",
-                                                pred_delta_angle.yaw, pred_delta_angle.pitch);
-            putText(*debug_img, result_display, {50, 200}, FONT_HERSHEY_SIMPLEX, 1, {255, 255, 255}, 2);
-        }
+    DEBUG_TRACKER {
+        String result_display = fmt::format("Yaw: {:.2f}, Pitch: {:.2f}",
+                                            pred_delta_angle.yaw, pred_delta_angle.pitch);
+        putText(*debug_img, result_display, {50, 200}, FONT_HERSHEY_SIMPLEX, 1, {255, 255, 255}, 2);
     }
-    /* !DEBUG */
 
     return pred_delta_angle;
-
 }
 
 /**
