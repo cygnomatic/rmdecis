@@ -66,5 +66,6 @@ struct VaneInfo {
 
 struct TrackArmorInfo {
     cv::Point3f target_world;
+    cv::Rect2f bbox;
 };
 #endif //CYGNOIDES_DECISION_TYPING_INTERNAL_H

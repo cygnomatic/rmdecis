@@ -131,5 +131,5 @@ TrackArmorInfo TrackKalman::cvtStateMat2Result(const Mat &state) {
     float y = state.at<float>(STATE_Y);
     float z = state.at<float>(STATE_Z);
 
-    return {Point3f{x, y, z}};
+    return {Point3f{x, y, z}, Rect2f{pred_uv, Size2f{width, height}}};
 }

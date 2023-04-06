@@ -32,7 +32,17 @@ inline void drawPolygons(cv::Mat &image, cv::RotatedRect rect,
     drawPolygons(image, pts, color, thickness);
 }
 
-inline float calculateIoU(const cv::Rect2f &rect1, const cv::Rect2f &rect2) {
+inline void dilateRect(cv::Rect2f& rect, float dilate) {
+    rect += cv::Size2f(rect.width * (dilate - 1.f), rect.height * (dilate - 1.f));
+    rect -= cv::Point2f(rect.width * (dilate - 1.f) / 2.f, rect.height * (dilate - 1.f) / 2.f);
+}
+
+inline float calculateIoU(cv::Rect2f rect1, cv::Rect2f rect2, float dilate = 1.0f) {
+
+    // Dilate rects
+    dilateRect(rect1, dilate);
+    dilateRect(rect2, dilate);
+
     cv::Rect2f intersect = rect1 & rect2;
     float intersectArea = intersect.area();
     float unionArea = rect1.area() + rect2.area() - intersectArea;
