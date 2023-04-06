@@ -19,15 +19,21 @@ jobs:
           name: Installing dependencies
           command: |
             sudo apt update
-            sudo apt install gcc build-essential make cmake libspdlog-dev libceres-dev libyaml-cpp-dev libeigen3-dev libkissfft-dev libopencv-dev
+            sudo apt install gcc build-essential make cmake libspdlog-dev libceres-dev libyaml-cpp-dev libeigen3-dev libopencv-dev libfmt-dev ninja-build
+      - run:
+          name: Build dependency kissfft
+          command: |
+            mkdir -p ~/kissfft
+            cd ~/kissfft
+            git clone https://github.com/mborgerding/kissfft.git
+            cd kissfft
+            mkdir build && cd build
+            cmake -DKISSFFT_STATIC=1 -DKISSFFT_TEST=OFF ..
+            make all
+            sudo make install
       - run:
           name: Build
-          command: sh build.sh
-      - run:
-          name: Compress Artifacts
-          command: tar -cvzf build.tar build
-      - store_artifacts:
-          path: build.tar
+          command: bash build.sh
       - save_cache:
           key: build-cache
           paths: 
