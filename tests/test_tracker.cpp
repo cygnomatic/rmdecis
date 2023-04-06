@@ -7,6 +7,7 @@
 #include "tracker/tracker.h"
 #include "reconstructor/reconstructor.h"
 #include "rmdecis/core.h"
+#include "utils/preprocess.h"
 
 using cv::Mat;
 using cv::rectangle;
@@ -22,6 +23,7 @@ int main() {
     Reconstructor reconstructor(cfg);
 
     player.setPlaybackSpeed(1);
+    player.setRecordSpeed(2);
 
     Tracker tracker(cfg);
     TrackArmorInfo track_info;
@@ -35,20 +37,11 @@ int main() {
 
         auto detect_result = vision_output.getData(player.frame_position);
 
-        std::vector<ArmorInfo> armor_infos;
-        for (auto &a: detect_result.armor_info) {
-            cv::Rect2f bbox = a.corners_img.getBoundingBox();
-            if (bbox.x <= 0 || bbox.x + bbox.width >= width || bbox.y <= 0 || bbox.y + bbox.height >= height)
-                continue;
-            if (a.detection_confidence < 0.55)
-                continue;
-            armor_infos.emplace_back(a);
-        }
+        std::vector<ArmorInfo> armor_infos = detectionToInfo(detect_result.armor_info, width, height,
+                                                             0.6, CompetitionRule(cfg));
 
         reconstructor.reconstructArmors(armor_infos, detect_result.robot_state);
-        for (auto &a: armor_infos) {
-            // ::info("x: {}, y: {}, z: {}", a.target_world.x, a.target_world.y, a.target_world.z);
-        }
+
         tracker.update(armor_infos, detect_result.seq_idx);
 
         for (auto &t: detect_result.armor_info) {
@@ -57,18 +50,17 @@ int main() {
 
         for (auto &p: tracker.getTracks()) {
 
-            track_info = p.second.predict(detect_result.seq_idx);
-            drawPoint(frame, reconstructor.cam2img(reconstructor.transformer.worldToCam(track_info.target_world)),
-                      {0, 250, 250}, 10);
-
             track_info = p.second.predict(detect_result.seq_idx + 10);
             drawPoint(frame, reconstructor.cam2img(reconstructor.transformer.worldToCam(track_info.target_world)),
-                      {0, 150, 150}, 10);
+                      {0, 100, 100}, 3);
 
-            track_info = p.second.predict(detect_result.seq_idx + 20);
+            track_info = p.second.predict(detect_result.seq_idx + 5);
             drawPoint(frame, reconstructor.cam2img(reconstructor.transformer.worldToCam(track_info.target_world)),
-                      {0, 100, 100}, 10);
+                      {0, 150, 150}, 3);
 
+            track_info = p.second.predict(detect_result.seq_idx);
+            drawPoint(frame, reconstructor.cam2img(reconstructor.transformer.worldToCam(track_info.target_world)),
+                      {0, 250, 250}, 3);
         }
 
         player.update(frame);
