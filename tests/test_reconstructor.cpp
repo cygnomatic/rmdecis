@@ -2,49 +2,56 @@
 // Created by catslashbin on 23-1-4.
 //
 
+
 #include "../utils_contrib/simple_video_player.h"
 #include "../utils_contrib/simulate_vision_result.h"
-#include "../src/reconstructor/reconstructor.h"
+#include "tracker/tracker.h"
+#include "reconstructor/reconstructor.h"
+#include "rmdecis/core.h"
+#include "utils/preprocess.h"
+#include "reconstructor/transformer.h"
 
-#include <fmt/format.h>
-
-using namespace cv;
+using cv::Mat;
+using cv::rectangle;
 
 int main() {
-    SimulateVisionOutput vision_output("../data/vision_out/vision_result_1.yaml");
-    SimpleVideoPlayer player("../data/vision_out/video_input_1.avi");
+
+    spdlog::set_level(spdlog::level::debug);
+
+    SimulateVisionOutput vision_output("../data/vision_out/vision_result.yaml");
+    SimpleVideoPlayer player("../data/vision_out/video_input.mp4");
 
     Config cfg("../config/config.yml");
     Reconstructor reconstructor(cfg);
 
-    player.setPlaybackSpeed(0.5);
+    player.setPlaybackSpeed(1);
+    player.setRecordSpeed(2);
+
+    Tracker tracker(cfg);
+    TrackArmorInfo track_info;
+
+    int width = cfg.get<int>("camera.width"), height = cfg.get<int>("camera.height");
 
     while (true) {
         Mat frame = player.getFrame();
         if (frame.empty())
             break;
 
-        auto frame_inp = vision_output.getData(player.frame_position);
-        reconstructor.reconstructArmor(frame_inp);
+        auto detect_result = vision_output.getData(player.frame_position);
 
-        for (auto &armor: frame_inp.armor_info) {
-            // String result_display = fmt::format("x: {:.2f}, y: {:.2f}, z: {:.2f}", armor.target_world.x,
-            //                                     armor.target_world.y, armor.target_world.z);
-            // putText(frame, result_display, {50, 200}, FONT_HERSHEY_SIMPLEX, 2, {255, 255, 255}, 3);
+        std::vector<ArmorInfo> armor_infos = detectionToInfo(detect_result.armor_info, width, height,
+                                                             0.6, CompetitionRule(cfg));
 
-            drawArmorCorners(frame, armor.corners_img, {255, 255, 255});
+        reconstructor.reconstructArmors(armor_infos, detect_result.robot_state);
 
-            Point3f arrow_top_cam = Transformer::modelToCam({Point3f(0, 0, 100)}, armor.trans_model2cam);
-            Point3f arrow_bot_cam = armor.target_cam;
-
-            if ((arrow_top_cam - arrow_bot_cam).z > 0) {
-                arrow_top_cam = 2 * arrow_bot_cam - arrow_top_cam;
+        for (auto &a: armor_infos) {
+            drawArmorCorners(frame, a.corners_img, {255, 255, 0}, 1);
+            std::vector<cv::Point3f> corners_cam;
+            for (auto &c: std::vector<cv::Point3f>(a.corners_model)) {
+                corners_cam.push_back(Transformer::modelToCam(c, a.trans_model2cam));
             }
-
-            auto arrow = reconstructor.cam_calib.projectToImage({arrow_bot_cam, arrow_top_cam});
-            arrowedLine(frame, arrow.at(0), arrow.at(1), {255, 0, 255}, 3);
-
-            // break;
+            std::vector<cv::Point2f> corners_img_reproj = a.reconstructor->cam_calib.projectToImage(corners_cam);
+            drawPolygons(frame, corners_img_reproj, {0, 255, 255}, 1);
         }
 
         player.update(frame);
