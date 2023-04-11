@@ -6,7 +6,7 @@
 
 using namespace cv;
 
-RobotState robot_state(0, 0, 15000);
+RobotState robot_state(0, 0, 15000, false);
 
 SimulateVisionOutput::SimulateVisionOutput(const std::string &data_path) {
 
@@ -23,7 +23,7 @@ SimulateVisionOutput::SimulateVisionOutput(const std::string &data_path) {
             Time time = {stamp["secs"].as<int>(), stamp["nsecs"].as<int>() / (int) 1e3};
             robot_state = RobotState{y["header"]["gimbal_state"]["yaw"].as<float>(),
                                      y["header"]["gimbal_state"]["pitch"].as<float>(),
-                                     15000};
+                                     15000, true};
 
             std::vector<DetectArmorInfo> armor_info;
 

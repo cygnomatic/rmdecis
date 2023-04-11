@@ -134,5 +134,6 @@ ArmorFrameInput::ArmorFrameInput(int seq_idx, Time time, RobotState robot_state,
 RuneFrameInput::RuneFrameInput(int seq_idx, Time time, RobotState robot_state, std::vector<DetectVaneInfo> vane_info) :
         vane_info(std::move(vane_info)), seq_idx(seq_idx), time(time), robot_state(robot_state) {}
 
-RobotState::RobotState(float gimbal_yaw, float gimbal_pitch, float ballet_init_speed) :
-        gimbal_pitch(gimbal_pitch), gimbal_yaw(gimbal_yaw), ballet_init_speed(ballet_init_speed) {}
+RobotState::RobotState(float gimbal_yaw, float gimbal_pitch, float ballet_init_speed, bool enable_auto_aim) :
+        gimbal_pitch(gimbal_pitch), gimbal_yaw(gimbal_yaw),
+        ballet_init_speed(ballet_init_speed), enable_auto_aim(enable_auto_aim) {}

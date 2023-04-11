@@ -95,10 +95,15 @@ EulerAngles BasicAiming::BasicAimingImpl::update(ArmorFrameInput detection,
     }
 
     auto tracks_map = tracker.getTracks();
-    if (tracks_map.find(target_id_) == tracks_map.end()) {
-        // Last track lost, update target track
-        target_id_ = -1; // Set target_id_ to -1 first, so the debug str in chooseNextTarget will not set.
-        target_id_ = chooseNextTarget(tracks_map, detection.seq_idx);
+    if (detection.robot_state.enable_auto_aim) {
+        if (tracks_map.find(target_id_) == tracks_map.end()) {
+            // Last track lost, update target track
+            target_id_ = -1; // Set target_id_ to -1 first, so the debug str in chooseNextTarget will not set.
+            target_id_ = chooseNextTarget(tracks_map, detection.seq_idx);
+        }
+    } else {
+        // Auto aim is disabled by the operator
+        target_id_ = -1;
     }
 
     DEBUG_DECISION {

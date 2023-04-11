@@ -72,6 +72,7 @@ struct CvTransform3f {
 struct RobotState {
     float gimbal_yaw, gimbal_pitch;
     float ballet_init_speed;
+    bool enable_auto_aim;
 
     /**
      * Current robot state input
@@ -79,7 +80,7 @@ struct RobotState {
      * @param gimbal_pitch in degree
      * @param ballet_init_speed in mm/s
      */
-    explicit RobotState(float gimbal_yaw, float gimbal_pitch, float ballet_init_speed);
+    explicit RobotState(float gimbal_yaw, float gimbal_pitch, float ballet_init_speed, bool enable_auto_aim);
 };
 
 
