@@ -27,6 +27,8 @@ private:
     int compensate_frame = 0;
 
     int target_id_ = -1;
+    bool last_enable_auto_aim = false;
+
     int k_frame_width_, k_frame_height_;
     float k_confidence_threshold_;
 
