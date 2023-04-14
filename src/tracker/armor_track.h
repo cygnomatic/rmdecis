@@ -28,6 +28,8 @@ public:
 
     TrackArmorInfo predict(int frame_seq);
 
+    cv::RotatedRect predReprojRect(Reconstructor *reconstructor, int frame_seq);
+
     float calcSimilarity(const ArmorInfo &detection, int frame_seq);
 
 public:
