@@ -20,11 +20,15 @@ TrackKalman::TrackKalman(Config &cfg, const ArmorInfo &detection, int frame_seq)
     SHM = cfg.get<float>("kalman.measurementNoiseCov.SHM", 10);
     SCM = cfg.get<float>("kalman.measurementNoiseCov.SCM", 50);
 
+    dt = cfg.get<float>("kalman.processInterval", 0.01);
+
     // Init states
 
     Mat init_state;
     vconcat(cvtDetection2Measurement(detection), Mat::zeros(7, 1, CV_32F), init_state);
     kf.statePost = init_state;
+
+// clang-format off
 
     kf.errorCovPost = (cv::Mat_<float>(14, 14)
             <<
@@ -91,6 +95,8 @@ TrackKalman::TrackKalman(Config &cfg, const ArmorInfo &detection, int frame_seq)
             0, 0, 0, 0, 0, SCM, 0,
             0, 0, 0, 0, 0, 0, SCM);
 
+// clang-format on
+
 }
 
 void TrackKalman::correct(const ArmorInfo &detection, int frame_seq) {
@@ -107,6 +113,10 @@ TrackArmorInfo TrackKalman::predict(int frame_seq) {
         state.at<float>(i) += state.at<float>(i + NUM_STATE) * float(frame_seq - last_frame_seq_) * dt;
     }
     return cvtStateMat2Result(state);
+}
+
+TrackArmorInfo TrackKalman::predict(int frame_seq, float pred_secs) {
+    return predict(frame_seq + int(pred_secs / dt));
 }
 
 cv::Mat TrackKalman::cvtDetection2Measurement(const ArmorInfo &detection) {

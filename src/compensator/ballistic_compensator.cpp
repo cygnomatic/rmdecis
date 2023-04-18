@@ -53,5 +53,11 @@ double BallisticCompensator::calcShootAngle(double x, double y, double v0, doubl
 
 }
 
+double BallisticCompensator::calcCompensateTime(double x, double y, double v0, double init_theta) const {
+    double angle = calcShootAngle(x, y, v0, init_theta);
+    return x / (cos(-1.0 * angle) * v0) + process_compensate_time;
+}
+
 BallisticCompensator::BallisticCompensator(Config &cfg) :
-        max_num_iterations(cfg.get<int>("aiming.compensator.maxNumIterations", 100)) {}
+        max_num_iterations(cfg.get<int>("aiming.compensator.maxNumIterations", 100)),
+        process_compensate_time(cfg.get<float>("aiming.compensator.processCompensateTime", 0.0)){}

@@ -43,6 +43,8 @@ public:
 
     TrackArmorInfo predict(int frame_seq);
 
+    TrackArmorInfo predict(int frame_seq, float pred_secs);
+
 private:
 
     // Process noise
@@ -51,9 +53,10 @@ private:
     // Measurement noise
     float SDM, SRM, SHM, SCM;
 
-    int last_frame_seq_;
+    // Process interval
+    float dt;
 
-    const float dt = 0.015;
+    int last_frame_seq_;
 };
 
 

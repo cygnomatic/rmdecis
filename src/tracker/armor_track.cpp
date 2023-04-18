@@ -42,6 +42,10 @@ TrackArmorInfo ArmorTrack::predict(int frame_seq) {
     return track_kalman.predict(frame_seq);
 }
 
+TrackArmorInfo ArmorTrack::predict(int frame_seq, float pred_secs) {
+    return track_kalman.predict(frame_seq, pred_secs);
+}
+
 float ArmorTrack::calcSimilarity(const ArmorInfo &detection, int frame_seq) {
 
     float iou = calculateIoU(last_bbox_, minAreaRect(std::vector<Point2f>(detection.corners_img)), k_dilate_);

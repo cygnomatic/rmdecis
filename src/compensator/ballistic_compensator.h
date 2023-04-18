@@ -17,6 +17,7 @@ class BallisticCompensator {
 
 private:
     int max_num_iterations;
+    float process_compensate_time;
 
 public:
 
@@ -31,9 +32,20 @@ public:
      * @param v0 Initial velocity of the bullet, mm/s
      * @param x Horizontal distance to the target, mm
      * @param y Vertical distance to the target, in mm
+     * @param init_theta Initial guess of theta
      * @return Pitch of gimbal, in rad
      */
     double calcShootAngle(double x, double y, double v0, double init_theta = 0.0) const;
+
+    /**
+     * Find the compensate airtime.
+     * @param v0 Initial velocity of the bullet, mm/s
+     * @param x Horizontal distance to the target, mm
+     * @param y Vertical distance to the target, in mm
+     * @param init_theta Initial guess of theta
+     * @return Compensate time, including bullet airtime and process compensate time, in seconds
+     */
+    double calcCompensateTime(double x, double y, double v0, double init_theta = 0.0) const;
 
 };
 

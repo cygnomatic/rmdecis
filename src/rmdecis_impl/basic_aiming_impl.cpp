@@ -75,16 +75,6 @@ EulerAngles BasicAiming::BasicAimingImpl::update(ArmorFrameInput detection,
             drawPoint(*debug_img_,
                       reconstructor.cam2img(reconstructor.transformer.worldToCam(track_info.target_world)),
                       {0, 250, 250}, 2);
-
-            track_info = p.second.predict(detection.seq_idx + 5);
-            drawPoint(*debug_img_,
-                      reconstructor.cam2img(reconstructor.transformer.worldToCam(track_info.target_world)),
-                      {0, 150, 150}, 2);
-
-            track_info = p.second.predict(detection.seq_idx + 10);
-            drawPoint(*debug_img_,
-                      reconstructor.cam2img(reconstructor.transformer.worldToCam(track_info.target_world)),
-                      {0, 100, 100}, 2);
         }
 
         // Draw trackers
@@ -119,8 +109,7 @@ EulerAngles BasicAiming::BasicAimingImpl::update(ArmorFrameInput detection,
     if (target_id_ == -1)
         return EulerAngles(NAN, NAN);
 
-    auto pred_delta_angle = predictFromTrack(tracks_map.at(target_id_),
-                                             detection.seq_idx + compensate_frame);
+    auto pred_delta_angle = predictFromTrack(tracks_map.at(target_id_), detection.seq_idx);
 
     // Avoid nan from predictFromTrack
     if (std::isnan(pred_delta_angle.yaw) || std::isnan(pred_delta_angle.pitch)) {
@@ -144,19 +133,35 @@ EulerAngles BasicAiming::BasicAimingImpl::predictFromTrack(ArmorTrack &track, in
 
     float horizontal_dist, vertical_dist, d_yaw, d_pitch, trig_pitch, pitch;
 
+    // Predict target without compensate time
     TrackArmorInfo target_info = track.predict(frame_seq);
-    Point3f center = target_info.target_world;
-    reconstructor.solveAngle(center, &horizontal_dist, &vertical_dist, &d_yaw, &trig_pitch);
+    reconstructor.solveAngle(target_info.target_world, &horizontal_dist, &vertical_dist, &d_yaw, &trig_pitch);
 
-    // TODO: calcShootAngle can return pitch with nan if there is no solution.
+    // Calculate compensate time
+    float compensate_time = float(compensator.calcCompensateTime(horizontal_dist, vertical_dist,
+                                                                 ballet_init_speed, curr_pitch_));
+    compensate_time = isnan(compensate_time) ? 0.0f : compensate_time;
+
+    // Predict target with compensate time
+    TrackArmorInfo pred_target_info = track.predict(frame_seq, compensate_time);
+    reconstructor.solveAngle(pred_target_info.target_world, &horizontal_dist, &vertical_dist, &d_yaw, &trig_pitch);
+
+    // Calculate target pitch
     pitch = float(compensator.calcShootAngle(horizontal_dist, vertical_dist, ballet_init_speed, curr_pitch_));
     d_pitch = pitch - curr_pitch_;
 
-    // info("horizontal_dist {}, vertical_dist {}, currPitch {}, trigPitch {}, shootAngle {}",
-    //      horizontal_dist, vertical_dist, curr_pitch_, trig_pitch, pitch);
+    if (target_id_ != -1) {
 
-    DEBUG_MSG {
-        if (target_id_ != -1) {
+        info("compensate_time {}, horizontal_dist {}, vertical_dist {}, currPitch {}, trigPitch {}, shootAngle {}",
+             compensate_time, horizontal_dist, vertical_dist, curr_pitch_, trig_pitch, pitch);
+
+        DEBUG_DECISION {
+            drawPoint(*debug_img_,
+                      reconstructor.cam2img(reconstructor.transformer.worldToCam(pred_target_info.target_world)),
+                      {255, 100, 255}, 2);
+        };
+
+        DEBUG_MSG {
             *debug_msg_ = fmt::format(R"({{"horizontal_dist": {}, "vertical_dist": {}, "curr_pitch": {}}})",
                                       horizontal_dist, vertical_dist, curr_pitch_);
         }
@@ -206,8 +211,4 @@ BasicAiming::BasicAimingImpl::BasicAimingImpl(Config &cfg)
           k_frame_height_(cfg.get<int>("camera.height")),
           k_confidence_threshold_(cfg.get<float>("aiming.basic.detConfidenceThreshold", 0.55)),
           enable_show_vision_input(cfg.get<bool>("aiming.basic.debugShowVisionInput", true)),
-          enable_show_tracker(cfg.get<bool>("aiming.basic.debugShowTracker", true)) {
-
-    // TODO: Time to compensate frame
-    compensate_frame = cfg.get<int>("aiming.basic.compensateTime", 0);
-}
+          enable_show_tracker(cfg.get<bool>("aiming.basic.debugShowTracker", true)) {}

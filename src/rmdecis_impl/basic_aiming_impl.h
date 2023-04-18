@@ -24,7 +24,6 @@ private:
 
     float ballet_init_speed = 15.0 * 1e3;
     float curr_pitch_ = 0.f;
-    int compensate_frame = 0;
 
     int target_id_ = -1;
     bool last_enable_auto_aim = false;

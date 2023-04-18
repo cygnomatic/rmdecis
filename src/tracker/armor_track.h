@@ -28,10 +28,11 @@ public:
 
     TrackArmorInfo predict(int frame_seq);
 
+    TrackArmorInfo predict(int frame_seq, float pred_secs);
+
     cv::RotatedRect predReprojRect(Reconstructor *reconstructor, int frame_seq);
 
     float calcSimilarity(const ArmorInfo &detection, int frame_seq);
-
 public:
     // They should be private members, but for debug we make them public
     cv::RotatedRect last_bbox_;
