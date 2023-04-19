@@ -10,92 +10,68 @@ TrackKalman::TrackKalman(Config &cfg, const ArmorInfo &detection, int frame_seq)
         : last_frame_seq_(frame_seq) {
 
     // Load params
-    SD = cfg.get<float>("kalman.processNoiseCov.SD", 1e-1);
-    SR = cfg.get<float>("kalman.processNoiseCov.SR", 1e-2);
-    SH = cfg.get<float>("kalman.processNoiseCov.SH", 1e-2);
     SC = cfg.get<float>("kalman.processNoiseCov.SC", 1e-2);
-
-    SDM = cfg.get<float>("kalman.measurementNoiseCov.SDM", 100);
-    SRM = cfg.get<float>("kalman.measurementNoiseCov.SRM", 10);
-    SHM = cfg.get<float>("kalman.measurementNoiseCov.SHM", 10);
-    SCM = cfg.get<float>("kalman.measurementNoiseCov.SCM", 50);
-
+    SCM = cfg.get<float>("kalman.measurementNoiseCov.SCM", 0.01);
     dt = cfg.get<float>("kalman.processInterval", 0.01);
 
     // Init states
 
     Mat init_state;
-    vconcat(cvtDetection2Measurement(detection), Mat::zeros(7, 1, CV_32F), init_state);
+    vconcat(cvtDetection2Measurement(detection), Mat::zeros(3, 1, CV_32F), init_state);
     kf.statePost = init_state;
 
-// clang-format off
+/* clang-format off */
 
-    kf.errorCovPost = (cv::Mat_<float>(14, 14)
+    kf.errorCovPost = (cv::Mat_<float>(6, 6)
             <<
-            1e2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            0, 1e2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 1e2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 1e2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 1e2, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 1e2, 0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 1e2, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 1e4, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 1e4, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 1e4, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1e4, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1e4, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1e4, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1e4);
+            1e2, 0, 0, 0, 0, 0,
+            0, 1e2, 0, 0, 0, 0,
+            0, 0, 1e2, 0, 0, 0,
+            0, 0, 0, 1e4, 0, 0,
+            0, 0, 0, 0, 1e4, 0,
+            0, 0, 0, 0, 0, 1e4);
 
     // Init matrices
 
-    kf.measurementMatrix = cv::Mat::eye(7, 14, CV_32F);
+    kf.measurementMatrix = cv::Mat::eye(3, 6, CV_32F);
 
-    kf.transitionMatrix = (cv::Mat_<float>(14, 14)
+    kf.transitionMatrix = (cv::Mat_<float>(6, 6)
             <<
-            1, 0, 0, 0, 0, 0, 0, dt, 0, 0, 0, 0, 0, 0,
-            0, 1, 0, 0, 0, 0, 0, 0, dt, 0, 0, 0, 0, 0,
-            0, 0, 1, 0, 0, 0, 0, 0, 0, dt, 0, 0, 0, 0,
-            0, 0, 0, 1, 0, 0, 0, 0, 0, 0, dt, 0, 0, 0,
-            0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, dt, 0, 0,
-            0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, dt, 0,
-            0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, dt,
-            0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1);
+            1, 0, 0, dt, 0, 0,
+            0, 1, 0, 0, dt, 0,
+            0, 0, 1, 0, 0, dt,
+            0, 0, 0, 1, 0, 0,
+            0, 0, 0, 0, 1, 0,
+            0, 0, 0, 0, 0, 1);
 
-    kf.processNoiseCov = (cv::Mat_<float>(14, 14)
+    float dt3 = dt * dt * dt, dt4 = dt * dt * dt * dt;
+    kf.processNoiseCov = (cv::Mat_<float>(6, 6)
             <<
-            SD, 0, 0, 0, 0, 0, 0, SD * dt, 0, 0, 0, 0, 0, 0,
-            0, SD, 0, 0, 0, 0, 0, 0, SD * dt, 0, 0, 0, 0, 0,
-            0, 0, SR, 0, 0, 0, 0, 0, 0, SR * dt, 0, 0, 0, 0,
-            0, 0, 0, SH, 0, 0, 0, 0, 0, 0, SH * dt, 0, 0, 0,
-            0, 0, 0, 0, SC, 0, 0, 0, 0, 0, 0, SC * dt, 0, 0,
-            0, 0, 0, 0, 0, SC, 0, 0, 0, 0, 0, 0, SC * dt, 0,
-            0, 0, 0, 0, 0, 0, SC, 0, 0, 0, 0, 0, 0, SC * dt,
-            SD * dt, 0, 0, 0, 0, 0, 0, SD * dt * dt, 0, 0, 0, 0, 0, 0,
-            0, SD * dt, 0, 0, 0, 0, 0, 0, SD * dt * dt, 0, 0, 0, 0, 0,
-            0, 0, SR * dt, 0, 0, 0, 0, 0, 0, SR * dt * dt, 0, 0, 0, 0,
-            0, 0, 0, SH * dt, 0, 0, 0, 0, 0, 0, SH * dt * dt, 0, 0, 0,
-            0, 0, 0, 0, SC * dt, 0, 0, 0, 0, 0, 0, SC * dt * dt, 0, 0,
-            0, 0, 0, 0, 0, SC * dt, 0, 0, 0, 0, 0, 0, SC * dt * dt, 0,
-            0, 0, 0, 0, 0, 0, SC * dt, 0, 0, 0, 0, 0, 0, SC * dt * dt);
+            0.25 * SC * dt4, 0, 0, 0.5 * SC * dt3, 0, 0,
+            0, 0.25 * SC * dt4, 0, 0, 0.5 * SC * dt3, 0,
+            0, 0, 0.25 * SC * dt4, 0, 0, 0.5 * SC * dt3,
+            0.5 * SC * dt3, 0, 0, dt, 0, 0,
+            0, 0.5 * SC * dt3, 0, 0, dt, 0,
+            0, 0, 0.5 * SC * dt3, 0, 0, dt);
 
-    kf.measurementNoiseCov = (cv::Mat_<float>(7, 7)
+    kf.measurementNoiseCov = (cv::Mat_<float>(3, 3)
             <<
-            SDM, 0, 0, 0, 0, 0, 0,
-            0, SDM, 0, 0, 0, 0, 0,
-            0, 0, SRM, 0, 0, 0, 0,
-            0, 0, 0, SHM, 0, 0, 0,
-            0, 0, 0, 0, SCM, 0, 0,
-            0, 0, 0, 0, 0, SCM, 0,
-            0, 0, 0, 0, 0, 0, SCM);
+            SCM, 0, 0,
+            0, SCM, 0,
+            0, 0, SCM);
 
-// clang-format on
+    // Matrix elements
+    // SC, 0, 0,  0, 0, 0,  0.5 * SC * dt3, 0, 0,  0.25 * SC * dt4, 0, 0,
+    // 0, SC, 0,  0, 0, 0,  0, 0.5 * SC * dt3, 0,  0, 0.25 * SC * dt4, 0,
+    // 0, 0, SC,  0, 0, 0,  0, 0, 0.5 * SC * dt3,  0, 0, 0.25 * SC * dt4,
+
+/* clang-format on */
+
+    assert(kf.errorCovPost.rows == NUM_STATE * 2 && kf.errorCovPost.cols == NUM_STATE * 2);
+    assert(kf.measurementMatrix.rows == NUM_STATE && kf.measurementMatrix.cols == NUM_STATE * 2);
+    assert(kf.transitionMatrix.rows == NUM_STATE * 2 && kf.transitionMatrix.cols == NUM_STATE * 2);
+    assert(kf.processNoiseCov.rows == NUM_STATE * 2 && kf.processNoiseCov.cols == NUM_STATE * 2);
+    assert(kf.measurementNoiseCov.rows == NUM_STATE && kf.measurementNoiseCov.cols == NUM_STATE);
 
 }
 
@@ -105,41 +81,34 @@ void TrackKalman::correct(const ArmorInfo &detection, int frame_seq) {
     }
     kf.correct(cvtDetection2Measurement(detection));
     last_frame_seq_ = frame_seq;
+    info("posConv {:.4f}, velConv {:.4f}, vel {}",
+         kf.errorCovPost.at<float>(0, 0),
+         kf.errorCovPost.at<float>(3, 3),
+         kf.statePost.at<float>(3));
 }
 
 TrackArmorInfo TrackKalman::predict(int frame_seq) {
+    return predict(frame_seq, 0.0f);
+}
+
+TrackArmorInfo TrackKalman::predict(int frame_seq, float pred_secs) {
     Mat state = kf.statePost.clone();
     for (int i = 0; i < NUM_STATE; ++i) {
-        state.at<float>(i) += state.at<float>(i + NUM_STATE) * float(frame_seq - last_frame_seq_) * dt;
+        state.at<float>(i) += state.at<float>(i + NUM_STATE) * (float(frame_seq - last_frame_seq_) * dt + pred_secs);
     }
     return cvtStateMat2Result(state);
 }
 
-TrackArmorInfo TrackKalman::predict(int frame_seq, float pred_secs) {
-    return predict(frame_seq + int(pred_secs / dt));
-}
-
 cv::Mat TrackKalman::cvtDetection2Measurement(const ArmorInfo &detection) {
-    Rect2f bounding_box = detection.corners_img.getBoundingBox();
     Point3f center = detection.target_world;
-
-    float u = bounding_box.x, v = bounding_box.y;
-    float ratio = bounding_box.width / bounding_box.height;
-    float area = bounding_box.area();
-
-    return (Mat_<float>(7, 1) << u, v, ratio, area, center.x, center.y, center.z);
+    return (Mat_<float>(3, 1) << center.x, center.y, center.z);
 }
 
 TrackArmorInfo TrackKalman::cvtStateMat2Result(const Mat &state) {
-    auto pred_uv = Point2f{state.at<float>(STATE_U), state.at<float>(STATE_V)};
-
-    // width^2 = (width * height) * (width / height) = area * ratio
-    float width = std::sqrt(state.at<float>(STATE_AREA) * state.at<float>(STATE_RATIO));
-    float height = width / state.at<float>(STATE_RATIO);
 
     float x = state.at<float>(STATE_X);
     float y = state.at<float>(STATE_Y);
     float z = state.at<float>(STATE_Z);
 
-    return {Point3f{x, y, z}, Rect2f{pred_uv, Size2f{width, height}}};
+    return {Point3f{x, y, z}};
 }

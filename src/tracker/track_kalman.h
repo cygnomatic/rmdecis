@@ -7,29 +7,21 @@
 
 #include "rmdecis/core.h"
 
-#define NUM_STATE 7
+#define NUM_STATE 3
 enum StateMatDesc {
-    STATE_U = 0,
-    STATE_V = 1,
-    STATE_RATIO = 2,
-    STATE_AREA = 3,
-    STATE_X = 4,
-    STATE_Y = 5,
-    STATE_Z = 6,
-    STATE_D_U = 7,
-    STATE_D_V = 8,
-    STATE_D_RATIO = 9,
-    STATE_D_AREA = 10,
-    STATE_D_X = 11,
-    STATE_D_Y = 12,
-    STATE_D_Z = 13,
+    STATE_X = 0,
+    STATE_Y = 1,
+    STATE_Z = 2,
+    STATE_D_X = 3,
+    STATE_D_Y = 4,
+    STATE_D_Z = 5,
 };
 
 
 class TrackKalman {
 public:
 
-    cv::KalmanFilter kf = cv::KalmanFilter(14, 7);
+    cv::KalmanFilter kf = cv::KalmanFilter(6, 3);
 
 public:
 
@@ -47,14 +39,11 @@ public:
 
 private:
 
-    // Process noise
-    float SD, SR, SH, SC;
+    float SC; // Process noise
 
-    // Measurement noise
-    float SDM, SRM, SHM, SCM;
+    float SCM; // Measurement noise
 
-    // Process interval
-    float dt;
+    float dt; // Process interval
 
     int last_frame_seq_;
 };
