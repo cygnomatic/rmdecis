@@ -85,9 +85,9 @@ RectCorners3f::RectCorners3f(const cv::Size_<float> &armor_size) :
                  {armor_size.width / 2,  -armor_size.height / 2, 0}}
         ) {}
 
-SmallRectCorners3f::SmallRectCorners3f() : SmallRectCorners3f(cv::Size(SMALL_ARMOR_WIDTH, SMALL_ARMOR_HEIGHT)) {}
+SmallRectCorners3f::SmallRectCorners3f() : SmallRectCorners3f(cv::Size_<float>(SMALL_ARMOR_WIDTH, SMALL_ARMOR_HEIGHT)) {}
 
-LargeRectCorners3f::LargeRectCorners3f() : LargeRectCorners3f(cv::Size(BIG_ARMOR_WIDTH, BIG_ARMOR_HEIGHT)) {}
+LargeRectCorners3f::LargeRectCorners3f() : LargeRectCorners3f(cv::Size_<float>(BIG_ARMOR_WIDTH, BIG_ARMOR_HEIGHT)) {}
 
 RuneCorners3f::RuneCorners3f() :
         RuneCorners3f(
