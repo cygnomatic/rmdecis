@@ -33,7 +33,7 @@ jobs:
             sudo make install
       - run:
           name: Build
-          command: bash build.sh
+          command: bash build.bash
       - save_cache:
           key: build-cache
           paths: 

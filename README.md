@@ -35,12 +35,12 @@
 
 2. 运行 `build.sh`
    ```bash
-   sh build.sh
+   sh build.bash
    ```
 
 3. （可选）安装库
    ```bash
-   sudo bash install.sh
+   sudo bash install.bash
    ```
 
 ## File Structure
