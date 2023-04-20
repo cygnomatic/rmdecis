@@ -97,9 +97,9 @@ EulerAngles BasicAiming::BasicAimingImpl::update(ArmorFrameInput detection,
         // Reconstructor result & target result
         if (target_id_ != -1) {
             auto target_trk = tracker.getTracks().at(target_id_);
-            auto target_ctr_cam = target_trk.predict(detection.seq_idx).target_world;
+            auto target_ctr_world = target_trk.predict(detection.seq_idx).target_world;
             cv::putText(*debug_img_, fmt::format("x: {:.2f}, y: {:.2f}, z: {:.2f}",
-                                                 target_ctr_cam.x, target_ctr_cam.y, target_ctr_cam.z),
+                                                 target_ctr_world.x, target_ctr_world.y, target_ctr_world.z),
                         Point(50, 150), cv::FONT_HERSHEY_SIMPLEX, 1, {255, 255, 255}, 1);
             drawArmorCorners(*debug_img_, target_trk.last_image_corners_, {255, 0, 0}, 5);
         }
@@ -152,8 +152,8 @@ EulerAngles BasicAiming::BasicAimingImpl::predictFromTrack(ArmorTrack &track, in
 
     if (target_id_ != -1) {
 
-        info("compensate_time {}, horizontal_dist {}, vertical_dist {}, currPitch {}, trigPitch {}, shootAngle {}",
-             compensate_time, horizontal_dist, vertical_dist, curr_pitch_, trig_pitch, pitch);
+        // info("compensate_time {}, horizontal_dist {}, vertical_dist {}, currPitch {}, trigPitch {}, shootAngle {}",
+        //      compensate_time, horizontal_dist, vertical_dist, curr_pitch_, trig_pitch, pitch);
 
         DEBUG_DECISION {
             drawPoint(*debug_img_,
