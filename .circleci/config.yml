@@ -8,7 +8,7 @@ version: 2.1
 jobs:
   build-release:
     machine:
-      image: ubuntu-2204:2022.10.2
+      image: ubuntu-2004:current
     resource_class: arm.large
     steps:
       - checkout
