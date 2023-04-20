@@ -140,7 +140,7 @@ EulerAngles BasicAiming::BasicAimingImpl::predictFromTrack(ArmorTrack &track, in
     // Calculate compensate time
     float compensate_time = float(compensator.calcCompensateTime(horizontal_dist, vertical_dist,
                                                                  ballet_init_speed, curr_pitch_));
-    compensate_time = isnan(compensate_time) ? 0.0f : compensate_time;
+    compensate_time = std::isnan(compensate_time) ? 0.0f : compensate_time;
 
     // Predict target with compensate time
     TrackArmorInfo pred_target_info = track.predict(frame_seq, compensate_time);
