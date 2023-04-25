@@ -81,10 +81,10 @@ void TrackKalman::correct(const ArmorInfo &detection, int frame_seq) {
     }
     kf.correct(cvtDetection2Measurement(detection));
     last_frame_seq_ = frame_seq;
-    debug("posConv {:.4f}, velConv {:.4f}, vel {}",
-         kf.errorCovPost.at<float>(0, 0),
-         kf.errorCovPost.at<float>(3, 3),
-         kf.statePost.at<float>(3));
+    // debug("posConv {:.4f}, velConv {:.4f}, vel {}",
+    //      kf.errorCovPost.at<float>(0, 0),
+    //      kf.errorCovPost.at<float>(3, 3),
+    //      kf.statePost.at<float>(3));
 }
 
 TrackArmorInfo TrackKalman::predict(int frame_seq) {
