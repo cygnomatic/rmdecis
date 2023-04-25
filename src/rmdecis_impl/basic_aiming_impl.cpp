@@ -19,7 +19,9 @@ EulerAngles BasicAiming::BasicAimingImpl::update(ArmorFrameInput detection,
 
     debug_img_ = debug_img;
     debug_msg_ = debug_msg;
-    *debug_msg = "{}"; // Clear original msg
+    DEBUG_MSG {
+        *debug_msg_ = "{}"; // Clear original msg
+    }
 
     // Pre-process data
     std::vector<ArmorInfo> armor_infos = detectionToInfo(detection.armor_info,
