@@ -1,14 +1,14 @@
 cmake_minimum_required(VERSION 3.9)
-project(Cygnoides_Decision VERSION 2023.11 DESCRIPTION "CygnoidesRM Decision lib")
+project(rmdecis VERSION 2023.12 DESCRIPTION "Robomaster auto-aim prediction lib")
 
 set(CMAKE_CXX_STANDARD 17)
 
-option(RMDECIS_DEPLOYMENT "Build rmdecis for Jetson NX deployment" OFF)
+option(RMDECIS_DEPLOYMENT "Build rmdecis with manually installed kissfft" OFF)
 
 ### Link libraries
 
 if (RMDECIS_DEPLOYMENT)
-    message("-- RMDECIS_DEPLOYMENT: Building for Jetson NX deployment")
+    message("-- RMDECIS_DEPLOYMENT: Build rmdecis with manually installed kissfft")
     find_package(OpenCV REQUIRED)
     find_package(Ceres REQUIRED)
     find_package(Eigen3 REQUIRED)
