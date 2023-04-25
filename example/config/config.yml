@@ -1,26 +1,28 @@
 camera:
-  coeffsPath: "/home/catslashbin/Projects/Cygnoides-Decision/config/camera_coeffs.yml"
-  width: 1080
-  height: 1024
+  coeffsPath: "../config/camera_coeffs.yml"
+  width: 640
+  height: 480
 aiming:
+  compensator:
+    processCompensateTime: 0.0
+    maxNumIterations: 100
   basic:
-    compensateTime: 5.0
-  airResistanceConst: 0.1
+    detConfidenceThreshold: 0.55
+    debugShowVisionInput: false
+    debugShowTracker: true
+    airResistanceConst: 0.1
 tracker:
-  minHitCount: 2
-  maxMissingCount: 5
-  similarityThreshold: 0.65
+  minHitCount: 3
+  maxMissingCount: 12
+  similarityThreshold: 0.5
+  maxScreenDist: 30
+  bboxDilate: 3.5
 kalman:
   processNoiseCov:
-    SD: 1e-1
-    SR: 1e-1
-    SH: 1e-1
-    SC: 1e-1
+    SC: 0.05
   measurementNoiseCov:
-    SDM: 150
-    SRM: 100
-    SHM: 100
-    SCM: 100
+    SCM: 0.1
+  processInterval: 0.05
 predictor:
   rune:
     avgUpdateTimeInterval: 0.02
@@ -36,3 +38,7 @@ transformer:
       x: 0.0
       y: 0.0
       z: 0.0
+globalRule:
+  isStandard3Large: false
+  isStandard4Large: false
+  isStandard5Large: false
