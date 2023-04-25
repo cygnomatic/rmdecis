@@ -1,6 +1,4 @@
-# Cygnoides-Decision
-
-北邮鸿雁战队 视觉组 - 决策部分 代码仓库
+# rmdecis
 
 ## Build & install
 
@@ -44,21 +42,9 @@
    ```
 
 ## File Structure
-```
-.
-├── config # 配置文件
-├── data # 测试用数据
-├── src 
-│   ├── compensator # 补偿器
-│   ├── contrib # 第三方库
-│   ├── reconstructor # 重建器
-│   ├── tracker # 跟踪器
-│   ├── typing # 类型定义
-│   └── utils # 工具
-├── tests # 测试代码
-└── utils_contrib # 测试工具
 
-```
+TODO
+
 ## Code Style
 
 - 类名采用 PascalCase
