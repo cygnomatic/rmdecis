@@ -1,6 +1,6 @@
 # rmdecis
 
-[![State-of-the-art Shitcode](https://img.shields.io/static/v1?label=State-of-the-art&message=Shitcode&color=7B5804)](https://github.com/trekhleb/state-of-the-art-shitcode) [![CircleCI](https://dl.circleci.com/status-badge/img/gh/CygnoidesV/rmdecis/tree/main.svg?style=shield&circle-token=8d7d1a6746becf36606404fa61bdba53afb9b66d)](https://dl.circleci.com/status-badge/redirect/gh/CygnoidesV/rmdecis/tree/main)
+[![State-of-the-art Shitcode](https://img.shields.io/static/v1?label=State-of-the-art&message=Shitcode&color=7B5804)](https://github.com/trekhleb/state-of-the-art-shitcode) [![CircleCI](https://dl.circleci.com/status-badge/img/gh/CygnoidesV/rmdecis/tree/main.svg?style=shield)](https://dl.circleci.com/status-badge/redirect/gh/CygnoidesV/rmdecis/tree/main)
 
 北京邮电大学鸿雁战队 RoboMaster 自瞄预测功能库
 
